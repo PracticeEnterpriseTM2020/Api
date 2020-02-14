@@ -8,18 +8,19 @@
     $link=$db->getLink();
     if($link != false){
         // check if POST values are set
-        if(isset($_POST["email"]) 
-        && isset($_POST["firstname"]) 
-        && isset($_POST["lastname"]) 
-        && isset($_POST["password"])){
+        if(isset($_POST["number"]) 
+        && isset($_POST["street"])
+        && isset($_POST["email"]) 
+        && isset($_POST["city"]) 
+        && isset($_POST["postalCode"])){
             // check for valid email
             if(!filter_var($_POST["email"],FILTER_VALIDATE_EMAIL)){
                 die(json_encode(array("message"=>"email not valid", "success"=>false)));
             }
             // make customer object
-            $cust = new Customer($link, $_POST["lastname"], $_POST["firstname"], $_POST["email"], $_POST["password"]);
-            // use create method returns true if successfully added customer
-            if($cust->create()){
+            $cust = new Customer($link, $_POST["street"], $_POST["number"], $_POST["city"], $_POST["postalCode"],$_POST["email"]);
+            // use addAddress method returns true if successfully added customer
+            if($cust->addAddress()){
                 http_response_code(201);
                 echo(json_encode(array("message" => "Successfully added customer.","success"=>true)));        
             }

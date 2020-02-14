@@ -24,7 +24,7 @@ class Database {
         }
     }
 
-    public function get_link() {
+    public function getLink() {
         return $this->conn; //returns the link needed to execute queries
     }
 }

@@ -19,9 +19,9 @@
             die(json_encode(array("message"=>"missing argument: email","success"=>false)));
         }
         // execute read one (returns an array)
-        $json = $customer->readOne();
+        $json = $customer->readOneLogin();
         // check if the searched customer exists
-        if($json["customer"]["firstname"] != null){
+        if($json["customer"]["email"] != null){
             $json["success"] = true;
             http_response_code(200);
             echo(json_encode($json));
