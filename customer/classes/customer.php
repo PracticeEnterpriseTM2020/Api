@@ -147,7 +147,7 @@ class Customer
     }
     public function readOneLogin()
     {
-        // query reads one customer
+        // query reads one customers' login
         $stmt = mysqli_prepare($this->conn, "SELECT email,pass FROM customer WHERE email=?");
         mysqli_stmt_bind_param($stmt, "s", $this->email);
         mysqli_stmt_execute($stmt);
@@ -180,7 +180,7 @@ class Customer
 
     public function readAllLogin()
     {
-        // gets all customers
+        // gets all customer logins
         $query = "SELECT email,pass from customer";
         $val = mysqli_query($this->conn, $query);
         // return query result
@@ -189,7 +189,7 @@ class Customer
 
     public function create()
     {
-        // makes a new customer WIP
+        // makes a new customer WIP {TODO: address & extend filtering}
         $stmt = mysqli_prepare($this->conn, "INSERT INTO customer (firstname,lastname,email,pass) VALUES (?,?,?,?)");
         mysqli_stmt_bind_param($stmt, "ssss", $this->firstname, $this->lastname, $this->email, $this->password);
         mysqli_stmt_execute($stmt);
