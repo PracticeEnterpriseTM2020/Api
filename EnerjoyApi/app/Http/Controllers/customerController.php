@@ -15,7 +15,7 @@ class customerController extends Controller
      */
     public function index()
     {
-        return customer::find(1)->with('address')->get();
+        return customer::with('address.city','address.country')->get();
     }
 
     /**

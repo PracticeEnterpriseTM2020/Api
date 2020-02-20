@@ -8,6 +8,6 @@ class city extends Model
 {
     public function address()
     {
-        return $this->belongsTo('App\address');
+        return $this->hasOne('App\address');
     }
 }
