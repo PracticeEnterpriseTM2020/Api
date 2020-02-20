@@ -1,9 +1,10 @@
 <?php
+
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAddressesTable extends Migration
+class CreateCountriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +13,9 @@ class CreateAddressesTable extends Migration
      */
     public function up()
     {
-        Schema::create('addresses', function (Blueprint $table) {
+        Schema::create('countries', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string("street");
-            $table->string("number");
-            $table->string("city");
-            $table->string("country");
+            $table->string('name');
         });
     }
 
@@ -28,6 +26,6 @@ class CreateAddressesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('addresses');
+        Schema::dropIfExists('countries');
     }
 }

@@ -5,9 +5,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class address extends Model
 {
-    protected $fillable = ['address', 'number', 'city','postalcode','custId'];
+    protected $fillable = ['street', 'number', 'city','postalcode'];
     public function customer()
     {
-        return $this->belongsTo('App\customer');
+        return $this->hasOne('App\customer');
     }
 }

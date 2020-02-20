@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\address;
 use App\customer;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class customerController extends Controller
      */
     public function index()
     {
-        return customer::with("address")->get();
+        return customer::find(1)->with('address')->get();
     }
 
     /**

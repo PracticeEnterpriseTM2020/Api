@@ -18,6 +18,7 @@ class CreateCustomersTable extends Migration
             $table->string('lastname');
             $table->string('email')->unique();
             $table->string('password');
+            $table->unsignedBigInteger('addrId');
         });
     }
 
