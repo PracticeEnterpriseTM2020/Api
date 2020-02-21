@@ -14,11 +14,11 @@ class CreateCustomersTable extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->string('firstname');
-            $table->string('lastname');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->unsignedBigInteger('addrId');
+            $table->string('firstname',30)->nullable(false);
+            $table->string('lastname',30)->nullable(false);
+            $table->string('email')->unique()->nullable(false);
+            $table->string('password')->nullable(false);
+            $table->bigInteger('addrId')->nullable(false)->unsigned();
         });
     }
 
