@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Validator;
 use App\address;
 use App\customer;
+use App\Http\Resources\customer as customerResource;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class customerController extends Controller
@@ -15,7 +17,11 @@ class customerController extends Controller
      */
     public function index()
     {
-        return customer::with('address.city','address.country')->get();
+        return customerResource::collection(customer::all());
+    }
+    public function indexLogin()
+    {
+        return customer::select('email','password')->get();
     }
 
     /**
@@ -37,7 +43,25 @@ class customerController extends Controller
      */
     public function show($email)
     {
+        $validator = Validator::make(['email' => $email], [
+            'email' => 'required|email'
+        ]);
+      
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
+        }
         return customer::where('email',$email)->with('address.city','address.country')->get();
+    }
+    public function showLogin($email)
+    {
+        $validator = Validator::make(['email' => $email], [
+            'email' => 'required|email'
+          ]);
+      
+          if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
+          }
+        return customer::where('email',$email)->select('email','password')->get();
     }
 
     /**
