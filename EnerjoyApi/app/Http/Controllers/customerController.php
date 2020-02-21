@@ -35,9 +35,9 @@ class customerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($email)
     {
-        return customer::find($id);
+        return customer::where('email',$email)->with('address.city','address.country')->get();
     }
 
     /**
