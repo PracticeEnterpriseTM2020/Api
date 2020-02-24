@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 19, 2020 at 09:05 PM
+-- Generation Time: Feb 24, 2020 at 05:29 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -96,6 +96,7 @@ CREATE TABLE `employees` (
 
 CREATE TABLE `invoices` (
   `id` bigint(8) UNSIGNED NOT NULL,
+  `customerId` bigint(8) UNSIGNED NOT NULL,
   `price` double UNSIGNED NOT NULL,
   `date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -119,6 +120,7 @@ CREATE TABLE `jobs` (
 
 CREATE TABLE `meters` (
   `id` bigint(8) UNSIGNED NOT NULL,
+  `customerId` bigint(8) UNSIGNED NOT NULL,
   `created` datetime NOT NULL,
   `isUsed` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -131,6 +133,7 @@ CREATE TABLE `meters` (
 
 CREATE TABLE `meter_data` (
   `id` bigint(20) UNSIGNED NOT NULL,
+  `linkedMeterId` bigint(8) UNSIGNED NOT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL,
   `consumption` int(16) NOT NULL
@@ -208,7 +211,8 @@ ALTER TABLE `employees`
 -- Indexes for table `invoices`
 --
 ALTER TABLE `invoices`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `invoiceCustomer` (`customerId`);
 
 --
 -- Indexes for table `jobs`
@@ -220,13 +224,15 @@ ALTER TABLE `jobs`
 -- Indexes for table `meters`
 --
 ALTER TABLE `meters`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `meterCustomer` (`customerId`);
 
 --
 -- Indexes for table `meter_data`
 --
 ALTER TABLE `meter_data`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `meterdataMeter` (`linkedMeterId`);
 
 --
 -- Indexes for table `suppliers`
@@ -240,6 +246,76 @@ ALTER TABLE `suppliers`
 --
 ALTER TABLE `tarif`
   ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `addresses`
+--
+ALTER TABLE `addresses`
+  MODIFY `id` bigint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `city`
+--
+ALTER TABLE `city`
+  MODIFY `id` bigint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `country`
+--
+ALTER TABLE `country`
+  MODIFY `id` bigint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `customers`
+--
+ALTER TABLE `customers`
+  MODIFY `id` bigint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `employees`
+--
+ALTER TABLE `employees`
+  MODIFY `id` bigint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `invoices`
+--
+ALTER TABLE `invoices`
+  MODIFY `id` bigint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `jobs`
+--
+ALTER TABLE `jobs`
+  MODIFY `id` bigint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `meters`
+--
+ALTER TABLE `meters`
+  MODIFY `id` bigint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `meter_data`
+--
+ALTER TABLE `meter_data`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `suppliers`
+--
+ALTER TABLE `suppliers`
+  MODIFY `id` bigint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tarif`
+--
+ALTER TABLE `tarif`
+  MODIFY `id` bigint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -266,10 +342,22 @@ ALTER TABLE `employees`
   ADD CONSTRAINT `employeesJobs` FOREIGN KEY (`jobId`) REFERENCES `jobs` (`id`);
 
 --
+-- Constraints for table `invoices`
+--
+ALTER TABLE `invoices`
+  ADD CONSTRAINT `invoiceCustomer` FOREIGN KEY (`customerId`) REFERENCES `customers` (`id`);
+
+--
 -- Constraints for table `meters`
 --
 ALTER TABLE `meters`
-  ADD CONSTRAINT `meterdataMeter` FOREIGN KEY (`id`) REFERENCES `meter_data` (`id`);
+  ADD CONSTRAINT `meterCustomer` FOREIGN KEY (`customerId`) REFERENCES `customers` (`id`);
+
+--
+-- Constraints for table `meter_data`
+--
+ALTER TABLE `meter_data`
+  ADD CONSTRAINT `meterdataMeter` FOREIGN KEY (`linkedMeterId`) REFERENCES `meters` (`id`);
 
 --
 -- Constraints for table `suppliers`
