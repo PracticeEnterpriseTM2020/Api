@@ -15,6 +15,7 @@ Route::get('customers/{email}/login', 'customerController@showLogin');
 Route::get('customers/login', 'customerController@indexLogin');
 Route::get('customers/{email}', 'customerController@show');
 Route::get('customers', 'customerController@index');
+Route::get('/invoices/{invoiceId}', 'invoiceController@show');
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
