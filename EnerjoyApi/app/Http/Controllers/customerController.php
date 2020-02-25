@@ -50,7 +50,7 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
         }
-        return customer::where('email',$email)->with('address.city','address.country')->get();
+        return customer::where('email',$email)->with('address.city','address.city.country')->get();
     }
     public function showLogin($email)
     {

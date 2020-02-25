@@ -16,7 +16,8 @@ class city extends JsonResource
     {
         return[
             'name' => $this->name,
-            'postalcode'=>$this->postalcode
+            'postalcode'=>$this->postalcode,
+            'country' => new CountryCollection($this->country)
         ];
     }
 }

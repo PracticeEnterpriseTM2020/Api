@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\country;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class address extends JsonResource
@@ -18,8 +17,7 @@ class address extends JsonResource
         return [
             'street' => $this->street,
             'number' => $this->number,
-            'city' => new city($this->city),
-            'country' => new CountryCollection($this->country)
+            'city' => new city($this->city)
         ];
     }
 }
