@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/meters/create', 'MetersController@create');
+Route::post('/meters', 'MetersController@store');
