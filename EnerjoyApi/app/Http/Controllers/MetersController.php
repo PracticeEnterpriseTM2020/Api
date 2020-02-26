@@ -9,6 +9,21 @@ use App\Meters;
 
 class MetersController extends Controller
 {
+
+    public function index()
+    {
+        $meter = Meters::get();
+
+        return view('meters.index', ['meters' => $meter]);
+    }
+
+    public function show($meter_id)
+    {
+        $meter = Meters::find($meter_id);
+
+        return view('meters.search', ['meters' => $meter]);
+    }
+
     public function create()
     {
         return view('meters.create');
@@ -29,9 +44,8 @@ class MetersController extends Controller
         $meter->creation_timestamp = strtotime(request('creation_timestamp'));
         $meter->save();
 
-        return response()->json([
-            'response_code' => 200,
-            'response_message' => 'Data added successfully!'
-        ]);
+        //return response()->setStatusCode(200);
+
+        return view('meters.index', ['meters' => $meter]);
     }
 }

@@ -11,9 +11,13 @@
 |
 */
 
+use App\Http\Controllers\MetersController;
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/meters/create', 'MetersController@create');
+Route::get('/meters', 'MetersController@index');
 Route::post('/meters', 'MetersController@store');
+Route::get('/meters/create', 'MetersController@create');
+Route::get('/meters/{meter_id}', 'MetersController@show');
