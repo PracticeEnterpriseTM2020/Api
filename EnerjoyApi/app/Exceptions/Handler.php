@@ -48,9 +48,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-       // if ($exception instanceof \Illuminate\Database\QueryException) {
+       //if ($exception instanceof \Illuminate\Database\QueryException) {
        //     return response(['message'=>'failed to query database'],404);
-       // } 
+       //} 
         return parent::render($request, $exception);
     }
 }
