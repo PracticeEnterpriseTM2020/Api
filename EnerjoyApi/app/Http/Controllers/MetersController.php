@@ -24,11 +24,14 @@ class MetersController extends Controller
         //dump(request()->all());
 
         $meter = new Meters();
-        
+
         $meter->meter_id = request('meter_id');
         $meter->creation_timestamp = strtotime(request('creation_timestamp'));
         $meter->save();
 
-        //return view('welcome');
+        return response()->json([
+            'response_code' => 200,
+            'response_message' => 'Data added successfully!'
+        ]);
     }
 }
