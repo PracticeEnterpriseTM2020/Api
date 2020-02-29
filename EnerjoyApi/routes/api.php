@@ -16,9 +16,15 @@ Route::get('customers/login', 'customerController@indexLogin');
 Route::get('customers/{email}', 'customerController@show');
 Route::get('customers', 'customerController@index');
 Route::get('invoices/{invoiceId}', 'invoiceController@show');
+
+//Meters
+Route::get('meters/{meter_id}', 'MetersController@show');
+Route::post('meters/create', 'MetersController@store');
+
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::fallback(function(){
+/*Route::fallback(function(){
     return response()->json(['message' => 'Page Not Found.'], 404);
-});
+});*/
