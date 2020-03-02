@@ -39,7 +39,7 @@ class MetersController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'meter_id' => 'required|max:255',
-            'creation_timestamp' => 'required|max:16'
+            'creation_timestamp' => 'required|max:16|min:16|date'
         ]);
 
         if ($validator->fails()) {
