@@ -19,7 +19,6 @@ class CreateCustomersTable extends Migration
             $table->string('email')->unique()->nullable(false);
             $table->string('password')->nullable(false);
             $table->unsignedBigInteger('addressId')->nullable(false);
-            $table->foreign('addressId')->references('id')->on('addresses');
         });
     }
 
