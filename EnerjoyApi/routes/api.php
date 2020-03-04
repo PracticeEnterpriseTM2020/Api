@@ -11,13 +11,15 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::get('customers/{email}/login', 'customerController@showLogin');
 Route::get('customers/login', 'customerController@indexLogin');
 Route::get('customers/{email}', 'customerController@show');
 Route::get('customers', 'customerController@index');
+
 //Invoices
 Route::get('invoices', 'invoiceController@index');
-Route::get('invoices/{invoiceId}', 'invoiceController@show');
+Route::get('invoices/{invoiceId}', 'invoiceController@showSingle');
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

@@ -43,9 +43,7 @@ class customerController extends Controller
      */
     public function show($email)
     {
-        $validator = Validator::make(['email' => $email], [
-            'email' => 'required|email'
-        ]);
+        $validator = Validator::make(['email' => $email], ['email' => 'required|email']);
       
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->messages()], 422);

@@ -10,7 +10,7 @@ class invoice extends JsonResource
     {
         return [
             'id' => $this->id,
-            'customerId' => $this->customerId,
+            'customerId' => new Customer($this->customer), //Connect the customerId to the customer to get access to their details (Name,...)
             'price' => $this->price,
             'date' => $this->date,
         ];
