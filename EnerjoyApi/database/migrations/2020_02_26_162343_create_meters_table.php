@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCountriesTable extends Migration
+class CreateMetersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateCountriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('countries', function (Blueprint $table) {
-            $table->bigIncrements('id')->unsigned();
-            $table->string('name',30)->nullable(false);
+        Schema::create('meters', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('meter_id');
+            $table->integer('creation_timestamp')->nullable();
+            $table->tinyInteger('isUsed')->default(0);
         });
     }
 
@@ -26,6 +28,6 @@ class CreateCountriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('country');
+        Schema::dropIfExists('meters');
     }
 }

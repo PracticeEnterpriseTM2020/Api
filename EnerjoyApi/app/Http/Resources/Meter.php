@@ -4,10 +4,10 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class customer extends JsonResource
+class Meter extends JsonResource
 {
     /**
-     * Transform the resource collection into an array.
+     * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -16,10 +16,9 @@ class customer extends JsonResource
     {
         return [
             'id' => $this->id,
-            'first' => $this->firstname,
-            'last' => $this->lastname,
-            'email' => $this->email, 
-            'address' => new address($this->address)
+            'meter_id' => $this->meter_id,
+            'creation_timestamp' => $this->creation_timestamp,
+            'isUsed' => $this->isUsed
         ];
     }
 }
