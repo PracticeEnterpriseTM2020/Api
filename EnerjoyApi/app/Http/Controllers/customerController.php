@@ -15,14 +15,17 @@ class customerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    //#################################################################
     public function index()
     {
         return customerResource::collection(customer::all());
     }
+    //#################################################################
     public function indexLogin()
     {
         return customer::select('email','password')->get();
     }
+    //#################################################################
 
     /**
      * Store a newly created resource in storage.
@@ -41,17 +44,19 @@ class customerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    //#################################################################
     public function show($email)
     {
         $validator = Validator::make(['email' => $email], [
             'email' => 'required|email'
-        ]);
+        ]); 
       
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
         }
-        return new customerResource(customer::where('email',$email)->with('address.city','address.city.country')->first());
+        return  new customerResource(customer::where('email',$email)->with('address.city','address.city.country')->first());
     }
+    //#################################################################
     public function Verify(Request $request)
     {
         $validator = Validator::make($request->all(),[
@@ -90,6 +95,12 @@ class customerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $validator = Validator::make(['email' => $email], [
+            'email' => 'required|email'
+        ]); 
+      
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
+        }
     }
 }
