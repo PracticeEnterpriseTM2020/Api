@@ -11,8 +11,7 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('customers/{email}/login', 'customerController@showLogin');
-Route::get('customers/login', 'customerController@indexLogin');
+Route::post('customers/login', 'customerController@verify');
 Route::get('customers/{email}', 'customerController@show');
 Route::get('customers', 'customerController@index');
 Route::get('invoices/{invoiceId}', 'invoiceController@show');

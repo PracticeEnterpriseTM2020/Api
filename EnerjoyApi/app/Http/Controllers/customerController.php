@@ -52,16 +52,22 @@ class customerController extends Controller
         }
         return customer::where('email',$email)->with('address.city','address.city.country')->get();
     }
-    public function showLogin($email)
+    public function Verify(Request $request)
     {
-        $validator = Validator::make(['email' => $email], [
-            'email' => 'required|email'
-          ]);
+        $validator = Validator::make($request->all(),[
+            "email"=> 'required|email',
+            "password"=>'required|max:255'
+        ]);
       
-          if ($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
-          }
-        return customer::where('email',$email)->select('email','password')->get();
+        }
+        if(customer::where('email',$request["email"])->where('password',$request['password'])->exists()){
+            return response()->json(['login'=>true,'message'=>'customer password and email match']);
+        }
+        else{
+            return response()->json(['login'=>false,'message'=>'customer password and email do notmatch']);
+        }
     }
 
     /**

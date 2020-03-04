@@ -15,9 +15,10 @@ class CitiesTableSeeder extends Seeder
     {
         $faker = Faker::create();
         foreach (range(1, 10) as $index) {
-            DB::table('cities')->insert([
+            DB::table('city')->insert([
                 'name' => $faker->city,
-                'postalcode' => $faker->postcode
+                'postalcode' => $faker->postcode,
+                'countryId' => $index
             ]);
         };
     }

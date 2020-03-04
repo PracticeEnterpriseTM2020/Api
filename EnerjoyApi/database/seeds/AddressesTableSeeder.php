@@ -19,7 +19,6 @@ class AddressesTableSeeder extends Seeder
                 'street' => $faker->streetName,
                 'number' => $index,
                 'cityId' => $index,
-                'CountryId' => $index
             ]);
         };
     }
