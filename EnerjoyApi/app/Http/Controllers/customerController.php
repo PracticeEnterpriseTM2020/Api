@@ -50,7 +50,7 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
         }
-        return customer::where('email',$email)->with('address.city','address.city.country')->get();
+        return new customerResource(customer::where('email',$email)->with('address.city','address.city.country')->first());
     }
     public function Verify(Request $request)
     {
@@ -66,7 +66,7 @@ class customerController extends Controller
             return response()->json(['login'=>true,'message'=>'customer password and email match']);
         }
         else{
-            return response()->json(['login'=>false,'message'=>'customer password and email do notmatch']);
+            return response()->json(['login'=>false,'message'=>'customer password and email do not match']);
         }
     }
 
