@@ -21,12 +21,6 @@ class customerController extends Controller
         return customerResource::collection(customer::all());
     }
     //#################################################################
-    public function indexLogin()
-    {
-        return customer::select('email','password')->get();
-    }
-    //#################################################################
-
     /**
      * Store a newly created resource in storage.
      *
@@ -52,7 +46,7 @@ class customerController extends Controller
         ]); 
       
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
         }
         return  new customerResource(customer::where('email',$email)->with('address.city','address.city.country')->first());
     }
@@ -65,7 +59,7 @@ class customerController extends Controller
         ]);
       
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
         }
         if(customer::where('email',$request["email"])->where('password',$request['password'])->exists()){
             return response()->json(['login'=>true,'message'=>'customer password and email match']);
@@ -93,14 +87,26 @@ class customerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    //#################################################################
+    public function destroy(Request $request)
     {
-        $validator = Validator::make(['email' => $email], [
-            'email' => 'required|email'
-        ]); 
+        $validator = Validator::make($request->all(),[
+            "email"=> 'required|email',
+        ]);
       
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+        }
+        $customer = customer::where('email',$request['email'])->first();
+        if(!$customer){
+            return response()->json(['delete'=>false,'message'=>'customer could not be found'],404);
+        }
+        $customer->active = 0;
+        if(!$customer->save()){
+            return response()->json(['delete'=>false,'message'=>'customer could not be deleted'],422);
+        }
+        else{
+            return response()->json(['delete'=>true,'message'=>'customer has been deleted']);
         }
     }
 }

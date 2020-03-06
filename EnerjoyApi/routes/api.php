@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +14,10 @@ use Illuminate\Routing\Route;
 |
 */
 //customers
+Route::post('customers/delete', 'customerController@destroy');
 Route::post('customers/login', 'customerController@verify');
 Route::get('customers/{email}', 'customerController@show');
 Route::get('customers', 'customerController@index');
-Route::get('customers/delete/{email}', 'customerController@destroy');
 
 //invoices
 Route::get('invoices/{invoiceId}', 'invoiceController@show');
