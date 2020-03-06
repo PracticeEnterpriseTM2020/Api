@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class customer extends Model
 {
+    public $timestamps = false;
     protected $fillable = ['firstname', 'lastname', 'email','password'];
     public function address()
     {
