@@ -65,19 +65,50 @@ class MetersController extends Controller
      * @param  \App\Meters  $meters
      * @return \Illuminate\Http\Response
      */
-    public function show($meter_id)
+    public function show(Request $request)
     {
-        $validator = Validator::make(['meter_id' => $meter_id], [
-            'meter_id' => 'required'
+        $validator = Validator::make($request->all(), [
+            'meter_id' => 'max:255',
+            'creation_timestamp' => 'max:16|min:16|date',
+            'isUsed' => 'boolean'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
         }
 
-        $selectMeters = Meters::where('meter_id', 'like', '%' . $meter_id . '%')->get();
+        $selectQuery = Meters::query();
 
-        if (count($selectMeters)) {
+        if($request->has('meter_id'))
+        {
+           $selectQuery = $selectQuery->where('meter_id', 'like', '%' . request('meter_id') . '%');
+        }
+
+        if($request->has('creation_timestamp_after'))
+        {
+
+            $selectQuery = $selectQuery->where('creation_timestamp', '>', strtotime(request('creation_timestamp_after')));
+        }
+
+        if($request->has('creation_timestamp_before'))
+        {
+
+            $selectQuery = $selectQuery->where('creation_timestamp','<' , strtotime(request('creation_timestamp_before')));
+        }
+
+        if($request->has('isUsed'))
+        {
+
+            $selectQuery = $selectQuery->where('isUsed', '=', request('isUsed'));
+        }
+        
+        $selectMeters = $selectQuery->get();
+        //return $selectMeters;
+
+        //$selectMeters = Meters::where('meter_id', 'like', '%' . $meter_id . '%')->get();
+
+        if (count($selectMeters))
+        {
             return $selectMeters;
         } else {
             return response()->json(['success' => false, 'errors' => 'No results found.'], 422);
