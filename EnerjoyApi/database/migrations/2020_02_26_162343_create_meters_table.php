@@ -18,6 +18,7 @@ class CreateMetersTable extends Migration
             $table->string('meter_id');
             $table->integer('creation_timestamp')->nullable();
             $table->tinyInteger('isUsed')->default(0);
+            $table->tinyInteger('deleted')->default(0);
         });
     }
 

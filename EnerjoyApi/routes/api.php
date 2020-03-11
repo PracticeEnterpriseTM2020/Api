@@ -18,8 +18,6 @@ Route::get('customers', 'customerController@index');
 Route::get('invoices/{invoiceId}', 'invoiceController@show');
 
 //Meters
-//Route::get('meters/{meter_id?}/{creation_timestamp_after?}/{creation_timestamp_before?}/{isUsed?}', 'MetersController@show')->defaults('creation_timestamp_after', 0)->defaults('creation_timestamp_before', time());
-//Route::get('meters/search/{meter_id?}/{creation_timestamp_after?}/{creation_timestamp_before?}/{isUsed?}', 'MetersController@show')->defaults('creation_timestamp_after', 0)->defaults('creation_timestamp_before', time());
 Route::get('meters/search', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
 

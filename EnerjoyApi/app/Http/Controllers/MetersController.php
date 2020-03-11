@@ -80,36 +80,31 @@ class MetersController extends Controller
 
         $selectQuery = Meters::query();
 
-        if($request->has('meter_id'))
-        {
-           $selectQuery = $selectQuery->where('meter_id', 'like', '%' . request('meter_id') . '%');
+        $selectQuery = $selectQuery->select('id', 'meter_id', 'creation_timestamp', 'isUsed');
+
+        if ($request->has('meter_id')) {
+            $selectQuery = $selectQuery->where('meter_id', 'like', '%' . request('meter_id') . '%');
         }
 
-        if($request->has('creation_timestamp_after'))
-        {
+        if ($request->has('creation_timestamp_after')) {
 
             $selectQuery = $selectQuery->where('creation_timestamp', '>', strtotime(request('creation_timestamp_after')));
         }
 
-        if($request->has('creation_timestamp_before'))
-        {
+        if ($request->has('creation_timestamp_before')) {
 
-            $selectQuery = $selectQuery->where('creation_timestamp','<' , strtotime(request('creation_timestamp_before')));
+            $selectQuery = $selectQuery->where('creation_timestamp', '<', strtotime(request('creation_timestamp_before')));
         }
 
-        if($request->has('isUsed'))
-        {
+        if ($request->has('isUsed')) {
 
             $selectQuery = $selectQuery->where('isUsed', '=', request('isUsed'));
         }
-        
+
+        $selectQuery = $selectQuery->where('deleted', '=', '0');
         $selectMeters = $selectQuery->get();
-        //return $selectMeters;
 
-        //$selectMeters = Meters::where('meter_id', 'like', '%' . $meter_id . '%')->get();
-
-        if (count($selectMeters))
-        {
+        if (count($selectMeters)) {
             return $selectMeters;
         } else {
             return response()->json(['success' => false, 'errors' => 'No results found.'], 422);
