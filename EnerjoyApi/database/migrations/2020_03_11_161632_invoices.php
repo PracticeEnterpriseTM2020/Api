@@ -15,7 +15,7 @@ class Invoices extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned()->nullable(false);
-            $table->unsignedBigInterer('customerId')->nullable(false);
+            $table->unsignedBigInteger('customerId')->nullable(false);
             $table->double('price')->nullable(false);
             $table->integer('date')->nullable(false);
         });
