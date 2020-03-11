@@ -250,7 +250,7 @@ INSERT INTO `suppliers` (`id`, `companyname`, `vatnumber`, `email`, `addressId`,
 -- Table structure for table `tarif`
 --
 
-CREATE TABLE `tarif` (
+CREATE TABLE `tarifs` (
   `id` bigint(8) UNSIGNED NOT NULL,
   `name` varchar(64) NOT NULL,
   `description` varchar(255) NOT NULL,
@@ -261,7 +261,7 @@ CREATE TABLE `tarif` (
 -- Dumping data for table `tarif`
 --
 
-INSERT INTO `tarif` (`id`, `name`, `description`, `value`) VALUES
+INSERT INTO `tarifs` (`id`, `name`, `description`, `value`) VALUES
 (1, 'Goedkoop plan', 'Niet zo duur', 19.99),
 (2, 'Duur plan', 'Wel zo duur', 49.99);
 
@@ -340,9 +340,9 @@ ALTER TABLE `suppliers`
   ADD KEY `supplierAddr` (`addressId`);
 
 --
--- Indexes for table `tarif`
+-- Indexes for table `tarifs`
 --
-ALTER TABLE `tarif`
+ALTER TABLE `tarifs`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -410,9 +410,9 @@ ALTER TABLE `suppliers`
   MODIFY `id` bigint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `tarif`
+-- AUTO_INCREMENT for table `tarifs`
 --
-ALTER TABLE `tarif`
+ALTER TABLE `tarifs`
   MODIFY `id` bigint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --

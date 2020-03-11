@@ -27,11 +27,11 @@ Route::get('meters/{meter_id}', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
 
 //Tarifs
-Route::get('tarifs', 'ArticleController@index');
-Route::get('tarifs/{id}', 'ArticleController@show');
-Route::post('tarifs', 'ArticleController@store');
-Route::put('tarifs/{id}', 'ArticleController@update');
-Route::delete('tarifs/{id}', 'ArticleController@delete');
+Route::get('tarifs', 'TarifController@index');
+Route::get('tarifs/{id}', 'TarifController@show');
+Route::post('tarifs', 'TarifController@store');
+Route::put('tarifs/{id}', 'TarifController@update');
+Route::delete('tarifs/{id}', 'TarifController@delete');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
