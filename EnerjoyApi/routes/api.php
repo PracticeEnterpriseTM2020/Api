@@ -22,6 +22,7 @@ Route::post('meters/create', 'MetersController@store');
 
 //Leveranciers
 Route::get('/Leverancier/{manier}/{zoek}','BedrijfController@ophalen');
+Route::get('/aanmaak','BedrijfController@store');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

@@ -10,17 +10,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 
 
-class Leverancier extends Model implements JWTSubject
+class Leverancier extends Model
 {
     protected $fillable = ['companyname', 'vatnumber', 'email','addressId','phonenumber'];
 
-    public function getJWTIdentifier()
-    {
-      return $this->getKey();
-    }
-
-    public function getJWTCustomClaims()
-    {
-      return [];
-    }
 }

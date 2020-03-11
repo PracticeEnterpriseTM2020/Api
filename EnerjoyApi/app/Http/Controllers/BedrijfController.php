@@ -24,17 +24,15 @@ class BedrijfController extends Controller
             return '[{"failed" : "wrongMethod"}]';
         }
     }
-    public function store(Request $request)
+    public function store($companyname, $vatnumber, $email, $addressId, $phonenumber)
     {
-      $bedrijf = suplier::create([
-        'id' => $request->id,
-        'companyname' => $request->companyname,
-        'vat' => $request->vatnumbre,
-        'email' => $request->email, 
-        'addressId' => (string) $request->addressId,
-        'phonenumber' => $request->phonenumber,
-      ]);
+        $Leverancier = new Leverancier();
 
-      return new suplierresource($bedrijf);
+        $Leverancier->companyname = request('Leverancier_id');
+        $Leverancier->creation_timestamp = strtotime(request('creation_timestamp'));
+        $Leverancier->save();
+        $data=array("companyname"=>$companyname,"vatnumber"=>$vatnumber,"email"=>$email,"addressId"=>$addressId, "phonenumber"=>$phonenumber);
+        \DB::table('suppliers')->insert($data);
+        echo "Record inserted successfully.<br/>";
     }
 }
