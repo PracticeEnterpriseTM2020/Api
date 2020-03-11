@@ -1,4 +1,11 @@
 <?php return array (
+  'axlon/laravel-postal-code-validation' => 
+  array (
+    'providers' => 
+    array (
+      0 => '\\Axlon\\PostalCodeValidation\\ValidationServiceProvider',
+    ),
+  ),
   'beyondcode/laravel-dump-server' => 
   array (
     'providers' => 

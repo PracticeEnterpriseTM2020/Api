@@ -1,8 +1,10 @@
 <?php
-
+use \Sirprize\PostalCodeValidator\Validator;
 namespace App\Http\Controllers;
 use Validator;
 use App\address;
+use App\city;
+use App\country;
 use App\customer;
 use App\Http\Resources\customer as customerResource;
 use Illuminate\Database\Eloquent\Collection;
@@ -29,7 +31,40 @@ class customerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            "email"=> 'required|email|exists:customers,email',
+            "first"=> 'required|alpha',
+            "last"=> 'required|alpha',
+            "password"=> 'required|max:255',
+            "street"=> 'required|max:70|alpha',
+            "number"=> 'required|max:7|alpha_num',
+            "city"=> 'required|alpha|max:30',
+            "postalcode"=> 'required|max:15|alpha_dash',
+            "countrycode"=>'required|max:2|alpha'
+        ]);
+        $Vpostal = new \Sirprize\PostalCodeValidator\Validator();
+        $check=$Vpostal->isvalid($request['countrycode'],$request["postalcode"]);
+        if(!$check){
+            return response()->json(['success' => false, 'errors' => "Postalcode does not exist"], 400);
+        }
+        $country=country::where('abv',$request["countrycode"])->first();
+        $city = new city();
+        $city->name = $request["city"];
+        $city->postalcode = $request["postalcode"];
+        $city->countryId = $country->id;
+        $city->save();
+        $addr = new address();
+        $addr->street = $request["street"];
+        $addr->number = $request['number'];
+        $addr->cityId = $city->id;
+        $addr->save();
+        $cust = new customer();
+        $cust->firstname = $request['first'];
+        $cust->lastname = $request['last'];
+        $cust->email = $request['email'];
+        $cust->password = $request['password'];
+        $cust->addressId = $addr->id;
+        $cust->save();
     }
 
     /**

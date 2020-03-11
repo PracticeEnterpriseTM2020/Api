@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class city extends Model
 {
+    public $timestamps = false;
     protected $table = 'city';
     public function address()
     {

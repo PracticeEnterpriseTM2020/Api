@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -48,10 +49,10 @@ class Handler extends ExceptionHandler
      * @param  \Illuminate\Http\Request  $request
      * @param  \Exception  $exception
      * @return \Illuminate\Http\Response
-     * 
      */
     public function render($request, Exception $exception)
     {
+
        //if ($exception instanceof \Illuminate\Database\QueryException) {
        //     return response(['message'=>'failed to query database'],404);
        //}
