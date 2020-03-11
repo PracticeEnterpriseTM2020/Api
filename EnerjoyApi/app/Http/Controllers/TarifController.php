@@ -13,9 +13,9 @@ class TarifController extends Controller
         return Tarif::all();
     }
 
-    public function show(Tarif $tarif)
+    public function show($tarifid)
     {
-        return $tarif;
+        return Tarif::find($tarifid);
     }
 
     public function store(Request $request)
@@ -32,10 +32,14 @@ class TarifController extends Controller
         return response()->json($tarif, 200);
     }
 
-    public function delete(Tarif $tarif)
+    public function delete($tarifid)
     {
+        $tarif = Tarif::findOrFail($tarifid);
         $tarif->delete();
 
-        return response()->json(null, 204);
+        return 204;
+
+
+
     }
 }
