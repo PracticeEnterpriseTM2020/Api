@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -12,8 +14,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('customers/{email}/login', 'customerController@showLogin');
-Route::get('customers/login', 'customerController@indexLogin');
+//customers
+Route::post('customers/delete', 'customerController@destroy');
+Route::post('customers/login', 'customerController@verify');
 Route::get('customers/{email}', 'customerController@show');
 Route::get('customers', 'customerController@index');
 
@@ -22,6 +25,9 @@ Route::get('invoices', 'invoiceController@index');
 Route::get('invoices/{invoiceId}', 'invoiceController@showSingle');
 Route::post('invoices/create', 'invoiceController@store');
 
+//Meters
+Route::get('meters/{meter_id}', 'MetersController@show');
+Route::post('meters/create', 'MetersController@store');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
