@@ -38,7 +38,7 @@ class MetersController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'meter_id' => 'required|max:255',
+            'meter_id' => 'required|max:255|alpha_dash',
             'creation_timestamp' => 'required|max:16|min:16|date'
         ]);
 
@@ -68,8 +68,9 @@ class MetersController extends Controller
     public function show(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'meter_id' => 'max:255',
-            'creation_timestamp' => 'max:16|min:16|date',
+            'meter_id' => 'max:255|alpha_dash',
+            'creation_timestamp_after' => 'max:16|min:16|date',
+            'creation_timestamp_before' => 'max:16|min:16|date',
             'isUsed' => 'boolean'
         ]);
 
