@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class invoice extends Model
 {
+    public $timestamps = false;
     protected $fillable = ['id', 'customerId', 'price','date'];
     public function customer()
     {

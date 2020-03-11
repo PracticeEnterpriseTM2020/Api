@@ -20,6 +20,7 @@ Route::get('customers', 'customerController@index');
 //Invoices
 Route::get('invoices', 'invoiceController@index');
 Route::get('invoices/{invoiceId}', 'invoiceController@showSingle');
+Route::post('invoices/create', 'invoiceController@store');
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

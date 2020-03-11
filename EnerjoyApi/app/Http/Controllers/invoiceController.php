@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use DB;
 use Validator;
+use Illuminate\Http\Request;
 use App\invoice;
+
 use App\Http\Resources\invoice as invoiceResource;
 
 
@@ -37,9 +38,12 @@ class invoiceController extends Controller
      //Store a newly created resource in storage.
     public function store(Request $request)
     {
+        //Validate the input, make sure all parameters are present and correct
         $validator = Validator::make($request->all(), [
-            'meter_id' => 'required|max:255',
-            'creation_timestamp' => 'required|max:16|min:16|date'
+            'id' => 'required',
+            'customerId' => 'required',
+            'price' => 'required',
+            'date' => 'required|max:16|min:16|date'
         ]);
 
         //If the data entered isn't valid, throw error and don't add to DB
@@ -47,15 +51,18 @@ class invoiceController extends Controller
             return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
         }
 
+        //Create a new invoice and fill the vars with the correct values
         $invoice = new Invoice();
 
         $invoice->id = request('id');
         $invoice->customerId = request('customerId');
         $invoice->price = request('price');
-        $invoice->date = 
-        $meter->save();
+        $invoice->date = strtotime(request('date'));
 
-        if (!$meter->save()) {
+        //Save the invoice to the DB
+        $invoice->save();
+
+        if (!$invoice->save()) {
             return response()->json(['success' => false, 'errors' => 'Data has not been added to database.'], 422);
         } else {
             return response()->json(['success' => true, 'message' => 'Data added to database.'], 200);
