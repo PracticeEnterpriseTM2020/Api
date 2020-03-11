@@ -11,4 +11,9 @@ class customer extends Model
     {
         return $this->belongsTo('App\address','addressId');
     }
+
+    public function invoice()
+    {
+        return $this->hasOne('App\invoice');
+    }
 }

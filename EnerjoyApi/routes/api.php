@@ -13,19 +13,21 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 //customers
 Route::post('customers/delete', 'customerController@destroy');
 Route::post('customers/login', 'customerController@verify');
 Route::get('customers/{email}', 'customerController@show');
 Route::get('customers', 'customerController@index');
 
-//invoices
-Route::get('invoices/{invoiceId}', 'invoiceController@show');
+//Invoices
+Route::get('invoices', 'invoiceController@index');
+Route::get('invoices/{invoiceId}', 'invoiceController@showSingle');
+Route::post('invoices/create', 'invoiceController@store');
 
 //Meters
 Route::get('meters/{meter_id}', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
-
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
