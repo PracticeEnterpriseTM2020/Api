@@ -1,0 +1,8 @@
+
+CREATE TABLE `tarief` (
+  `tariefID` int(10) NOT NULL,
+  `tariefNaam` varchar(100) NOT NULL,
+  `tariefBeschrijving` varchar(100) NOT NULL,
+  `tariefWaarde` varchar(100) NOT NULL,
+  `tariefActief` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

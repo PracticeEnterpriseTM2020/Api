@@ -10,8 +10,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 
 
-class Leverancier extends Model
+class Supplier extends Model
 {
     protected $fillable = ['companyname', 'vatnumber', 'email','addressId','phonenumber'];
-
+    public $timestamps = false;
 }

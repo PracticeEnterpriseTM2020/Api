@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Supplier;
 use Illuminate\Http\Request;
 
 class BedrijfController extends Controller
@@ -24,15 +24,31 @@ class BedrijfController extends Controller
             return '[{"failed" : "wrongMethod"}]';
         }
     }
-    public function store($companyname, $vatnumber, $email, $addressId, $phonenumber)
+    public function store(Request $request)
     {
-        $Leverancier = new Leverancier();
 
-        $Leverancier->companyname = request('Leverancier_id');
-        $Leverancier->creation_timestamp = strtotime(request('creation_timestamp'));
-        $Leverancier->save();
-        $data=array("companyname"=>$companyname,"vatnumber"=>$vatnumber,"email"=>$email,"addressId"=>$addressId, "phonenumber"=>$phonenumber);
-        \DB::table('suppliers')->insert($data);
-        echo "Record inserted successfully.<br/>";
+        $land = request('country');
+        $landId = \DB::table('country')->where("name",$land)->value('id');
+        
+
+
+        $stad = request('city');
+        $stadId = \DB::table('city')->where("countryId",$landId)->where('name', $stad)->value('id');
+
+
+        $straat = request('straat');
+        $number = request('nummer');
+        $adres = \DB::table('addresses')->where("cityId",$stadId)->where('street', $straat)->where('number',$number)->value('id');
+
+
+        $suppliers = new Supplier();
+
+        $suppliers->companyname = request('companyname');
+        $suppliers->vatnumber = request('vatnumber');
+        $suppliers->email = request('email');
+        $suppliers->addressId = $landId;
+        $suppliers->phonenumber = request('phonenumber');
+        $suppliers->save();
+        echo $adres;
     }
 }
