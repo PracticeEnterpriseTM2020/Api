@@ -20,6 +20,8 @@ Route::get('invoices/{invoiceId}', 'invoiceController@show');
 Route::get('meters/{meter_id}', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
 
+//Leveranciers
+Route::get('/Leverancier/{manier}/{zoek}','BedrijfController@ophalen');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
