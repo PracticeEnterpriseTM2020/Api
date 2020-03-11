@@ -43,7 +43,7 @@ class MetersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
         }
 
         $meter = new Meters();
@@ -53,7 +53,7 @@ class MetersController extends Controller
         $meter->save();
 
         if (!$meter->save()) {
-            return response()->json(['success' => false, 'errors' => 'Data has not been added to database.'], 422);
+            return response()->json(['success' => false, 'errors' => 'Data has not been added to database.'], 400);
         } else {
             return response()->json(['success' => true, 'message' => 'Data added to database.'], 200);
         }
@@ -75,7 +75,7 @@ class MetersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
         }
 
         $selectQuery = Meters::query();
@@ -107,7 +107,45 @@ class MetersController extends Controller
         if (count($selectMeters)) {
             return $selectMeters;
         } else {
-            return response()->json(['success' => false, 'errors' => 'No results found.'], 422);
+            return response()->json(['success' => false, 'errors' => 'No results found.'], 400);
+        }
+    }
+
+
+    /**
+     * Softdelete a meter
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function SoftDelete(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|max:255|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+        }
+
+        $checkIfMeterExcistsAndIsNotUsedQuery = Meters::query();
+
+        $checkIfMeterExcistsAndIsNotUsedQuery = $checkIfMeterExcistsAndIsNotUsedQuery->where('id', '=', request('id'));
+        $checkIfMeterExcistsAndIsNotUsedQuery = $checkIfMeterExcistsAndIsNotUsedQuery->where('isUsed', '=', '0');
+        $checkIfMeterExcistsAndIsNotUsedQuery = $checkIfMeterExcistsAndIsNotUsedQuery->where('deleted', '=', '0');
+
+        $checkIfMeterExcistsAndIsNotUsedMeters = $checkIfMeterExcistsAndIsNotUsedQuery->get();
+
+        if (count($checkIfMeterExcistsAndIsNotUsedMeters)) {
+            $updateMetersQuery = Meters::query();
+
+            $updateMetersQuery = $updateMetersQuery->where('id', '=', request('id'), 'and', 'isUsed', '=', '0', 'and', 'deleted', '=', '0');
+
+            $updateMeters = $updateMetersQuery->update(['deleted' => 1]);
+
+            return response()->json(['success' => true], 200);
+        } else {
+            return response()->json(['success' => false, 'errors' => 'id does not exist or meter is used.'], 400);
         }
     }
 

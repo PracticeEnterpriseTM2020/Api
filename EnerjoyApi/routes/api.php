@@ -20,6 +20,7 @@ Route::get('invoices/{invoiceId}', 'invoiceController@show');
 //Meters
 Route::get('meters/search', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
+Route::get('meters/delete','MetersController@SoftDelete');
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
