@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\employeeController;
 use Illuminate\Http\Request;
 
 
@@ -28,6 +29,9 @@ Route::post('meters/create', 'MetersController@store');
 
 //Job Offers
 Route::get("JobOffers", "JobOfferController@show");
+//Employees
+Route::get('Employees','employeeController@show_all');
+Route::get('Employees/{employee_id}','employeeController@show_by_id');
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
