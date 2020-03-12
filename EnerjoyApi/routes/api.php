@@ -26,10 +26,14 @@ Route::get('invoices/{invoiceId}', 'invoiceController@show');
 Route::get('meters/{meter_id}', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
 
+//Job Offers
+Route::get("JobOffers", "JobOfferController@show");
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 Route::fallback(function(){
     return response()->json(['message' => 'Page Not Found.'], 404);
 });
