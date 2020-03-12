@@ -15,7 +15,7 @@ class MeterTableSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        for ($i = 0; $i <= 100; $i++) {
+        for ($i = 0; $i <= 1000; $i++) {
             DB::table('meters')->insert([
                 'meter_id' => $faker->bothify($text = '????????-??????-####-##'),
                 'creation_timestamp' => $faker->unixTime,

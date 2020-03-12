@@ -72,13 +72,26 @@ class MetersController extends Controller
             'creation_timestamp_after'  => 'max:16|min:16|date',
             'creation_timestamp_before' => 'max:16|min:16|date',
             'isUsed'                    => 'boolean',
-            'amounthPerPage'            => 'required|integer|between:3,100',
-            'page'                      => 'required|integer|min:1'
+            'amountPerPage'             => 'integer|between:3,100',
+            'page'                      => 'integer|min:1'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
         }
+
+        if ($request->has('amountPerPage')) {
+            $amountPerPageRequest = request('amountPerPage');
+        } else{
+            $amountPerPageRequest = 10;
+        }
+
+        if ($request->has('page')) {
+            $pageRequest = request('page');
+        } else {
+            $pageRequest = 1;
+        }
+
 
         $selectQuery = Meters::query();
 
@@ -106,17 +119,17 @@ class MetersController extends Controller
         $selectQuery = $selectQuery->where('deleted', '=', '0');
         $selectMetersAll = $selectQuery->count();
 
-        if (floor($selectMetersAll / request('amounthPerPage')) >= request('page')) {
-            $page = (int) request('page');
+        if (floor($selectMetersAll / $amountPerPageRequest) >= $pageRequest) {
+            $page = (int) $pageRequest;
         } else {
-            $page = (floor($selectMetersAll / request('amounthPerPage')));
+            $page = (floor($selectMetersAll / $amountPerPageRequest));
         }
 
-        $selectMeters = $selectQuery->limit(request('amounthPerPage'))->offset($page * request('amounthPerPage'))->get();
+        $selectMeters = $selectQuery->limit($amountPerPageRequest)->offset($page * $amountPerPageRequest)->get();
 
         if (count($selectMeters)) {
             //return $selectMeters;
-            return response()->json(['success' => true, 'results' => $selectMetersAll, 'pages' => floor($selectMetersAll / request('amounthPerPage')), 'current_page' => $page, 'data' => $selectMeters], 200);
+            return response()->json(['success' => true, 'results' => $selectMetersAll, 'pages' => floor($selectMetersAll / $amountPerPageRequest), 'current_page' => $page, 'data' => $selectMeters], 200);
         } else {
             return response()->json(['success' => false, 'errors' => 'No results found.'], 400);
         }
@@ -139,15 +152,15 @@ class MetersController extends Controller
             return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
         }
 
-        $checkIfMeterExcistsAndIsNotUsedQuery = Meters::query();
+        $checkIfMeterExistsAndIsNotUsedQuery = Meters::query();
 
-        $checkIfMeterExcistsAndIsNotUsedQuery = $checkIfMeterExcistsAndIsNotUsedQuery->where('id', '=', request('id'));
-        $checkIfMeterExcistsAndIsNotUsedQuery = $checkIfMeterExcistsAndIsNotUsedQuery->where('isUsed', '=', '0');
-        $checkIfMeterExcistsAndIsNotUsedQuery = $checkIfMeterExcistsAndIsNotUsedQuery->where('deleted', '=', '0');
+        $checkIfMeterExistsAndIsNotUsedQuery = $checkIfMeterExistsAndIsNotUsedQuery->where('id', '=', request('id'));
+        $checkIfMeterExistsAndIsNotUsedQuery = $checkIfMeterExistsAndIsNotUsedQuery->where('isUsed', '=', '0');
+        $checkIfMeterExistsAndIsNotUsedQuery = $checkIfMeterExistsAndIsNotUsedQuery->where('deleted', '=', '0');
 
-        $checkIfMeterExcistsAndIsNotUsedMeters = $checkIfMeterExcistsAndIsNotUsedQuery->get();
+        $checkIfMeterExistsAndIsNotUsedMeters = $checkIfMeterExistsAndIsNotUsedQuery->get();
 
-        if (count($checkIfMeterExcistsAndIsNotUsedMeters)) {
+        if (count($checkIfMeterExistsAndIsNotUsedMeters)) {
             $updateMetersQuery = Meters::query();
 
             $updateMetersQuery = $updateMetersQuery->where('id', '=', request('id'), 'and', 'isUsed', '=', '0', 'and', 'deleted', '=', '0');
@@ -179,14 +192,14 @@ class MetersController extends Controller
             return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
         }
 
-        $checkIfMeterExcistsAndIsNotUsedQuery = Meters::query();
+        $checkIfMeterExistsAndIsNotUsedQuery = Meters::query();
 
-        $checkIfMeterExcistsAndIsNotUsedQuery = $checkIfMeterExcistsAndIsNotUsedQuery->where('id', '=', request('id'));
-        $checkIfMeterExcistsAndIsNotUsedQuery = $checkIfMeterExcistsAndIsNotUsedQuery->where('deleted', '=', '0');
+        $checkIfMeterExistsAndIsNotUsedQuery = $checkIfMeterExistsAndIsNotUsedQuery->where('id', '=', request('id'));
+        $checkIfMeterExistsAndIsNotUsedQuery = $checkIfMeterExistsAndIsNotUsedQuery->where('deleted', '=', '0');
 
-        $checkIfMeterExcistsAndIsNotUsedMeters = $checkIfMeterExcistsAndIsNotUsedQuery->get();
+        $checkIfMeterExistsAndIsNotUsedMeters = $checkIfMeterExistsAndIsNotUsedQuery->get();
 
-        if (count($checkIfMeterExcistsAndIsNotUsedMeters)) {
+        if (count($checkIfMeterExistsAndIsNotUsedMeters)) {
             $updateMetersQuery = Meters::query();
 
             $updateMetersQuery = $updateMetersQuery->where('id', '=', request('id'), 'and', 'deleted', '=', '0');
