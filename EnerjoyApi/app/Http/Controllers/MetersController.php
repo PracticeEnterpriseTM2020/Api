@@ -68,10 +68,12 @@ class MetersController extends Controller
     public function show(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'meter_id' => 'max:255|alpha_dash',
-            'creation_timestamp_after' => 'max:16|min:16|date',
+            'meter_id'                  => 'max:255|alpha_dash',
+            'creation_timestamp_after'  => 'max:16|min:16|date',
             'creation_timestamp_before' => 'max:16|min:16|date',
-            'isUsed' => 'boolean'
+            'isUsed'                    => 'boolean',
+            'amounthPerPage'            => 'required|integer|between:3,100',
+            'page'                      => 'required|integer|min:1'
         ]);
 
         if ($validator->fails()) {
@@ -102,10 +104,19 @@ class MetersController extends Controller
         }
 
         $selectQuery = $selectQuery->where('deleted', '=', '0');
-        $selectMeters = $selectQuery->get();
+        $selectMetersAll = $selectQuery->count();
+
+        if (floor($selectMetersAll / request('amounthPerPage')) >= request('page')) {
+            $page = (int) request('page');
+        } else {
+            $page = (floor($selectMetersAll / request('amounthPerPage')));
+        }
+
+        $selectMeters = $selectQuery->limit(request('amounthPerPage'))->offset($page * request('amounthPerPage'))->get();
 
         if (count($selectMeters)) {
-            return $selectMeters;
+            //return $selectMeters;
+            return response()->json(['success' => true, 'results' => $selectMetersAll, 'pages' => floor($selectMetersAll / request('amounthPerPage')), 'current_page' => $page, 'data' => $selectMeters], 200);
         } else {
             return response()->json(['success' => false, 'errors' => 'No results found.'], 400);
         }
