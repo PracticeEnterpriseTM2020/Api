@@ -1,2 +1,1 @@
-GET http://127.0.0.1:8000/api/Employees/1
-s
+get http://127.0.0.1:8000/api/Employees/delete/flynch@maggio.com
