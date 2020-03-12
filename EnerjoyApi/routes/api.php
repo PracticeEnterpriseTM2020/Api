@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\employeeController;
 use Illuminate\Http\Request;
 
 
@@ -25,6 +26,10 @@ Route::get('invoices/{invoiceId}', 'invoiceController@show');
 //Meters
 Route::get('meters/{meter_id}', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
+
+//Employees
+Route::get('Employees','employeeController@show_all');
+Route::get('Employees/{employee_id}','employeeController@show_by_id');
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
