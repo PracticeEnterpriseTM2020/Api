@@ -118,7 +118,7 @@ class MetersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function SoftDelete(Request $request)
+    public function softdelete(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|max:255|numeric'
@@ -149,15 +149,51 @@ class MetersController extends Controller
         }
     }
 
+
     /**
-     * Show the form for editing the specified resource.
+     * Edit a meter
      *
-     * @param  \App\Meters  $meters
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function edit(Meters $meters)
+    public function edit(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|max:255|numeric',
+            'meter_id' => 'max:255|alpha_dash',
+            'creation_timestamp' => 'max:16|min:16|date'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+        }
+
+        $checkIfMeterExcistsAndIsNotUsedQuery = Meters::query();
+
+        $checkIfMeterExcistsAndIsNotUsedQuery = $checkIfMeterExcistsAndIsNotUsedQuery->where('id', '=', request('id'));
+        $checkIfMeterExcistsAndIsNotUsedQuery = $checkIfMeterExcistsAndIsNotUsedQuery->where('deleted', '=', '0');
+
+        $checkIfMeterExcistsAndIsNotUsedMeters = $checkIfMeterExcistsAndIsNotUsedQuery->get();
+
+        if (count($checkIfMeterExcistsAndIsNotUsedMeters)) {
+            $updateMetersQuery = Meters::query();
+
+            $updateMetersQuery = $updateMetersQuery->where('id', '=', request('id'), 'and', 'deleted', '=', '0');
+
+            if (($request->has('id')) && (($request->has('meter_id')) || ($request->has('creation_timestamp')))) {
+                if ($request->has('meter_id')) {
+                    $updateMeters = $updateMetersQuery->update(['meter_id' => request('meter_id')]);
+                }
+                if ($request->has('creation_timestamp')) {
+                    $updateMeters = $updateMetersQuery->update(['creation_timestamp' => strtotime(request('creation_timestamp'))]);
+                }
+                return response()->json(['success' => true], 200);
+            } else {
+                return response()->json(['success' => false, 'errors' => 'Request does not have an id and-or doesn\'t have a meter_id or creation_timestamp.'], 400);
+            }
+        } else {
+            return response()->json(['success' => false, 'errors' => 'id does not exist'], 400);
+        }
     }
 
     /**
