@@ -2,7 +2,7 @@ post http://127.0.0.1:8000/api/Employees/update HTTP/1.1
 content-type: application/json
 
 {
-    "id":1,
+    "id":"test",
     "first_name":"jost",
     "email":"test124@test.com"
 }
