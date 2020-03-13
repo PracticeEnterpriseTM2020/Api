@@ -22,7 +22,7 @@ class CreateEmployeesTable extends Migration
             $table->decimal("salary",10,2);
             $table->integer("address_id");
             $table->integer("job_id");
-            $table->integer("active");
+            $table->softDeletes();
             $table->dropTimestamps();
         });
     }

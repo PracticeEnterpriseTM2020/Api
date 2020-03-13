@@ -31,7 +31,9 @@ Route::post('meters/create', 'MetersController@store');
 Route::get('Employees','employeeController@show_all');
 Route::get('Employees/show_by_id/id={employee_id}','employeeController@show_by_id');
 Route::post('Employees/create','employeeController@store');
-Route::get('Employees/delete/{email}','employeeController@destroy');
+Route::get('Employees/delete/email={email}','employeeController@destroy');
+Route::get('Employees/restore/email={email}','employeeController@restore');
+Route::post('Employees/update','employeeController@update');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

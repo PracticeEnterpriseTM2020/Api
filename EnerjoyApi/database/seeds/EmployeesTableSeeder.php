@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
 
+
 class EmployeesTableSeeder extends Seeder
 {
     /**
@@ -22,8 +23,7 @@ class EmployeesTableSeeder extends Seeder
                 'password' => bcrypt('secret'),
                 'salary' => $faker->numberBetween($min = 1000, $max = 9000),
                 'address_id' => $index,
-                'job_id' => $index++,
-                'active' => 1
+                'job_id' => $index
             ]);
         }
     }

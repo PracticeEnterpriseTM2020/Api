@@ -1,1 +1,8 @@
-get http://127.0.0.1:8000/api/Employees/delete/flynch@maggio.com
+post http://127.0.0.1:8000/api/Employees/update HTTP/1.1
+content-type: application/json
+
+{
+    "id":1,
+    "first_name":"jost",
+    "email":"test124@test.com"
+}

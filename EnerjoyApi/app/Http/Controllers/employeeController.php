@@ -99,24 +99,119 @@ class employeeController extends Controller
             return response()->json(['delete'=>false,'message'=>'Could not find employee'],404);
         }else
         {
-            if($employee->active != 0)
+            $employee->delete();
+            if($employee->trashed())
             {
-                $employee->active = 0;
-                if($employee->save())
-                {
-                    return response()->json(['delete'=>true,'message'=>'Employee deleted from database']);
-                }
-                else
-                {
-                    return response()->json(['delete'=>false,'message'=>'Employee could not be deleted from database'],400);
-                }
+                return response()->json(['delete'=>true,'message'=>'Employee soft-deleted from database.'],200);
             }
             else
             {
-                return response()->json(['delete'=>false,'message'=>'Employee already deleted from database'],422);
+                return response()->json(['delete'=>false,'message'=>"Could not soft-delete employee."],404);
             }
-            
         }
+    }
+
+    public function restore($email)
+    {
+        $validator = Validator::make(['email' => $email], [
+            'email' => 'required|email'
+        ]); 
+
+        if($validator->fails())
+        {
+            return response()->json(['restore' => false, 'errors' => $validator->messages()], 400);
+        }
+
+        $employee = Employee::onlyTrashed()->where('email', $email)->first();
+        if(!$employee)
+        {
+            return response()->json(['restore'=>false,'message'=>'Could not find employee'],404);
+        }else
+        {
+            if($employee->restore())
+            {
+                return response()->json(['restore'=>true,'message'=>'Employee restored.'],200);
+            }
+            else
+            {
+                return response()->json(['restore'=>false,'message'=>"Could not restore employee."],404);
+            }
+        }
+    }
+
+    public function update(Request $request)
+    {
+        $employee = Employee::find($request::get("id"));
+
+        $rules = array(
+            'first_name'    => 'string',
+            'last_name'     => 'string',
+            'email'         => 'email',
+            'salary'        => 'numeric',
+            'address_id'    => 'integer',
+            'job_id'        => 'integer'
+        );
+
+        $validator = Validator::make($request::all(),$rules);
+        $counter = 0;
+
+        if($validator->fails())
+        {
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+        }
+
+        if($employee->first_name != $request::get("first_name") && !empty($request::get("first_name")))
+        {
+            $employee->first_name = $request::get("first_name");
+            $counter++;
+        }
+
+        
+        if($employee->last_name != $request::get("last_name") && !empty($request::get("last_name")))
+        {
+            $employee->last_name = $request::get("last_name");
+            $counter++;
+        }
+
+        if($employee->email != $request::get("email") && !empty($request::get("email")))
+        {
+            $employee->email = $request::get("email");
+            $counter++;
+        }
+
+        if($employee->email != $request::get("salary") && !empty($request::get("salary")))
+        {
+            $employee->salary = $request::get("salary");
+            $counter++;
+        }
+
+        if($employee->address_id != $request::get("address_id") && !empty($request::get("address_id")))
+        {
+            $employee->address_id = $request::get("address_id");
+            $counter++;
+        }
+
+        if($employee->job_id != $request::get("job_id") && !empty($request::get("job_id")))
+        {
+            $employee->job_id = $request::get("job_id");
+            $counter++;
+        }
+        if($counter != 0)
+        {
+            if($employee->save())
+            {
+                return response()->json(['success' => true, 'errors' => "Successfully updated the database"], 200);
+            }
+            else
+            {
+                return response()->json(['success' => false, 'errors' => "Unable to update the database "], 400);
+            }
+        }
+        else
+        {
+            return response()->json(['success' => false, 'errors' => "Nothing had to be updated."], 400);
+        }
+        
     }
 
     public function create()
