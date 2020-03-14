@@ -1,5 +1,5 @@
-#Show all employees
-#get http://127.0.0.1:8000/api/Employees
+#Show all employees 5 per page
+#get http://127.0.0.1:8000/api/Employees?page=2
 
 #Show one employee based on id
 # get http://127.0.0.1:8000/api/Employees/show_by_id/id=1

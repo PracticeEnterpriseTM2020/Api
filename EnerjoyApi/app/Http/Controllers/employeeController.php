@@ -11,7 +11,7 @@ class employeeController extends Controller
 {
     public function show_all()
     {
-        return Employee::get();
+        return Employee::paginate(5);
     }
 
     public function show_by_id($id)
