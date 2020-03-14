@@ -36,24 +36,32 @@ class customerController extends Controller
             "first"=> 'required|alpha',
             "last"=> 'required|alpha',
             "password"=> 'required|max:255',
-            "street"=> 'required|max:70|alpha',
+            "street"=> 'required|max:70|string',
             "number"=> 'required|max:7|alpha_num',
-            "city"=> 'required|alpha|max:30',
+            "city"=> 'required|string|max:30',
             "postalcode"=> 'required|max:15|alpha_dash',
             "countrycode"=>'required|max:2|alpha'
         ]);
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
         $Vpostal = new \Sirprize\PostalCodeValidator\Validator();
         if(!$Vpostal->hasCountry($request['countrycode'])){
-            return response()->json(['success' => false, 'errors' => "Countrycode does not exist"], 400);
+            return response()->json(['success' => false, 'message' => "Countrycode does not exist"], 400);
         }
         $check=$Vpostal->isvalid($request['countrycode'],$request["postalcode"]);
         if(!$check){
-            return response()->json(['success' => false, 'errors' => "Postalcode does not exist"], 400);
+            return response()->json(['success' => false, 'message' => "Postalcode does not exist"], 400);
         }
         $country=country::where('abv',strtoupper($request["countrycode"]))->firstOrFail();
+        if(address::leftJoin('city','addresses.cityId','=','city.id')
+        ->where('street',$request["street"])
+        ->where('number',$request['number'])
+        ->where('city.name',$request['city'])
+        ->where('city.postalcode',$request['postalcode'])
+        ->where('city.countryId',$country->id)->exists()){
+            return response()->json(['success' => false, 'message' => "Address already in use"], 400);
+        }
         $city = city::firstOrCreate(
         [
             'name'=>strtolower($request['city']),
@@ -64,24 +72,20 @@ class customerController extends Controller
             'name'=>strtolower($request['city']),
             'postalcode'=>$request['postalcode']
         ]);
-        $addr = address::firstOrCreate(
-        [
-            'street'=>$request['street'],
-            'number'=>$request['number'],
-            'cityId'=>$city->id
-        ],
+        $addr = address::create(
         [
             'street'=>$request['street'],
             'number'=>$request['number'],
             'cityId'=>$city->id
         ]);
-        $cust = customer::firstOrCreate([
+        $cust = customer::create([
             'lastname'=>$request['last'],
             'firstname'=>$request['first'],
             'email'=>$request['email'],
-            'password'=>$request['email'],
+            'password'=>$request['password'],
             'addressId'=>$addr->id
         ]);
+        return response()->json(['success' => true, 'message' => "Successfully created customer"]);
     }
 
     /**
@@ -97,13 +101,13 @@ class customerController extends Controller
             'email' => 'required|email'
         ]);     
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
         if(customer::where('email',$email)->exists()){
             return  new customerResource(customer::where('email',$email)->with('address.city','address.city.country')->first());
         }
         else{
-            return response()->json(['success' => false, 'errors' => 'customer does not exist'], 404);
+            return response()->json(['success' => false, 'message' => 'customer does not exist'], 404);
         }
     }
     //#################################################################
@@ -115,7 +119,7 @@ class customerController extends Controller
         ]);
       
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
         if(customer::where('email',$request["email"])->where('password',$request['password'])->exists()){
             return response()->json(['login'=>true,'message'=>'customer password and email match']);
@@ -151,7 +155,7 @@ class customerController extends Controller
         ]);
       
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
         $customer = customer::where('email',$request['email'])->first();
         if(!$customer){
