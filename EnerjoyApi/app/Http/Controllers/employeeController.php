@@ -220,6 +220,11 @@ class employeeController extends Controller
         }
     }
 
+    public function sort()
+    {
+        
+    }
+
     public function create()
     {
 
