@@ -1,11 +1,11 @@
 #Show all employees 5 per page
-#get http://127.0.0.1:8000/api/Employees?page=2
+#get http://127.0.0.1:8000/api/employees?page=2
 
 #Show one employee based on id
-# get http://127.0.0.1:8000/api/Employees/show_by_id/id=1
+# get http://127.0.0.1:8000/api/employees/show_by_id/id=1
 
 #Create new employee
-# post http://127.0.0.1:8000/api/Employees/create
+# post http://127.0.0.1:8000/api/employees/create
 # content-type: application/json
 
 # {
@@ -19,13 +19,13 @@
 # }
 
 #Delete employee
-#get http://127.0.0.1:8000/api/Employees/delete/email=john@gmail.com
+#get http://127.0.0.1:8000/api/employees/delete/email=john@gmail.com
 
 #Restore employee
-#get http://127.0.0.1:8000/api/Employees/restore/email=john@gmail.com
+#get http://127.0.0.1:8000/api/employees/restore/email=john@gmail.com
 
 #Update employee
-# post http://127.0.0.1:8000/api/Employees/update
+# post http://127.0.0.1:8000/api/employees/update
 # content-type: application/json
 
 # {
@@ -35,7 +35,7 @@
 # }
 
 #filter the employees
-# get http://127.0.0.1:8000/api/Employees/filter
+# get http://127.0.0.1:8000/api/employees/filter
 # content-type: application/json
 
 # {
@@ -44,4 +44,40 @@
 #     "search": "y"
 # }
 
+#Show all jobs 5 per page
+#get http://127.0.0.1:8000/api/jobs
 
+#Show one job based on id
+#get http://127.0.0.1:8000/api/jobs/show_by_id/id=11
+
+#Create new job
+# post http://127.0.0.1:8000/api/jobs/create
+# content-type: application/json
+
+# {
+#     "job_title":"Programmer"
+# }
+
+#Delete job
+#get http://127.0.0.1:8000/api/jobs/delete/title=Programmer
+
+#Restore job
+#get http://127.0.0.1:8000/api/jobs/restore/title=Programmer
+
+#Update job
+# post http://127.0.0.1:8000/api/jobs/update
+# content-type: application/json
+
+# {
+#     "id": 11,
+#     "job_title": "Tester"
+# }
+
+#filter the jobs with 5 on each page
+# get http://127.0.0.1:8000/api/jobs/filter
+# content-type: application/json
+
+# {
+#     "sort": "job_title",
+#     "order": "desc"
+# }

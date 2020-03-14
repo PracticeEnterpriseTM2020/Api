@@ -28,13 +28,24 @@ Route::get('meters/{meter_id}', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
 
 //Employees
-Route::get('Employees','employeeController@show_all');
-Route::get('Employees/show_by_id/id={employee_id}','employeeController@show_by_id');
-Route::post('Employees/create','employeeController@store');
-Route::get('Employees/delete/email={email}','employeeController@destroy');
-Route::get('Employees/restore/email={email}','employeeController@restore');
-Route::post('Employees/update','employeeController@update');
-Route::get('Employees/filter','employeeController@filter');
+Route::get('employees','employeeController@show_all');
+Route::get('employees/show_by_id/id={employee_id}','employeeController@show_by_id');
+Route::post('employees/create','employeeController@store');
+Route::get('employees/delete/email={email}','employeeController@destroy');
+Route::get('employees/restore/email={email}','employeeController@restore');
+Route::post('employees/update','employeeController@update');
+Route::get('employees/filter','employeeController@filter');
+
+//Jobs
+Route::get('jobs','jobController@show_all');
+Route::get('jobs/show_by_id/id={job_id}','jobController@show_by_id');
+Route::post('jobs/create','jobController@store');
+Route::get('jobs/delete/title={title}','jobController@destroy');
+Route::get('jobs/restore/title={title}','jobController@restore');
+Route::post('jobs/update','jobController@update');
+Route::get('jobs/filter','jobController@filter');
+
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

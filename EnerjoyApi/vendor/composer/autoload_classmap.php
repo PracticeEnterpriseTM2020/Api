@@ -1574,6 +1574,7 @@ return array(
     'JakubOnderka\\PhpConsoleColor\\ConsoleColor' => $vendorDir . '/jakub-onderka/php-console-color/src/ConsoleColor.php',
     'JakubOnderka\\PhpConsoleColor\\InvalidStyleException' => $vendorDir . '/jakub-onderka/php-console-color/src/InvalidStyleException.php',
     'JakubOnderka\\PhpConsoleHighlighter\\Highlighter' => $vendorDir . '/jakub-onderka/php-console-highlighter/src/Highlighter.php',
+    'JobsTableSeeder' => $baseDir . '/database/seeds/JobsTableSeeder.php',
     'JsonException' => $vendorDir . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
     'Laravel\\Tinker\\ClassAliasAutoloader' => $vendorDir . '/laravel/tinker/src/ClassAliasAutoloader.php',
     'Laravel\\Tinker\\Console\\TinkerCommand' => $vendorDir . '/laravel/tinker/src/Console/TinkerCommand.php',
