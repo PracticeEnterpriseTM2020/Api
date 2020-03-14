@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Validator;
-use Request;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Employee;
 
@@ -51,7 +51,7 @@ class employeeController extends Controller
             'job_id'        => 'required|integer'
         );
 
-        $validator = Validator::make($request::all(),$rules);
+        $validator = Validator::make($request->all(),$rules);
 
         if($validator->fails())
         {
@@ -62,13 +62,13 @@ class employeeController extends Controller
             $employee = new Employee;
 
             $employee->id = request('employee_id');
-            $employee->first_name   = $request::get('first_name');
-            $employee->last_name    = $request::get('last_name');
-            $employee->email        = $request::get('email');
-            $employee->password     = bcrypt($request::get('password'));
-            $employee->salary       = $request::get('salary');
-            $employee->address_id   = $request::get('address_id');
-            $employee->job_id       = $request::get('job_id');
+            $employee->first_name   = $request->input('first_name');
+            $employee->last_name    = $request->input('last_name');
+            $employee->email        = $request->input('email');
+            $employee->password     = bcrypt($request->input('password'));
+            $employee->salary       = $request->input('salary');
+            $employee->address_id   = $request->input('address_id');
+            $employee->job_id       = $request->input('job_id');
 
             if($employee->save())
             {
@@ -141,7 +141,7 @@ class employeeController extends Controller
 
     public function update(Request $request)
     {
-        $employee = Employee::find($request::get("id"));
+        $employee = Employee::find($request->input("id"));
 
         $rules = array(
             'id'            => 'required|integer',
@@ -153,7 +153,7 @@ class employeeController extends Controller
             'job_id'        => 'integer'
         );
 
-        $validator = Validator::make($request::all(),$rules);
+        $validator = Validator::make($request->all(),$rules);
         $counter = 0;
 
         if($validator->fails())
@@ -166,40 +166,40 @@ class employeeController extends Controller
             return response()->json(['success' => false, 'errors' => "Employee not found"], 400);
         }else
         {
-            if($employee->first_name != $request::get("first_name") && !empty($request::get("first_name")))
+            if($employee->first_name != $request->input("first_name") && !empty($request->input("first_name")))
             {
-                $employee->first_name = $request::get("first_name");
+                $employee->first_name = $request->input("first_name");
                 $counter++;
             }
     
             
-            if($employee->last_name != $request::get("last_name") && !empty($request::get("last_name")))
+            if($employee->last_name != $request->input("last_name") && !empty($request->input("last_name")))
             {
-                $employee->last_name = $request::get("last_name");
+                $employee->last_name = $request->input("last_name");
                 $counter++;
             }
     
-            if($employee->email != $request::get("email") && !empty($request::get("email")))
+            if($employee->email != $request->input("email") && !empty($request->input("email")))
             {
-                $employee->email = $request::get("email");
+                $employee->email = $request->input("email");
                 $counter++;
             }
     
-            if($employee->email != $request::get("salary") && !empty($request::get("salary")))
+            if($employee->email != $request->input("salary") && !empty($request->input("salary")))
             {
-                $employee->salary = $request::get("salary");
+                $employee->salary = $request->input("salary");
                 $counter++;
             }
     
-            if($employee->address_id != $request::get("address_id") && !empty($request::get("address_id")))
+            if($employee->address_id != $request->input("address_id") && !empty($request->input("address_id")))
             {
-                $employee->address_id = $request::get("address_id");
+                $employee->address_id = $request->input("address_id");
                 $counter++;
             }
     
-            if($employee->job_id != $request::get("job_id") && !empty($request::get("job_id")))
+            if($employee->job_id != $request->input("job_id") && !empty($request->input("job_id")))
             {
-                $employee->job_id = $request::get("job_id");
+                $employee->job_id = $request->input("job_id");
                 $counter++;
             }
             if($counter != 0)
@@ -220,9 +220,23 @@ class employeeController extends Controller
         }
     }
 
-    public function sort()
+    public function filter(Request $request)
     {
-        
+        $sort = $request->input("sort","id"); // neem de sort uit de url of zet default als id
+        $order = $request->input("order","asc");
+        $search = $request->input("search","");
+
+        try
+        {
+            return Employee::where("first_name", "like", "%$search%")
+                ->orWhere("last_name", "like", "%$search%")
+                ->orderBy($sort,$order)
+                ->paginate(5);
+        }
+        catch(QueryException $e)
+        {
+            return response()->json(["message"=>"bad request"],400);
+        }
     }
 
     public function create()

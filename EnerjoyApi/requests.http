@@ -1,8 +1,52 @@
-post http://127.0.0.1:8000/api/Employees/update HTTP/1.1
-content-type: application/json
+#Show all employees
+#get http://127.0.0.1:8000/api/Employees
 
-{
-    "id":1,
-    "first_name":"Nannie",
-    "email":"test124@test.com"
-}
+#Show one employee based on id
+# get http://127.0.0.1:8000/api/Employees/show_by_id/id=1
+
+#Create new employee
+# post http://127.0.0.1:8000/api/Employees/create
+# content-type: application/json
+
+# {
+#     "first_name":"John",
+#     "last_name":"Doe",
+#     "email":"john@gmail.com",
+#     "password":"test",
+#     "salary": 1600,
+#     "address_id": 1,
+#     "job_id": 2
+# }
+
+#Delete employee
+#get http://127.0.0.1:8000/api/Employees/delete/email=john@gmail.com
+
+#Restore employee
+#get http://127.0.0.1:8000/api/Employees/restore/email=john@gmail.com
+
+#Update employee
+# post http://127.0.0.1:8000/api/Employees/update
+# content-type: application/json
+
+# {
+#     "id": 11,
+#     "first_name":"John",
+#     "last_name":"Doe",
+#     "email":"john@gmail.com",
+#     "password":"123",
+#     "salary": 1600,
+#     "address_id": 1,
+#     "job_id": 2
+# }
+
+#filter the employees
+# get http://127.0.0.1:8000/api/Employees/filter
+# content-type: application/json
+
+# {
+#     "sort": "id",
+#     "order": "asc",
+#     "search": "y"
+# }
+
+

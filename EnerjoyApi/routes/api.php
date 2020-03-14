@@ -34,7 +34,7 @@ Route::post('Employees/create','employeeController@store');
 Route::get('Employees/delete/email={email}','employeeController@destroy');
 Route::get('Employees/restore/email={email}','employeeController@restore');
 Route::post('Employees/update','employeeController@update');
-Route::post('Employees/sort/on={variable}&order={order}','employeeController@sort');
+Route::get('Employees/filter','employeeController@filter');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
