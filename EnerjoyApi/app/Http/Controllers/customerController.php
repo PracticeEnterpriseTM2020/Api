@@ -121,7 +121,7 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
-        if(customer::where('email',$request["email"])->where('password',$request['password'])->exists()){
+        if(customer::where('email',$request["email"])->where('password',$request['password'])->where('active',1)->exists()){
             return response()->json(['login'=>true,'message'=>'customer password and email match']);
         }
         else{
@@ -157,7 +157,7 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
-        $customer = customer::where('email',$request['email'])->first();
+        $customer = customer::where('email',$request['email'])->where('active',1)->first();
         if(!$customer){
             return response()->json(['delete'=>false,'message'=>'customer could not be found'],404);
         }
