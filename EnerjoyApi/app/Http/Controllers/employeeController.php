@@ -154,7 +154,6 @@ class employeeController extends Controller
         );
 
         $validator = Validator::make($request->all(),$rules);
-        $counter = 0;
 
         if($validator->fails())
         {
@@ -166,6 +165,8 @@ class employeeController extends Controller
             return response()->json(['success' => false, 'errors' => "Employee not found"], 400);
         }else
         {
+            $counter = 0;
+
             if($employee->first_name != $request->input("first_name") && !empty($request->input("first_name")))
             {
                 $employee->first_name = $request->input("first_name");

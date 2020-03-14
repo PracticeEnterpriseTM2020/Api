@@ -30,13 +30,8 @@
 
 # {
 #     "id": 11,
-#     "first_name":"John",
-#     "last_name":"Doe",
-#     "email":"john@gmail.com",
-#     "password":"123",
-#     "salary": 1600,
-#     "address_id": 1,
-#     "job_id": 2
+#     "first_name":"Jan",
+#     "last_name":"Doe"
 # }
 
 #filter the employees
