@@ -74,10 +74,10 @@
 # }
 
 #filter the jobs with 5 on each page
-# get http://127.0.0.1:8000/api/jobs/filter
-# content-type: application/json
+#  get http://127.0.0.1:8000/api/jobs/filter
+#  content-type: application/json
 
-# {
-#     "sort": "job_title",
+#  {     
+#     "sort": "hallo",
 #     "order": "desc"
-# }
+#  }
