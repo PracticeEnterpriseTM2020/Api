@@ -27,12 +27,26 @@ Route::get('invoices/{invoiceId}', 'invoiceController@show');
 Route::get('meters/{meter_id}', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
 
-//Job Offers
-Route::get("JobOffers", "JobOfferController@show");
+
 //Employees
 Route::get('Employees','employeeController@show_all');
 Route::get('Employees/{employee_id}','employeeController@show_by_id');
 
+//Job Offers
+Route::get("JobOffers", "JobOfferController@filter");
+Route::get("JobOffers/{job_offer}", "JobOfferController@show");
+Route::post("JobOffers", "JobOfferController@store");
+Route::put("JobOffers/{job_offer}", "JobOfferController@update");
+Route::delete("JobOffers/{job_offer}", "JobOfferController@destroy");
+Route::put("JobOffers/{id}/restore", "JobOfferController@restore");
+
+//Fleet
+Route::get("Fleet", "FleetController@filter");
+Route::get("Fleet/{fleet}", "FleetController@show");
+Route::post("Fleet", "FleetController@store");
+Route::put("Fleet/{fleet}", "FleetController@update");
+Route::delete("Fleet/{fleet}", "FleetController@destroy");
+Route::put("Fleet/{id}/restore", "FleetController@restore");
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

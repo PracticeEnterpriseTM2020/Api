@@ -1,2 +1,8 @@
-GET http://127.0.0.1:8000/api/Employees/1
-s
+POST http://127.0.0.1:8000/api/JobOffers/create/ HTTP/1.1
+content-type: application/json
+{
+    "job_offer_title": "Test Title",
+    "job_offer_description": "Test Desc", 
+    "job_id": "1", 
+    "creator_id": "1"
+}

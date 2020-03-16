@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateJobOffersTable extends Migration
+class JobOffers extends Migration
 {
     /**
      * Run the migrations.
@@ -17,8 +17,9 @@ class CreateJobOffersTable extends Migration
             $table->bigIncrements('id');
             $table->string('job_offer_title');
             $table->string('job_offer_description');
-            $table->int('job_id');
+            $table->integer('job_id');
             $table->integer('creator_id');
+            $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });
     }
