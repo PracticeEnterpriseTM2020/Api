@@ -17,6 +17,7 @@ class CreateJobsTable extends Migration
             $table->bigIncrements('id');
             $table->string("job_title");
             $table->softDeletes();
+            $table->timeStamps();
         });
     }
 

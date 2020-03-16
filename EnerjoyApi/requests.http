@@ -1,83 +1,58 @@
-#Show all employees 5 per page
-#get http://127.0.0.1:8000/api/employees?page=2
+#Show by id
+#get http://127.0.0.1:8000/api/employees/1
 
-#Show one employee based on id
-# get http://127.0.0.1:8000/api/employees/show_by_id/id=1
+#Show all employees (could filter on order, sort and search if empty show all)
+#get http://127.0.0.1:8000/api/employees/?sort=id&order=desc&search=Pfeffer
 
-#Create new employee
-# post http://127.0.0.1:8000/api/employees/create
-# content-type: application/json
-
-# {
-#     "first_name":"John",
-#     "last_name":"Doe",
-#     "email":"john@gmail.com",
-#     "password":"test",
-#     "salary": 1600,
-#     "address_id": 1,
-#     "job_id": 2
-# }
-
-#Delete employee
-#get http://127.0.0.1:8000/api/employees/delete/email=john@gmail.com
-
-#Restore employee
-#get http://127.0.0.1:8000/api/employees/restore/email=john@gmail.com
-
-#Update employee
-# post http://127.0.0.1:8000/api/employees/update
-# content-type: application/json
+# #Create employee
+# POST http://127.0.0.1:8000/api/employees/
+# Content-Type: application/json
 
 # {
-#     "id": 11,
-#     "first_name":"Jan",
-#     "last_name":"Doe"
+#     "first_name": "Bob",
+#     "last_name": "De Bouwer",
+#     "email" : "test@test.be",
+#     "salary" : 1600,
+#     "password" : "test",
+#     "address_id" : 1,
+#     "job_id" : 2
 # }
 
-#filter the employees
-# get http://127.0.0.1:8000/api/employees/filter
-# content-type: application/json
+#Soft-delete employee
+#DELETE http://127.0.0.1:8000/api/employees/15
+
+#restore soft-deleted employee
+#PUT http://127.0.0.1:8000/api/employees/15/restore
+
+#update employee
+# PUT http://127.0.0.1:8000/api/employees/15
+# Content-Type: application/json
 
 # {
-#     "sort": "id",
-#     "order": "asc",
-#     "search": "y"
+#     "first_name" : "beb"
 # }
 
-#Show all jobs 5 per page
-#get http://127.0.0.1:8000/api/jobs
+#Show by id
+#get http://127.0.0.1:8000/api/jobs/1
 
-#Show one job based on id
-#get http://127.0.0.1:8000/api/jobs/show_by_id/id=11
-
-#Create new job
-# post http://127.0.0.1:8000/api/jobs/create
-# content-type: application/json
+# # #Create Job
+# POST http://127.0.0.1:8000/api/jobs/
+# Content-Type: application/json
 
 # {
-#     "job_title":"Programmer"
+#     "job_title" : "Tester"
 # }
 
-#Delete job
-#get http://127.0.0.1:8000/api/jobs/delete/title=Programmer
+#Soft-delete employee
+#DELETE http://127.0.0.1:8000/api/jobs/11
 
-#Restore job
-#get http://127.0.0.1:8000/api/jobs/restore/title=Programmer
+#restore soft-deleted employee
+# PUT http://127.0.0.1:8000/api/jobs/11/restore
 
-#Update job
-# post http://127.0.0.1:8000/api/jobs/update
-# content-type: application/json
+#update employee
+# PUT http://127.0.0.1:8000/api/jobs/11
+# Content-Type: application/json
 
 # {
-#     "id": 11,
-#     "job_title": "Tester"
+#     "job_title" : "Programmer"
 # }
-
-#filter the jobs with 5 on each page
-#  get http://127.0.0.1:8000/api/jobs/filter
-#  content-type: application/json
-
-#  {     
-#     "sort": "hallo",
-#     "order": "desc"
-#  }

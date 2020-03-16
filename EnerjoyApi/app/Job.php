@@ -10,8 +10,8 @@ class Job extends Model
     use SoftDeletes;
     
     protected $table = "jobs";
-    public $timestamps = false;
     protected $fillable = ["job_title"];
+    protected $hidden = ['created_at','updated_at','deleted_at'];
     protected $dates = ["deleted_at"];
     protected $width = ["Employee"];
 
