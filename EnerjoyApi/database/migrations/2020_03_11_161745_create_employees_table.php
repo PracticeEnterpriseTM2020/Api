@@ -23,7 +23,6 @@ class CreateEmployeesTable extends Migration
             $table->integer("address_id");
             $table->integer("job_id");
             $table->softDeletes();
-            $table->dropTimestamps();
         });
     }
 
