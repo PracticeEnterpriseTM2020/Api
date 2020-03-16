@@ -29,8 +29,21 @@ Route::post('meters/create', 'MetersController@store');
 
 
 //Employees
-Route::get('Employees','employeeController@show_all');
-Route::get('Employees/{employee_id}','employeeController@show_by_id');
+Route::get('employees','employeeController@filter');
+Route::get('employees/{employee}','employeeController@show_by_id');
+Route::post('employees','employeeController@store');
+Route::delete('employees/{employee}','employeeController@destroy');
+Route::put('employees/{employee}/restore','employeeController@restore');
+Route::put('employees/{employee}','employeeController@update');
+
+//Jobs
+Route::get('jobs','jobController@filter');
+Route::get('jobs/{job}','jobController@show_by_id');
+Route::post('jobs','jobController@store');
+Route::delete('jobs/{job}','jobController@destroy');
+Route::put('jobs/{job}/restore','jobController@restore');
+Route::put('jobs/{job}','jobController@update');
+
 
 //Job Offers
 Route::get("JobOffers", "JobOfferController@filter");
