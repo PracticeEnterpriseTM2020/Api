@@ -44,7 +44,7 @@ class FleetController extends Controller
     public function filter(Request $request){
         $sort = $request->input("sort", "id");
         $order = $request->input("order", "asc");
-        $search_key = $request->input("search_key", "merk");
+        $search_key = $request->input("search_key", "brand");
         $search = $request->input("search", "");
         //$itemPage = $request->input("itemPerPage", 5);
         

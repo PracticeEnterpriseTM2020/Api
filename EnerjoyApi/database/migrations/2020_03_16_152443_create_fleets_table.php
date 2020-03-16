@@ -15,10 +15,10 @@ class CreateFleetsTable extends Migration
     {
         Schema::create('fleets', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string("merk");
+            $table->string("brand");
             $table->string("model");
-            $table->string("nummerplaat");
-            $table->integer("eigenaar_id");
+            $table->string("licenseplate");
+            $table->integer("owner_id");
             $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });

@@ -16,10 +16,10 @@ class FleetTableSeeder extends Seeder
         $faker = Faker::create();
         for ($i = 0; $i < 10; $i++) {
             DB::table('fleets')->insert([
-                'merk' => $faker->word,
+                'brand' => $faker->word,
                 'model' => $faker->word,
-                'nummerplaat' => $faker->bothify("1-???-###"),
-                'eigenaar_id' => $i
+                'licenseplate' => $faker->bothify("1-???-###"),
+                'owner_id' => $i
             ]);
         }
     }

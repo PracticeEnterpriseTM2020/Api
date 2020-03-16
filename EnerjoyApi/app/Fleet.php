@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Fleet extends Model
 {
-    protected $fillable = ['merk', 'model', 'nummerplaat', 'eigenaar_id'];
+    protected $fillable = ['brand', 'model', 'licenseplate', 'owner_id'];
     protected $with = ['employee'];
     protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
 
@@ -16,6 +16,6 @@ class Fleet extends Model
 
     public function employee()
     {
-        return $this->hasOne('App\Employee','id','eigenaar_id');
+        return $this->hasOne('App\Employee','id','owner_id');
     }
 }
