@@ -60,14 +60,10 @@ class Handler extends ExceptionHandler
             ], 404);
         }
 
-       if ($exception instanceof QueryException) {
-            return response(['message'=>'failed to query database'],404);
-       }
-
-       if ($exception instanceof ModelNotFoundException) {
-        return response()->json([
-            'error' => 'Resource not found'
-        ], 404);
+        if ($exception instanceof ModelNotFoundException) {
+            return response()->json([
+                'error' => 'Resource not found'
+            ], 404);
         }
 
         if ((Request::isMethod('post') && $exception instanceof MethodNotAllowedHttpException) || (Request::isMethod('post') && $exception instanceof NotFoundHttpException)) {
