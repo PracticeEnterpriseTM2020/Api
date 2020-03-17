@@ -23,7 +23,6 @@ class JobOfferController extends Controller
     }
 
     public function store(Request $request){
-        //return $request->all();
         $job_offer = JobOffer::create($request->all());
         return response()->json([$job_offer], 201);
     }

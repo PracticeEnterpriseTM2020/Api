@@ -9,6 +9,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Request;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use \Illuminate\Database\QueryException;
 
 class Handler extends ExceptionHandler
 {
@@ -58,9 +59,11 @@ class Handler extends ExceptionHandler
                 'error' => 'Resource not found'
             ], 404);
         }
-       //if ($exception instanceof \Illuminate\Database\QueryException) {
-       //     return response(['message'=>'failed to query database'],404);
-       //}
+
+       if ($exception instanceof QueryException) {
+            return response(['message'=>'failed to query database'],404);
+       }
+
        if ($exception instanceof ModelNotFoundException) {
         return response()->json([
             'error' => 'Resource not found'
