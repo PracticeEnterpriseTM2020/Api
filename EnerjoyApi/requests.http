@@ -69,8 +69,22 @@
 
 #GET http://127.0.0.1:8000/api/employees
 
-GET http://127.0.0.1:8000/api/fleet
+GET http://127.0.0.1:8000/api/fleet?order=desc
 ###
 
-GET http://127.0.0.1:8000/api/jobs/oder=desc
+GET http://127.0.0.1:8000/api/jobs/?order=desc
 ###
+
+POST http://127.0.0.1:8000/api/employees
+Content-Type: application/json
+
+{
+    "first_name":"Robbe",
+    "last_name":"De Boeck",
+    "email":"robbe.deboeck@enerjoy.be",
+    "password":"test",
+    "password_confirmation":"test",
+    "salary":3000.95,
+    "address_id":1,
+    "job_id":1
+}

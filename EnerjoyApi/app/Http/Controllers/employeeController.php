@@ -26,8 +26,7 @@ class employeeController extends Controller
             "first_name" => "required|string",
             "last_name" => "required|string",
             "email" => "required|email|unique:employees,email",
-            "password" => "required|string|confirm:confirm_password",
-            "confirm_password" => "required|string",
+            "password" => "required|string|confirmed",
             "salary" => "required|numeric|gte:0",
             "address_id" => "required|integer|exists:addresses,id",
             "job_id" => "required|integer|exists:jobs,id"
@@ -58,8 +57,7 @@ class employeeController extends Controller
             "first_name" => "string",
             "last_name" => "string",
             "email" => "email|unique:employees,email",
-            "password" => "string|confirm:confirm_password",
-            "confirm_password" => "string",
+            "password" => "string|confirmed",
             "salary" => "numeric|gte:0",
             "address_id" => "integer|exists:addresses,id",
             "job_id" => "integer|exists:jobs,id"
