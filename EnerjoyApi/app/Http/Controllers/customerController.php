@@ -9,6 +9,7 @@ use App\customer;
 use App\Http\Resources\customer as customerResource;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class customerController extends Controller
 {
@@ -29,6 +30,22 @@ class customerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function activate(Request $request){
+        $validator = Validator::make($request->all(),[
+            "email"=> 'required|email',
+            "password"=> 'required|max:255',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+        }
+        $customer = customer::where('email',$request['email'])->where('active',0)->where('password',$request['password'])->first();
+        if(!$customer){
+            return response()->json(['delete'=>false,'message'=>'customer could not be found'],404);
+        }
+        $customer->active = 1;
+        $customer->save();
+        return response()->json(['success' => true, 'message' => "customer has been activated"]);
+    }
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
@@ -74,7 +91,7 @@ class customerController extends Controller
         ]);
         $addr = address::create(
         [
-            'street'=>$request['street'],
+            'street'=>strtolower($request['street']),
             'number'=>$request['number'],
             'cityId'=>$city->id
         ]);
@@ -136,9 +153,39 @@ class customerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            "email"=> 'required|email',
+            "newEmail"=>['required','email',
+            Rule::unique('customers','email')->ignore($request['email'],'email')],
+            "first"=> 'required|alpha',
+            "last"=> 'required|alpha',
+            "password"=> 'required|max:255',
+            "street"=> 'required|max:70|string',
+            "number"=> 'required|max:7|alpha_num',
+            "city"=> 'required|string|max:30',
+            "postalcode"=> 'required|max:15|alpha_dash',
+            "countrycode"=>'required|max:2|alpha'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+        }
+        $Vpostal = new \Sirprize\PostalCodeValidator\Validator();
+        if(!$Vpostal->hasCountry(strtoupper($request['countrycode']))){
+            return response()->json(['success' => false, 'message' => "Countrycode does not exist"], 400);
+        }
+        $check=$Vpostal->isvalid($request['countrycode'],$request["postalcode"]);
+        if(!$check){
+            return response()->json(['success' => false, 'message' => "Postalcode does not exist"], 400);
+        }
+        $customer = customer::where('email',$request['email'])->where('active',1)->firstOrFail();
+        $address = address::where('id',$customer->addressId)->firstOrFail();
+        $city = city::where('id',$address->cityId)->firstOrFail();
+        $country = country::where('abv',strtoupper($request["countrycode"]))->firstOrFail();
+        $city->update(['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode'],'countryId'=>$country->id]);
+        $address->update(['street'=>strtolower($request['street']),'number'=>$request['number']]);
+        $customer->update(['firstname'=>$request['first'],'lastname'=>$request['last'],'email'=>$request['newEmail'],'password'=>$request['password']]);
     }
 
     /**

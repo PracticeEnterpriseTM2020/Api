@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 Route::post('customers/delete', 'customerController@destroy');
 Route::post('customers/new', 'customerController@store');
 Route::post('customers/login', 'customerController@verify');
+Route::post('customers/change', 'customerController@update');
+Route::post('customers/activate', 'customerController@activate');
 Route::get('customers/{email}', 'customerController@show');
 Route::get('customers', 'customerController@index');
 
