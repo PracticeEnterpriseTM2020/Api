@@ -149,7 +149,7 @@ class MetersController extends Controller
     public function softdelete(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|max:255|numeric'
+            'id' => 'required|numeric'
         ]);
 
         if ($validator->fails()) {
