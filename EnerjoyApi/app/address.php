@@ -1,12 +1,15 @@
 <?php
 
 namespace App;
+
 use Illuminate\Database\Eloquent\Model;
 
 class address extends Model
 {
     protected $table = 'addresses';
-    protected $fillable = ['street', 'number', 'city','postalcode'];
+    protected $fillable = ['street', 'number', 'city_id', 'postalcode'];
+    protected $with = ["city"];
+
     public function customer()
     {
         return $this->hasOne('App\customer');
@@ -14,6 +17,6 @@ class address extends Model
 
     public function city()
     {
-        return $this->belongsTo('App\city','cityId');
+        return $this->belongsTo('App\city');
     }
 }

@@ -6,13 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class city extends Model
 {
-    protected $table = 'city';
+    protected $table = "cities";
+    protected $fillable = ["name", "postalcode", "country_id"];
+    protected $with = ["country"];
+
     public function address()
     {
-        return $this->hasOne('App\address');
+        return $this->hasOne("App\address");
     }
     public function country()
     {
-        return $this->belongsTo('App\country','countryId');
+        return $this->belongsTo("App\country");
     }
 }

@@ -16,6 +16,6 @@ class Fleet extends Model
 
     public function employee()
     {
-        return $this->hasOne('App\Employee','id','owner_id');
+        return $this->hasOne('App\Employee', 'id', 'owner_id');
     }
 }

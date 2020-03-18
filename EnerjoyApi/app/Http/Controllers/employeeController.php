@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Employee;
 use ErrorException;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 
 class employeeController extends Controller
@@ -19,7 +22,19 @@ class employeeController extends Controller
 
     public function store(Request $request)
     {
-        $request->offsetSet('password', bcrypt($request->password));
+        $validator = Validator::make($request->all(), [
+            "first_name" => "required|string",
+            "last_name" => "required|string",
+            "email" => "required|email|unique:employees,email",
+            "password" => "required|string|confirm:confirm_password",
+            "confirm_password" => "required|string",
+            "salary" => "required|numeric|gte:0",
+            "address_id" => "required|integer|exists:addresses,id",
+            "job_id" => "required|integer|exists:jobs,id"
+        ]);
+        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
+
+        $request->offsetSet("password", Hash::make($request->password));
         $employee = Employee::create($request->all());
         return response()->json($employee, 201);
     }
@@ -39,28 +54,57 @@ class employeeController extends Controller
 
     public function update(Request $request, Employee $employee)
     {
+        $validator = Validator::make($request->all(), [
+            "first_name" => "string",
+            "last_name" => "string",
+            "email" => "email|unique:employees,email",
+            "password" => "string|confirm:confirm_password",
+            "confirm_password" => "string",
+            "salary" => "numeric|gte:0",
+            "address_id" => "integer|exists:addresses,id",
+            "job_id" => "integer|exists:jobs,id"
+        ]);
+        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
+
+        if ($request->password) $request->offsetSet("password", Hash::make($request->password));
+
         $employee->update($request->all());
         return response()->json($employee, 200);
     }
 
     public function filter(Request $request)
     {
-        $sort = $request->input("sort", "id"); // neem de sort uit de url of zet default als id
+        $cols = Schema::getColumnListing("employees");
+        $validator = Validator::make($request->all(), [
+            "sort" => Rule::in($cols),
+            "order" => Rule::in(["asc", "desc"]),
+            "amount" => "integer|gt:0"
+        ], ["in" => ":attribute must be one of the following types: :values"]);
+        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+
+        $sort = $request->input("sort", "id");
         $order = $request->input("order", "asc");
         $search = $request->input("search", "");
         $amount = $request->input("amount", 5);
 
-        try {
-            return Employee::where("first_name", "like", "%$search%")
-                ->orWhere("last_name", "like", "%$search%")
-                ->orderBy($sort, $order)
-                ->paginate($amount);
-        } catch (QueryException $e) {
-            return response()->json(["message" => "Bad Request: sort does not exist"], 400);
-        } catch (ErrorException $e) {
-            return response()->json(["message" => "Bad Request: amount must be a numeric value"], 400);
-        } catch (InvalidArgumentException $e) {
-            return response()->json(["message" => "Bad Request: order must be asc or desc"], 400);
-        }
+        return Employee::where("first_name", "like", "%$search%")
+            ->orWhere("last_name", "like", "%$search%")
+            ->orderBy($sort, $order)
+            ->paginate($amount);
+    }
+
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "email" => "required|email|exists:employees,email",
+            "password" => "required"
+        ]);
+
+        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+
+        $employee = Employee::where("email", "=", "maltenwerth@hotmail.com")->first();
+        if (!Hash::check($request->password, $employee->password)) return response()->json(["error" => "Email and password do not match"], 401);
+
+        return $employee;
     }
 }

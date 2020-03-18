@@ -32,6 +32,7 @@ Route::post('meters/create', 'MetersController@store');
 Route::get('employees', 'employeeController@filter');
 Route::get('employees/{employee}', 'employeeController@show_by_id');
 Route::post('employees', 'employeeController@store');
+Route::post('employees/login', 'employeeController@login');
 Route::delete('employees/{employee}', 'employeeController@destroy');
 Route::put('employees/{employee}/restore', 'employeeController@restore');
 Route::put('employees/{employee}', 'employeeController@update');

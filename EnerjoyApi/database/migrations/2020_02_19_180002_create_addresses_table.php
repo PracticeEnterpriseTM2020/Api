@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -14,9 +15,9 @@ class CreateAddressesTable extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->string("street",70)->nullable(false);
-            $table->string("number",7)->nullable(false);
-            $table->unsignedBigInteger("cityId")->nullable(false);
+            $table->string("street", 70);
+            $table->string("number", 7);
+            $table->unsignedBigInteger("city_id");
         });
     }
 

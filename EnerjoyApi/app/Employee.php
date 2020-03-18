@@ -11,14 +11,14 @@ class Employee extends Model
     use SoftDeletes;
 
     protected $table = "employees";
-    protected $fillable = ["first_name","last_name","email","password","salary","address_id","job_id"];
-    protected $hidden = ['created_at','updated_at','password','deleted_at'];
+    protected $fillable = ["first_name", "last_name", "email", "password", "salary", "address_id", "job_id"];
+    protected $hidden = ['created_at', 'updated_at', 'password', 'deleted_at'];
     protected $dates = ["deleted_at"];
-    protected $with = ["address","job"];
+    protected $with = ["address", "job"];
 
     function address()
     {
-        return $this->BelongsTo("App\address");
+        return $this->belongsTo("App\address");
     }
 
     function job()
@@ -26,4 +26,8 @@ class Employee extends Model
         return $this->belongsTo("App\Job");
     }
 
+    function fleet()
+    {
+        return $this->hasMany("App\Fleet");
+    }
 }

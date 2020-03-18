@@ -56,3 +56,21 @@
 # {
 #     "job_title" : "Programmer"
 # }
+
+#GET http://127.0.0.1:8000/api/employees
+
+# POST http://127.0.0.1:8000/api/employees/login
+# Content-Type: application/json
+
+# {
+#     "email":"maltenwerth@hotmail.com",
+#     "password":"secret"
+# }
+
+#GET http://127.0.0.1:8000/api/employees
+
+GET http://127.0.0.1:8000/api/fleet
+###
+
+GET http://127.0.0.1:8000/api/jobs/oder=desc
+###

@@ -18,7 +18,7 @@ class CreateFleetsTable extends Migration
             $table->string("brand");
             $table->string("model");
             $table->string("licenseplate");
-            $table->integer("owner_id");
+            $table->integer("owner_id")->nullable();
             $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });
