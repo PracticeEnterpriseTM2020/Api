@@ -187,7 +187,7 @@ class MetersController extends Controller
     public function edit(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|max:255|numeric',
+            'id' => 'required|numeric',
             'meter_id' => 'max:255|alpha_dash',
             'creation_timestamp' => 'max:16|min:16|date'
         ]);
