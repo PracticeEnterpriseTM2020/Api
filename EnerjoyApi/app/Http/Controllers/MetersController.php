@@ -119,17 +119,21 @@ class MetersController extends Controller
         $selectQuery = $selectQuery->where('deleted', '=', '0');
         $selectMetersAll = $selectQuery->count();
 
-        if (floor($selectMetersAll / $amountPerPageRequest) >= $pageRequest) {
+        if ((floor($selectMetersAll / $amountPerPageRequest)+1) >= $pageRequest) {
             $page = (int) $pageRequest;
         } else {
             $page = (floor($selectMetersAll / $amountPerPageRequest));
         }
 
-        $selectMeters = $selectQuery->limit($amountPerPageRequest)->offset($page * $amountPerPageRequest)->get();
+        if($pageRequest ==1){
+            $selectMeters = $selectQuery->limit($amountPerPageRequest)->get();
+        } else {
+            $selectMeters = $selectQuery->limit($amountPerPageRequest)->offset(($page-1) * $amountPerPageRequest)->get();
+        }
 
         if (count($selectMeters)) {
             //return $selectMeters;
-            return response()->json(['success' => true, 'results' => $selectMetersAll, 'pages' => floor($selectMetersAll / $amountPerPageRequest), 'current_page' => $page, 'data' => $selectMeters], 200);
+            return response()->json(['success' => true, 'results' => $selectMetersAll, 'pages' => (floor($selectMetersAll / $amountPerPageRequest)+1), 'current_page' => $page, 'data' => $selectMeters], 200);
         } else {
             return response()->json(['success' => false, 'errors' => 'No results found.'], 400);
         }
