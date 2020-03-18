@@ -14,14 +14,22 @@ class MeterTableSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-
+$this->command->line('Updating stuff...');
         for ($i = 0; $i <= 1000; $i++) {
+
+            $meter_id           = $faker->bothify($text = '????????-??????-####-##');
+            $creation_timestamp = $faker->unixTime;
+            $isUsed             = $faker->boolean;
+            $deleted            = $faker->boolean;
+
             DB::table('meters')->insert([
-                'meter_id' => $faker->bothify($text = '????????-??????-####-##'),
-                'creation_timestamp' => $faker->unixTime,
-                'isUsed' => $faker->boolean,
-                'deleted' => $faker->boolean
+                'meter_id' => $meter_id,
+                'creation_timestamp' => $creation_timestamp,
+                'isUsed' => $isUsed,
+                'deleted' => $deleted
             ]);
+
+            $this->command->line('Inserting row ' . $i . ' | meter_id: ' . $meter_id . ' | creation_timestamp: ' . $creation_timestamp . ' | isUsed: ' . $isUsed . ' | deleted: ' . $deleted);
         }
     }
 }
