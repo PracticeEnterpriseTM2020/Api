@@ -15,7 +15,7 @@ class MeterTableSeeder extends Seeder
     {
         $faker = Faker::create();
 $this->command->line('Updating stuff...');
-        for ($i = 0; $i <= 1000; $i++) {
+        for ($i = 1; $i <= 1000; $i++) {
 
             $meter_id           = $faker->bothify($text = '????????-??????-####-##');
             $creation_timestamp = $faker->unixTime;
