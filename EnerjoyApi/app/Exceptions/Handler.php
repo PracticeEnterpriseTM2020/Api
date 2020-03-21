@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -10,6 +12,7 @@ use Request;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use \Illuminate\Database\QueryException;
+use InvalidArgumentException;
 
 class Handler extends ExceptionHandler
 {
@@ -60,6 +63,10 @@ class Handler extends ExceptionHandler
             ], 404);
         }
 
+        if ($exception instanceof AuthorizationException) {
+            return response()->json(['error' => 'You are not allowed to perform this action'], 403);
+        }
+
         if ($exception instanceof QueryException) {
             return response()->json([
                 'error' => 'Internal server error'
@@ -67,8 +74,13 @@ class Handler extends ExceptionHandler
         }
 
         if ((Request::isMethod('post') && $exception instanceof MethodNotAllowedHttpException) || (Request::isMethod('post') && $exception instanceof NotFoundHttpException)) {
-            return response()->json(['message' => 'Page Not Found'], 500);
+            return response()->json(['error' => 'Page Not Found'], 500);
         }
         return parent::render($request, $exception);
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        return response()->json(['error' => 'Authentication failed'], 401);
     }
 }

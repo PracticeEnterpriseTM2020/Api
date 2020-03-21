@@ -19,9 +19,10 @@ class CreateEmployeesTable extends Migration
             $table->string("last_name");
             $table->string("email");
             $table->string("password");
-            $table->decimal("salary",10,2);
+            $table->decimal("salary", 10, 2);
             $table->integer("address_id");
             $table->integer("job_id");
+            $table->string('api_token', 80)->unique()->nullable()->default(null);
             $table->softDeletes();
             $table->timeStamps();
         });

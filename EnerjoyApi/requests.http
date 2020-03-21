@@ -75,16 +75,15 @@ GET http://127.0.0.1:8000/api/fleet?order=desc
 GET http://127.0.0.1:8000/api/jobs/?order=desc
 ###
 
-POST http://127.0.0.1:8000/api/employees
+POST http://127.0.0.1:8000/api/employees/login
 Content-Type: application/json
 
 {
-    "first_name":"Robbe",
-    "last_name":"De Boeck",
-    "email":"robbe.deboeck@enerjoy.be",
-    "password":"test",
-    "password_confirmation":"test",
-    "salary":3000.95,
-    "address_id":1,
-    "job_id":1
+    "email": "joesph.schaden@schamberger.com",
+    "password": "secret"
 }
+###
+
+GET http://127.0.0.1:8000/api/employees/6
+//Accept: application/json
+Authorization: Bearer $2y$10$YJBirpzL/h4AB43Mh2ejJ.jqMNj5.G9IO4sZZ2JOwaD4HnF1HHHL2

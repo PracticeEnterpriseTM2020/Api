@@ -46,6 +46,12 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
+
+        'employee' => [
+            'driver' => 'token',
+            'provider' => 'employees',
+            'hash' => false,
+        ],
     ],
 
     /*
@@ -71,6 +77,10 @@ return [
             'model' => App\User::class,
         ],
 
+        'employees' => [
+            'driver' => 'eloquent',
+            'model' => App\Employee::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

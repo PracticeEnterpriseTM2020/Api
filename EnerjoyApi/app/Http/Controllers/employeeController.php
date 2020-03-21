@@ -7,16 +7,25 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Employee;
 use ErrorException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 
 class employeeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware("can:human-resources")->except(["login", "show_by_id"]);
+    }
+
     public function show_by_id(Employee $employee)
     {
+        if (Gate::none(["read-employee", "human-resources"], $employee)) throw new AuthorizationException();
         return $employee;
     }
 
@@ -32,6 +41,7 @@ class employeeController extends Controller
             "job_id" => "required|integer|exists:jobs,id"
         ]);
         if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
+        $request->offsetSet("api_token", Hash::make(Str::random(60)));
 
         $request->offsetSet("password", Hash::make($request->password));
         $employee = Employee::create($request->all());
@@ -66,7 +76,7 @@ class employeeController extends Controller
 
         if ($request->password) $request->offsetSet("password", Hash::make($request->password));
 
-        $employee->update($request->all());
+        $employee->update($request->except(["api_token"]));
         return response()->json($employee, 200);
     }
 
@@ -100,7 +110,7 @@ class employeeController extends Controller
 
         if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
-        $employee = Employee::where("email", "=", "maltenwerth@hotmail.com")->first();
+        $employee = Employee::where("email", "=", $request->email)->first();
         if (!Hash::check($request->password, $employee->password)) return response()->json(["error" => "Email and password do not match"], 401);
 
         return $employee;
