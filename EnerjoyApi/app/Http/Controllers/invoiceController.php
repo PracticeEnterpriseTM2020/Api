@@ -48,7 +48,7 @@ class invoiceController extends Controller
 
         //If the data entered isn't valid, throw error and don't add to DB
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 422);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
         }
 
         //Create a new invoice and fill the vars with the correct values
@@ -66,6 +66,29 @@ class invoiceController extends Controller
             return response()->json(['success' => false, 'errors' => 'Data has not been added to database.'], 422);
         } else {
             return response()->json(['success' => true, 'message' => 'Data added to database.'], 200);
+        }
+    }
+
+    public function destroy(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "id"=> 'required',
+        ]);
+
+        //If the data entered isn't valid, throw error and don't alter the DB
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+        }
+        $invoice = Invoice::where('id',$request['id'])->where('active',1)->first();
+        if(!$invoice){
+            return response()->json(['delete'=>false,'message'=>'Invoice could not be found'],404);
+        }
+        $invoice->active = 0;
+        if(!$invoice->save()){
+            return response()->json(['delete'=>false,'message'=>'Invoice could not be deleted'],422);
+        }
+        else{
+            return response()->json(['delete'=>true,'message'=>'Invoice has been deleted']);
         }
     }
 

@@ -14,14 +14,17 @@ use Illuminate\Http\Request;
 |
 */
 
-//customers
+//Customers
 Route::post('customers/delete', 'customerController@destroy');
 Route::post('customers/login', 'customerController@verify');
 Route::get('customers/{email}', 'customerController@show');
 Route::get('customers', 'customerController@index');
 
+
 //Invoices
+Route::get('invoices/{invoiceId}', 'invoiceController@show');
 Route::get('invoices', 'invoiceController@index');
+Route::post('invoices/delete','invoiceController@destroy');
 Route::get('invoices/{invoiceId}', 'invoiceController@showSingle');
 Route::post('invoices/create', 'invoiceController@store');
 
