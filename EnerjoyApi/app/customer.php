@@ -5,9 +5,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class customer extends Model
 {
-    protected $fillable = ['firstname', 'lastname', 'email','password'];
+    public $timestamps = false;
+    protected $fillable = ['firstname', 'lastname', 'email','password','addressId'];
+
     public function address()
     {
         return $this->belongsTo('App\address','addressId');
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne('App\invoice');
     }
 }

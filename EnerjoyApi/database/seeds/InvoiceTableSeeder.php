@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
 
-class CountriesTableSeeder extends Seeder
+class InvoiceTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,9 +15,11 @@ class CountriesTableSeeder extends Seeder
     {
         $faker = Faker::create();
         foreach (range(1, 10) as $index) {
-            DB::table('countries')->insert([
-                'name' => $faker->country
+            DB::table('invoices')->insert([
+                'customerId' => $faker->numberBetween(1,10),
+                'price' => $faker->numberBetween(1000,10000),
+                'date' => $faker->unixTime
             ]);
-        }
+        } 
     }
 }

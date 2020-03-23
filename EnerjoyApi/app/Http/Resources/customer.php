@@ -19,7 +19,7 @@ class customer extends JsonResource
             'first' => $this->firstname,
             'last' => $this->lastname,
             'email' => $this->email,
-            'password' => $this->password,
+            'active' => $this->active,
             'address' => new address($this->address)
         ];
     }
