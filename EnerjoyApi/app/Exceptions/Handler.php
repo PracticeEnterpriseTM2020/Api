@@ -71,11 +71,11 @@ class Handler extends ExceptionHandler
             ], 404);
         }
 
-        if ($exception instanceof QueryException) {
-            return response()->json([
-                'error' => 'Internal server error.'
-            ], 500);
-        }
+        // if ($exception instanceof QueryException) {
+        //     return response()->json([
+        //         'error' => 'Internal server error.'
+        //     ], 500);
+        // }
 
         if ((Request::isMethod('post') && $exception instanceof MethodNotAllowedHttpException) || (Request::isMethod('post') && $exception instanceof NotFoundHttpException)) {
             return response()->json(['message' => 'Page Not Found'], 500);
