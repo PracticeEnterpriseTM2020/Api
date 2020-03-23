@@ -25,6 +25,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define("human-resources", function ($user) {
+            return in_array($user->job_id, [1, 2]);
+        });
     }
 }

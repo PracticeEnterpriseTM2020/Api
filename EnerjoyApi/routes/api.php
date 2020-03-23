@@ -29,38 +29,57 @@ Route::post('meters/create', 'MetersController@store');
 
 
 //Employees
-Route::get('employees', 'employeeController@filter');
-Route::get('employees/{employee}', 'employeeController@show_by_id');
-Route::post('employees', 'employeeController@store');
-Route::post('employees/login', 'employeeController@login');
-Route::delete('employees/{employee}', 'employeeController@destroy');
-Route::put('employees/{employee}/restore', 'employeeController@restore');
-Route::put('employees/{employee}', 'employeeController@update');
+Route::prefix("employees")->group(function () {
+    Route::post('/login', 'employeeController@login');
+    Route::get('/refresh', 'employeeController@refresh');
+    Route::middleware("auth")->group(function () {
+        Route::get('/', 'employeeController@filter');
+        Route::get('/self', 'employeeController@self');
+        Route::get('/{employee}', 'employeeController@show_by_id');
+        Route::post('/', 'employeeController@store');
+        Route::delete('/logout', 'employeeController@logout');
+        Route::delete('/{employee}', 'employeeController@destroy');
+        Route::put('/{employee}/restore', 'employeeController@restore');
+        Route::put('/{employee}', 'employeeController@update');
+    });
+});
 
 //Jobs
-Route::get('jobs', 'jobController@filter');
-Route::get('jobs/{job}', 'jobController@show_by_id');
-Route::post('jobs', 'jobController@store');
-Route::delete('jobs/{job}', 'jobController@destroy');
-Route::put('jobs/{job}/restore', 'jobController@restore');
-Route::put('jobs/{job}', 'jobController@update');
+Route::prefix('jobs')->group(function () {
+    Route::middleware("auth")->group(function () {
+        Route::get('/', 'jobController@filter');
+        Route::get('/{job}', 'jobController@show_by_id');
+        Route::post('/', 'jobController@store');
+        Route::delete('/{job}', 'jobController@destroy');
+        Route::put('/{job}/restore', 'jobController@restore');
+        Route::put('/{job}', 'jobController@update');
+    });
+});
 
 
 //Job Offers
-Route::get("joboffers", "JobOfferController@filter");
-Route::get("joboffers/{job_offer}", "JobOfferController@show");
-Route::post("joboffers", "JobOfferController@store");
-Route::put("joboffers/{job_offer}", "JobOfferController@update");
-Route::delete("joboffers/{job_offer}", "JobOfferController@destroy");
-Route::put("joboffers/{id}/restore", "JobOfferController@restore");
+Route::prefix("joboffers")->group(function () {
+    Route::middleware("auth")->group(function () {
+        Route::get("/", "JobOfferController@filter");
+        Route::get("/{job_offer}", "JobOfferController@show");
+        Route::post("/", "JobOfferController@store");
+        Route::put("/{job_offer}", "JobOfferController@update");
+        Route::delete("/{job_offer}", "JobOfferController@destroy");
+        Route::put("/{id}/restore", "JobOfferController@restore");
+    });
+});
 
 //Fleet
-Route::get("fleet", "FleetController@filter");
-Route::get("fleet/{fleet}", "FleetController@show");
-Route::post("fleet", "FleetController@store");
-Route::put("fleet/{fleet}", "FleetController@update");
-Route::delete("fleet/{fleet}", "FleetController@destroy");
-Route::put("fleet/{id}/restore", "FleetController@restore");
+Route::prefix("fleet")->group(function () {
+    Route::middleware("auth")->group(function () {
+        Route::get("/", "FleetController@filter");
+        Route::get("/{fleet}", "FleetController@show");
+        Route::post("/", "FleetController@store");
+        Route::put("/{fleet}", "FleetController@update");
+        Route::delete("/{fleet}", "FleetController@destroy");
+        Route::put("/{id}/restore", "FleetController@restore");
+    });
+});
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

@@ -2,23 +2,52 @@
 
 namespace App\Http\Controllers;
 
+use App\address;
+use App\city;
 use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Employee;
 use ErrorException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
-use InvalidArgumentException;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class employeeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware("can:human-resources")->except(["login", "logout", "self", "refresh"]);
+    }
+
     public function show_by_id(Employee $employee)
     {
         return $employee;
     }
+
+    // public function store(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         "first_name" => "required|string",
+    //         "last_name" => "required|string",
+    //         "email" => "required|email|unique:employees,email",
+    //         "password" => "required|string|confirmed",
+    //         "salary" => "required|numeric|gte:0",
+    //         "phone" => "required|string",
+    //         "ssn" => "required|string",
+    //         "address_id" => "required|integer|exists:addresses,id",
+    //         "job_id" => "required|integer|exists:jobs,id"
+    //     ]);
+    //     if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
+
+    //     $employee = Employee::create($request->all());
+    //     return response()->json($employee, 201);
+    // }
 
     public function store(Request $request)
     {
@@ -28,12 +57,22 @@ class employeeController extends Controller
             "email" => "required|email|unique:employees,email",
             "password" => "required|string|confirmed",
             "salary" => "required|numeric|gte:0",
-            "address_id" => "required|integer|exists:addresses,id",
+            "phone" => "required|string",
+            "ssn" => "required|string",
+            "birthdate" => "required|date|before:" + date("Y/m/d"),
+            "street" => "required|string",
+            "number" => "required|string",
+            "city" => "required|string",
+            "postalcode" => "required|string",
+            "country_id" => "required|integer|exists:countries,id",
             "job_id" => "required|integer|exists:jobs,id"
         ]);
         if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
 
-        $request->offsetSet("password", Hash::make($request->password));
+        $city = city::firstOrCreate(["name" => $request->city, "postalcode" => $request->postalcode, "country_id" => $request->country_id]);
+        $addr = address::firstOrCreate(["street" => $request->street, "number" => $request->number, "city_id" => $city->id]);
+
+        $request->offsetSet("address_id", $addr->id);
         $employee = Employee::create($request->all());
         return response()->json($employee, 201);
     }
@@ -54,19 +93,30 @@ class employeeController extends Controller
     public function update(Request $request, Employee $employee)
     {
         $validator = Validator::make($request->all(), [
-            "first_name" => "string",
-            "last_name" => "string",
-            "email" => "email|unique:employees,email",
+            "first_name" => "required|string",
+            "last_name" => "required|string",
+            "email" => "required|email|unique:employees,email",
             "password" => "string|confirmed",
-            "salary" => "numeric|gte:0",
-            "address_id" => "integer|exists:addresses,id",
-            "job_id" => "integer|exists:jobs,id"
+            "salary" => "required|numeric|gte:0",
+            "phone" => "required|string",
+            "ssn" => "required|string",
+            "birthdate" => "required|date|before:" + date("Y/m/d"),
+            "street" => "required|string",
+            "number" => "required|string",
+            "city" => "required|string",
+            "postalcode" => "required|string",
+            "country_id" => "required|integer|exists:countries,id",
+            "job_id" => "required|integer|exists:jobs,id"
         ]);
         if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
 
-        if ($request->password) $request->offsetSet("password", Hash::make($request->password));
+        $city = city::firstOrCreate(["name" => $request->city, "postalcode" => $request->postalcode, "country_id" => $request->country_id]);
+        $addr = address::firstOrCreate(["street" => $request->street, "number" => $request->number, "city_id" => $city->id]);
 
-        $employee->update($request->all());
+        $request->offsetSet("address_id", $addr->id);
+        if ($request->password) $employee->update($request->all());
+        else $employee->update($request->except(["password"]));
+
         return response()->json($employee, 200);
     }
 
@@ -100,9 +150,29 @@ class employeeController extends Controller
 
         if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
-        $employee = Employee::where("email", "=", "maltenwerth@hotmail.com")->first();
-        if (!Hash::check($request->password, $employee->password)) return response()->json(["error" => "Email and password do not match"], 401);
+        if (!$token = Auth::attempt($request->only(["email", "password"]))) throw new AuthenticationException("Email and password do not match.");
 
+        $employee = Employee::where("email", "=", $request->email)->first();
+        $employee["token"] = $token;
         return $employee;
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        return response()->json(["message" => "Successfully logged out."], 200);
+    }
+
+    public function self(Request $request)
+    {
+        $employee = $request->user();
+        $employee["token"] = $request->bearerToken();
+        return $employee;
+    }
+
+    public function refresh(Request $request)
+    {
+        $token = auth()->refresh();
+        return response()->json(["token" => $token]);
     }
 }
