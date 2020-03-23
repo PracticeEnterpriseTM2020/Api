@@ -30,25 +30,6 @@ class employeeController extends Controller
         return $employee;
     }
 
-    // public function store(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         "first_name" => "required|string",
-    //         "last_name" => "required|string",
-    //         "email" => "required|email|unique:employees,email",
-    //         "password" => "required|string|confirmed",
-    //         "salary" => "required|numeric|gte:0",
-    //         "phone" => "required|string",
-    //         "ssn" => "required|string",
-    //         "address_id" => "required|integer|exists:addresses,id",
-    //         "job_id" => "required|integer|exists:jobs,id"
-    //     ]);
-    //     if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
-
-    //     $employee = Employee::create($request->all());
-    //     return response()->json($employee, 201);
-    // }
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

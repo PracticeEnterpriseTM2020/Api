@@ -8,6 +8,7 @@ class country extends Model
 {
     protected $table = 'countries';
     protected $fillable = ["name"];
+    protected $hidden = ["created_at", "updated_at"];
 
     public function city()
     {

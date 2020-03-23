@@ -8,6 +8,7 @@ class city extends Model
 {
     protected $table = "cities";
     protected $fillable = ["name", "postalcode", "country_id"];
+    protected $hidden = ["created_at", "updated_at"];
     protected $with = ["country"];
 
     public function address()
