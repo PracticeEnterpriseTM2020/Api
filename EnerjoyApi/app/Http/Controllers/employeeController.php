@@ -48,7 +48,7 @@ class employeeController extends Controller
             "country_id" => "required|integer|exists:countries,id",
             "job_id" => "required|integer|exists:jobs,id"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
+        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
         $city = city::firstOrCreate(["name" => $request->city, "postalcode" => $request->postalcode, "country_id" => $request->country_id]);
         $addr = address::firstOrCreate(["street" => $request->street, "number" => $request->number, "city_id" => $city->id]);
@@ -88,7 +88,7 @@ class employeeController extends Controller
             "country_id" => "required|integer|exists:countries,id",
             "job_id" => "required|integer|exists:jobs,id"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
+        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
         $city = city::firstOrCreate(["name" => $request->city, "postalcode" => $request->postalcode, "country_id" => $request->country_id]);
         $addr = address::firstOrCreate(["street" => $request->street, "number" => $request->number, "city_id" => $city->id]);

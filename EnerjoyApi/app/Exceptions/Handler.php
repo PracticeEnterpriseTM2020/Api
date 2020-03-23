@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use \Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class Handler extends ExceptionHandler
@@ -65,17 +66,21 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'This token has been blacklisted.'], 401);
         }
 
+        if ($exception instanceof JWTException) {
+            return response()->json(['error' => 'Invalid token'], 401);
+        }
+
         if ($exception instanceof ModelNotFoundException) {
             return response()->json([
                 'error' => 'Resource not found.'
             ], 404);
         }
 
-        // if ($exception instanceof QueryException) {
-        //     return response()->json([
-        //         'error' => 'Internal server error.'
-        //     ], 500);
-        // }
+        if ($exception instanceof QueryException) {
+            return response()->json([
+                'error' => 'Internal server error.'
+            ], 500);
+        }
 
         if ((Request::isMethod('post') && $exception instanceof MethodNotAllowedHttpException) || (Request::isMethod('post') && $exception instanceof NotFoundHttpException)) {
             return response()->json(['message' => 'Page Not Found'], 500);
