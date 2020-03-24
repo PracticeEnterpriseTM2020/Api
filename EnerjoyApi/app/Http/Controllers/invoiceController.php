@@ -176,7 +176,7 @@ class invoiceController extends Controller
             return response()->json(['restore'=>false,'message'=>'Invoice could not be restored'],422);
         }
         else{
-            return response()->json(['resotre'=>true,'message'=>'Invoice has been restored']);
+            return response()->json(['restore'=>true,'message'=>'Invoice has been restored']);
         }
 
     }
