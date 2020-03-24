@@ -22,11 +22,14 @@ Route::get('customers', 'customerController@index');
 
 
 //Invoices
-Route::get('invoices/{invoiceId}', 'invoiceController@show');
-Route::get('invoices', 'invoiceController@index');
+Route::get('invoices', 'invoiceController@filter');
 Route::post('invoices/delete','invoiceController@destroy');
-Route::get('invoices/{invoiceId}', 'invoiceController@showSingle');
+Route::post('invoices/restore','invoiceController@restore');
 Route::post('invoices/create', 'invoiceController@store');
+//Route::get('invoices/{invoiceId}', 'invoiceController@showSingle');
+
+
+
 
 //Meters
 Route::get('meters/{meter_id}', 'MetersController@show');
