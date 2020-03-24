@@ -20,13 +20,15 @@ Route::get('invoices/{invoiceId}', 'invoiceController@show');
 Route::get('meters/{meter_id}', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
 
+
 //Leveranciers
 Route::get('/Leverancier/{manier?}/{zoek?}','BedrijfController@ophalen');
 Route::post('/aanmaak','BedrijfController@store');
+Route::post('/verwijder/{id}','BedrijfController@delete');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+    //return $request->user();
+//});
 /*Route::fallback(function(){
     return response()->json(['message' => 'Page Not Found.'], 404);
 });*/
