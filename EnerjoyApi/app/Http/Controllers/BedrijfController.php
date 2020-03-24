@@ -117,7 +117,7 @@ class BedrijfController extends Controller
             }
             $i++;
         }
-
+        $suppliers->isSet = 1;
         $suppliers->save();
         return "[{\"success\" : \"Supplier_was_added_to_the_database\"}]";
     }
