@@ -436,6 +436,7 @@ class ComposerStaticInit19cc748df6f4203483a14ab92e4e5bf1
         'App\\country' => __DIR__ . '/../..' . '/app/country.php',
         'App\\customer' => __DIR__ . '/../..' . '/app/customer.php',
         'App\\invoice' => __DIR__ . '/../..' . '/app/invoice.php',
+        'App\\meter_customer' => __DIR__ . '/../..' . '/app/meter_customer.php',
         'Axlon\\PostalCodeValidation\\Extensions\\PostalCode' => __DIR__ . '/..' . '/axlon/laravel-postal-code-validation/src/Extensions/PostalCode.php',
         'Axlon\\PostalCodeValidation\\Extensions\\PostalCodeFor' => __DIR__ . '/..' . '/axlon/laravel-postal-code-validation/src/Extensions/PostalCodeFor.php',
         'Axlon\\PostalCodeValidation\\Rules\\PostalCode' => __DIR__ . '/..' . '/axlon/laravel-postal-code-validation/src/Rules/PostalCode.php',

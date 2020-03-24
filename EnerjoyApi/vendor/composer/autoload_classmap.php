@@ -45,6 +45,7 @@ return array(
     'App\\country' => $baseDir . '/app/country.php',
     'App\\customer' => $baseDir . '/app/customer.php',
     'App\\invoice' => $baseDir . '/app/invoice.php',
+    'App\\meter_customer' => $baseDir . '/app/meter_customer.php',
     'Axlon\\PostalCodeValidation\\Extensions\\PostalCode' => $vendorDir . '/axlon/laravel-postal-code-validation/src/Extensions/PostalCode.php',
     'Axlon\\PostalCodeValidation\\Extensions\\PostalCodeFor' => $vendorDir . '/axlon/laravel-postal-code-validation/src/Extensions/PostalCodeFor.php',
     'Axlon\\PostalCodeValidation\\Rules\\PostalCode' => $vendorDir . '/axlon/laravel-postal-code-validation/src/Rules/PostalCode.php',
