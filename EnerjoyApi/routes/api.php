@@ -35,8 +35,10 @@ Route::post('invoices/create', 'invoiceController@store');
 
 
 //Meters
-Route::get('meters/{meter_id}', 'MetersController@show');
+Route::get('meters/search', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
+Route::post('meters/edit', 'MetersController@edit');
+Route::get('meters/delete','MetersController@softdelete');
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
