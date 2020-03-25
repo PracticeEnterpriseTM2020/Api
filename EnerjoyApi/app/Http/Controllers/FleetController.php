@@ -15,6 +15,11 @@ use InvalidArgumentException;
 class FleetController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware("can:human-resources");
+    }
+
     public function show_all()
     {
         return Fleet::get();
@@ -33,7 +38,7 @@ class FleetController extends Controller
             "licenseplate" => "required|string|unique:fleets,licenseplate",
             "owner_id" => "nullable|exists:employees,id"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
+        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
         $fleet = Fleet::create($request->all());
         return response()->json($fleet, 201);
@@ -55,12 +60,12 @@ class FleetController extends Controller
     public function update(Request $request, Fleet $fleet)
     {
         $validator = Validator::make($request->all(), [
-            "brand" => "string",
-            "model" => "string",
-            "licenseplate" => "string|unique:fleets,licenseplate",
+            "brand" => "required|string",
+            "model" => "required|string",
+            "licenseplate" => "required|string|unique:fleets,licenseplate",
             "owner_id" => "nullable|exists:employees,id"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
+        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
         $fleet->update($request->all());
         return response()->json($fleet, 200);
@@ -74,7 +79,7 @@ class FleetController extends Controller
             "order" => Rule::in(["asc", "desc"]),
             "key" => Rule::in($cols),
             "amount" => "integer|gt:0"
-        ], ["in" => ":attribute must be one of the following types: :values"]);
+        ]);
         if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
         $sort = $request->input("sort", "id");

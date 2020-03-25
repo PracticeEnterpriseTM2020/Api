@@ -14,6 +14,12 @@ use InvalidArgumentException;
 
 class jobController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware("can:human-resources");
+    }
+
     public function show_by_id(Job $job)
     {
         return $job;
@@ -24,7 +30,7 @@ class jobController extends Controller
         $validator = Validator::make($request->all(), [
             "job_title" => "required|string|unique:jobs,job_title"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
+        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
         $job = Job::create($request->all());
         return response()->json($job, 201);
@@ -46,9 +52,9 @@ class jobController extends Controller
     public function update(Request $request, Job $job)
     {
         $validator = Validator::make($request->all(), [
-            "job_title" => "string|unique:jobs,job_title"
+            "job_title" => "required|string|unique:jobs,job_title"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
+        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
         $job->update($request->all());
         return response()->json($job, 200);
@@ -62,7 +68,7 @@ class jobController extends Controller
             "order" => Rule::in(["asc", "desc"]),
             "key" => Rule::in($cols),
             "amount" => "integer|gt:0"
-        ], ["in" => ":attribute must be one of the following types: :values"]);
+        ]);
         if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
         $sort = $request->input("sort", "id");

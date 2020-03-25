@@ -14,7 +14,7 @@ class JobOfferTableSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             DB::table('job_offers')->insert([
                 'job_offer_title' => $faker->jobTitle,
                 'job_offer_description' => $faker->text($maxNbChars = 50),

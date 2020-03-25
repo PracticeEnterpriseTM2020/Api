@@ -107,7 +107,7 @@ class employeeController extends Controller
             "sort" => Rule::in($cols),
             "order" => Rule::in(["asc", "desc"]),
             "amount" => "integer|gt:0"
-        ], ["in" => ":attribute must be one of the following types: :values"]);
+        ]);
         if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
         $sort = $request->input("sort", "id");

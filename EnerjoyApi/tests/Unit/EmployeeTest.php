@@ -19,12 +19,12 @@ class EmployeeTest extends TestCase
         parent::setUp();
         $this->base_url = "/api/employees";
         $this->admin = Employee::first();
-        $this->hrUser = Employee::find(2);
-        $this->normalUser = Employee::find(3);
+        $this->user = Employee::find(3);
         $this->employeeStructure = [
             "first_name",
             "last_name",
             "email",
+            "phone",
             "salary",
             "ssn",
             "birthdate",
@@ -81,7 +81,7 @@ class EmployeeTest extends TestCase
 
     public function test_get_all_unauthorized()
     {
-        $response = $this->actingAs($this->normalUser)->get($this->base_url);
+        $response = $this->actingAs($this->user)->get($this->base_url);
         $response->assertStatus(403);
     }
 
@@ -101,7 +101,7 @@ class EmployeeTest extends TestCase
 
     public function test_show_by_id_unauthorized()
     {
-        $response = $this->actingAs($this->normalUser)->get("$this->base_url/1");
+        $response = $this->actingAs($this->user)->get("$this->base_url/1");
         $response->assertStatus(403);
     }
 
@@ -142,8 +142,8 @@ class EmployeeTest extends TestCase
 
     public function test_logout_success()
     {
-        $token = JWTAuth::fromUser($this->normalUser);
-        $response = $this->actingAs($this->normalUser)->delete("$this->base_url/logout", [], ["Authorization" => "Bearer $token"]);
+        $token = JWTAuth::fromUser($this->user);
+        $response = $this->actingAs($this->user)->delete("$this->base_url/logout", [], ["Authorization" => "Bearer $token"]);
         $response->assertStatus(200);
     }
 
@@ -157,7 +157,7 @@ class EmployeeTest extends TestCase
 
     public function test_refresh_expired()
     {
-        $token = JWTAuth::fromUser($this->normalUser);
+        $token = JWTAuth::fromUser($this->user);
         JWTAuth::manager()->invalidate(new Token($token));
         $response = $this->get("$this->base_url/refresh", ["Authorization" => "Bearer $token"]);
         $response->assertStatus(401);
@@ -165,7 +165,7 @@ class EmployeeTest extends TestCase
 
     public function test_refresh_success()
     {
-        $token = JWTAuth::fromUser($this->normalUser);
+        $token = JWTAuth::fromUser($this->user);
         $response = $this->get("$this->base_url/refresh", ["Authorization" => "Bearer $token"]);
         $response->assertStatus(200);
     }
@@ -180,7 +180,7 @@ class EmployeeTest extends TestCase
 
     public function test_update_unauthorized()
     {
-        $response = $this->actingAs($this->normalUser)->put("$this->base_url/1");
+        $response = $this->actingAs($this->user)->put("$this->base_url/1");
         $response->assertStatus(403);
     }
 
@@ -240,7 +240,7 @@ class EmployeeTest extends TestCase
 
     public function test_restore_unauthorized()
     {
-        $response = $this->actingAs($this->normalUser)->put("$this->base_url/1/restore");
+        $response = $this->actingAs($this->user)->put("$this->base_url/1/restore");
         $response->assertStatus(403);
     }
 
@@ -265,7 +265,7 @@ class EmployeeTest extends TestCase
 
     public function test_create_unauthorized()
     {
-        $response = $this->actingAs($this->normalUser)->post("$this->base_url");
+        $response = $this->actingAs($this->user)->post("$this->base_url");
         $response->assertStatus(403);
     }
 
@@ -351,7 +351,7 @@ class EmployeeTest extends TestCase
 
     public function test_delete_unauthorized()
     {
-        $response = $this->actingAs($this->normalUser)->delete("$this->base_url/5");
+        $response = $this->actingAs($this->user)->delete("$this->base_url/5");
         $response->assertStatus(403);
     }
 

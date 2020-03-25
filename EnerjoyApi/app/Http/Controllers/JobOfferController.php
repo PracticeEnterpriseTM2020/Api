@@ -4,17 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Job;
 use App\JobOffer;
-use ErrorException;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
-use InvalidArgumentException;
 use Validator;
 
 class JobOfferController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware("can:human-resources")->except(["filter", "show"]);
+    }
 
     public function show_all()
     {
@@ -34,9 +34,9 @@ class JobOfferController extends Controller
             "job_id" => "required|exists:jobs,id",
             "creator_id" => "required|exists:employees,id"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
+        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
-        $job_offer = JobOffer::create($request->all());
+        $job_offer = JobOffer::create($request->all())->load(["creator", "job"]);
         return response()->json($job_offer, 201);
     }
 
@@ -56,12 +56,12 @@ class JobOfferController extends Controller
     public function update(Request $request, JobOffer $job_offer)
     {
         $validator = Validator::make($request->all(), [
-            "job_offer_title" => "string",
-            "job_offer_description" => "string",
-            "job_id" => "exists:jobs,id",
-            "creator_id" => "exists:employees,id"
+            "job_offer_title" => "required|string",
+            "job_offer_description" => "required|string",
+            "job_id" => "required|exists:jobs,id",
+            "creator_id" => "required|exists:employees,id"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 409);
+        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
         $job_offer->update($request->all());
         return response()->json($job_offer, 200);
@@ -75,7 +75,7 @@ class JobOfferController extends Controller
             "order" => Rule::in(["asc", "desc"]),
             "key" => Rule::in($cols),
             "amount" => "integer|gt:0"
-        ], ["in" => ":attribute must be one of the following types: :values"]);
+        ]);
         if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
 
         $sort = $request->input("sort", "id");
