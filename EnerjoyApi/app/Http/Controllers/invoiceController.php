@@ -50,7 +50,7 @@ class invoiceController extends Controller
         //Filter based on InvoiceId
         else if($customerId == 0 && $invoiceId != "0")
         {
-            return Invoice::where("invoiceId", "=", "$customerId")
+            return Invoice::where("id", "=", "$invoiceId")
             ->where("active", "=", "1")
             ->orderBy($sort, $order)
             ->paginate($amount);
