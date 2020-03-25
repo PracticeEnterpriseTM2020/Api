@@ -41,6 +41,15 @@ Route::post('meters/edit', 'MetersController@edit');
 Route::get('meters/delete','MetersController@softdelete');
 
 
+//Leveranciers
+Route::get('/Leverancier/{manier?}/{zoek?}','Supplier@ophalen');
+Route::post('/aanmaak','SupplierController@store');
+Route::post('/verwijder','SupplierController@softVerwijder');
+Route::post('/herinstaleer', 'SupplierController@softHerinstaleer');
+Route::post('/aanpas','SupplierController@aanpas');
+
+
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
