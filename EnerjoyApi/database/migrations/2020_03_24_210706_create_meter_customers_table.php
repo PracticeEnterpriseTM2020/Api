@@ -14,8 +14,9 @@ class CreateMeterCustomersTable extends Migration
     public function up()
     {
         Schema::create('meter_customers', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
+            $table->bigIncrements('id')->unsigned();
+            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('meter_id')->unique();
         });
     }
 

@@ -14,7 +14,7 @@ class CreateMetersTable extends Migration
     public function up()
     {
         Schema::create('meters', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->string('meter_id');
             $table->bigInteger('creation_timestamp')->nullable();
             $table->tinyInteger('isUsed')->default(0);

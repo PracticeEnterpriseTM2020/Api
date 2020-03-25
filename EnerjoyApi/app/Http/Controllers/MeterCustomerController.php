@@ -2,85 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use Validator; //For validating the inputs
 use App\meter_customer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class MeterCustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $validator = Validator::make($request->all(), [
+            'meter_id' => 'required|max:255|alpha_dash',
+            'creation_timestamp' => 'required|max:16|min:16|date'
+        ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\meter_customer  $meter_customer
-     * @return \Illuminate\Http\Response
-     */
-    public function show(meter_customer $meter_customer)
-    {
-        //
-    }
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\meter_customer  $meter_customer
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(meter_customer $meter_customer)
-    {
-        //
-    }
+        $meter = new Meters();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\meter_customer  $meter_customer
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, meter_customer $meter_customer)
-    {
-        //
-    }
+        $meter->meter_id = request('meter_id');
+        $meter->creation_timestamp = strtotime(request('creation_timestamp'));
+        $meter->save();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\meter_customer  $meter_customer
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(meter_customer $meter_customer)
-    {
-        //
+        if (!$meter->save()) {
+            return response()->json(['success' => false, 'errors' => 'Data has not been added to database.'], 400);
+        } else {
+            return response()->json(['success' => true, 'message' => 'Data added to database.'], 200);
+        }
     }
 }
