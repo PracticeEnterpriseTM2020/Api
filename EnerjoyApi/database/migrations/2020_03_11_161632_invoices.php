@@ -18,6 +18,8 @@ class Invoices extends Migration
             $table->unsignedBigInteger('customerId')->nullable(false);
             $table->double('price')->nullable(false);
             $table->integer('date')->nullable(false);
+            $table->smallInteger('paid')->unsigned()->default(0);
+            $table->smallInteger('active')->unsigned()->default(1);
         });
     }
 

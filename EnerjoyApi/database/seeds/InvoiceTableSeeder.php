@@ -18,7 +18,8 @@ class InvoiceTableSeeder extends Seeder
             DB::table('invoices')->insert([
                 'customerId' => $faker->numberBetween(1,10),
                 'price' => $faker->numberBetween(1000,10000),
-                'date' => $faker->unixTime
+                'date' => $faker->unixTime,
+                'paid' => $faker->numberBetween(0,1)
             ]);
         } 
     }

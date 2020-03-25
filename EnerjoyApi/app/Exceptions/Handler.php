@@ -57,7 +57,10 @@ class Handler extends ExceptionHandler
        //     return response(['message'=>'failed to query database'],404);
        //}
        if ((Request::isMethod('post') && $exception instanceof MethodNotAllowedHttpException) || (Request::isMethod('post') && $exception instanceof NotFoundHttpException)) {
-        return response()->json(['message' => 'Page Not Found'], 500);
+        return response()->json(['message' => 'Page Not Found'], 404);
+    }
+    if($exception instanceof ModelNotFoundException){
+        return response()->json([['message'=> $exception->getMessage()]],404);
     }
         return parent::render($request, $exception);
     }

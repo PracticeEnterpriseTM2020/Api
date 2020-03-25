@@ -38,10 +38,7 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
-        $customer = customer::where('email',$request['email'])->where('active',0)->where('password',$request['password'])->first();
-        if(!$customer){
-            return response()->json(['delete'=>false,'message'=>'customer could not be found'],404);
-        }
+        $customer = customer::where('email',$request['email'])->where('active',0)->where('password',$request['password'])->firstOrFail();
         $customer->active = 1;
         $customer->save();
         return response()->json(['success' => true, 'message' => "customer has been activated"]);
@@ -120,12 +117,7 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
-        if(customer::where('email',$email)->exists()){
-            return  new customerResource(customer::where('email',$email)->with('address.city','address.city.country')->first());
-        }
-        else{
-            return response()->json(['success' => false, 'message' => 'customer does not exist'], 404);
-        }
+            return  new customerResource(customer::where('email',$email)->with('address.city','address.city.country')->FirstOrFail());
     }
     //#################################################################
     public function Verify(Request $request)
@@ -161,7 +153,6 @@ class customerController extends Controller
             Rule::unique('customers','email')->ignore($request['email'],'email')],
             "first"=> 'required|alpha',
             "last"=> 'required|alpha',
-            "password"=> 'required|max:255',
             "street"=> 'required|max:70|string',
             "number"=> 'required|max:7|alpha_num',
             "city"=> 'required|string|max:30',
@@ -181,11 +172,11 @@ class customerController extends Controller
         }
         $customer = customer::where('email',$request['email'])->where('active',1)->firstOrFail();
         $address = address::where('id',$customer->addressId)->firstOrFail();
-        $city = city::where('id',$address->cityId)->firstOrFail();
         $country = country::where('abv',strtoupper($request["countrycode"]))->firstOrFail();
-        $city->update(['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode'],'countryId'=>$country->id]);
-        $address->update(['street'=>strtolower($request['street']),'number'=>$request['number']]);
-        $customer->update(['firstname'=>$request['first'],'lastname'=>$request['last'],'email'=>$request['newEmail'],'password'=>$request['password']]);
+        $city = city::firstOrCreate(['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode']],['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode'],'countryId'=>$country->id]);
+        $address->update(['street'=>strtolower($request['street']),'number'=>$request['number'],'cityId'=>$city->id]);
+        $customer->update(['firstname'=>$request['first'],'lastname'=>$request['last'],'email'=>$request['newEmail']]);
+        return response()->json(['success' => true, 'message' => "customer has been updated"]);
     }
 
     /**
@@ -204,10 +195,7 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
-        $customer = customer::where('email',$request['email'])->where('active',1)->first();
-        if(!$customer){
-            return response()->json(['delete'=>false,'message'=>'customer could not be found'],404);
-        }
+        $customer = customer::where('email',$request['email'])->where('active',1)->FirstOrFail();
         $customer->active = 0;
         if(!$customer->save()){
             return response()->json(['delete'=>false,'message'=>'customer could not be deleted'],422);
