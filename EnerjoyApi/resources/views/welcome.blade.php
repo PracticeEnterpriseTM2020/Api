@@ -81,7 +81,9 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Enerjoy
+
+                    Laravel
+
                 </div>
 
                 <div class="links">

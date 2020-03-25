@@ -1,12 +1,15 @@
 <?php
-
+use \Sirprize\PostalCodeValidator\Validator;
 namespace App\Http\Controllers;
 use Validator;
 use App\address;
+use App\city;
+use App\country;
 use App\customer;
 use App\Http\Resources\customer as customerResource;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class customerController extends Controller
 {
@@ -27,9 +30,79 @@ class customerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function activate(Request $request){
+        $validator = Validator::make($request->all(),[
+            "email"=> 'required|email',
+            "password"=> 'required|max:255',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+        }
+        $customer = customer::where('email',$request['email'])->where('active',0)->where('password',$request['password'])->first();
+        if(!$customer){
+            return response()->json(['delete'=>false,'message'=>'customer could not be found'],404);
+        }
+        $customer->active = 1;
+        $customer->save();
+        return response()->json(['success' => true, 'message' => "customer has been activated"]);
+    }
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            "email"=> 'required|email|unique:customers,email',
+            "first"=> 'required|alpha',
+            "last"=> 'required|alpha',
+            "password"=> 'required|max:255',
+            "street"=> 'required|max:70|string',
+            "number"=> 'required|max:7|alpha_num',
+            "city"=> 'required|string|max:30',
+            "postalcode"=> 'required|max:15|alpha_dash',
+            "countrycode"=>'required|max:2|alpha'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+        }
+        $Vpostal = new \Sirprize\PostalCodeValidator\Validator();
+        if(!$Vpostal->hasCountry($request['countrycode'])){
+            return response()->json(['success' => false, 'message' => "Countrycode does not exist"], 400);
+        }
+        $check=$Vpostal->isvalid($request['countrycode'],$request["postalcode"]);
+        if(!$check){
+            return response()->json(['success' => false, 'message' => "Postalcode does not exist"], 400);
+        }
+        $country=country::where('abv',strtoupper($request["countrycode"]))->firstOrFail();
+        if(address::leftJoin('city','addresses.cityId','=','city.id')
+        ->where('street',$request["street"])
+        ->where('number',$request['number'])
+        ->where('city.name',$request['city'])
+        ->where('city.postalcode',$request['postalcode'])
+        ->where('city.countryId',$country->id)->exists()){
+            return response()->json(['success' => false, 'message' => "Address already in use"], 400);
+        }
+        $city = city::firstOrCreate(
+        [
+            'name'=>strtolower($request['city']),
+            'postalcode'=>$request['postalcode']
+        ],
+        [
+            'countryId'=>$country->id,
+            'name'=>strtolower($request['city']),
+            'postalcode'=>$request['postalcode']
+        ]);
+        $addr = address::create(
+        [
+            'street'=>strtolower($request['street']),
+            'number'=>$request['number'],
+            'cityId'=>$city->id
+        ]);
+        $cust = customer::create([
+            'lastname'=>$request['last'],
+            'firstname'=>$request['first'],
+            'email'=>$request['email'],
+            'password'=>$request['password'],
+            'addressId'=>$addr->id
+        ]);
+        return response()->json(['success' => true, 'message' => "Successfully created customer"]);
     }
 
     /**
@@ -45,9 +118,14 @@ class customerController extends Controller
             'email' => 'required|email'
         ]);     
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
-        return  new customerResource(customer::where('email',$email)->with('address.city','address.city.country')->first());
+        if(customer::where('email',$email)->exists()){
+            return  new customerResource(customer::where('email',$email)->with('address.city','address.city.country')->first());
+        }
+        else{
+            return response()->json(['success' => false, 'message' => 'customer does not exist'], 404);
+        }
     }
     //#################################################################
     public function Verify(Request $request)
@@ -58,9 +136,9 @@ class customerController extends Controller
         ]);
       
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
-        if(customer::where('email',$request["email"])->where('password',$request['password'])->exists()){
+        if(customer::where('email',$request["email"])->where('password',$request['password'])->where('active',1)->exists()){
             return response()->json(['login'=>true,'message'=>'customer password and email match']);
         }
         else{
@@ -75,9 +153,39 @@ class customerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            "email"=> 'required|email',
+            "newEmail"=>['required','email',
+            Rule::unique('customers','email')->ignore($request['email'],'email')],
+            "first"=> 'required|alpha',
+            "last"=> 'required|alpha',
+            "password"=> 'required|max:255',
+            "street"=> 'required|max:70|string',
+            "number"=> 'required|max:7|alpha_num',
+            "city"=> 'required|string|max:30',
+            "postalcode"=> 'required|max:15|alpha_dash',
+            "countrycode"=>'required|max:2|alpha'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+        }
+        $Vpostal = new \Sirprize\PostalCodeValidator\Validator();
+        if(!$Vpostal->hasCountry(strtoupper($request['countrycode']))){
+            return response()->json(['success' => false, 'message' => "Countrycode does not exist"], 400);
+        }
+        $check=$Vpostal->isvalid($request['countrycode'],$request["postalcode"]);
+        if(!$check){
+            return response()->json(['success' => false, 'message' => "Postalcode does not exist"], 400);
+        }
+        $customer = customer::where('email',$request['email'])->where('active',1)->firstOrFail();
+        $address = address::where('id',$customer->addressId)->firstOrFail();
+        $city = city::where('id',$address->cityId)->firstOrFail();
+        $country = country::where('abv',strtoupper($request["countrycode"]))->firstOrFail();
+        $city->update(['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode'],'countryId'=>$country->id]);
+        $address->update(['street'=>strtolower($request['street']),'number'=>$request['number']]);
+        $customer->update(['firstname'=>$request['first'],'lastname'=>$request['last'],'email'=>$request['newEmail'],'password'=>$request['password']]);
     }
 
     /**
@@ -94,9 +202,9 @@ class customerController extends Controller
         ]);
       
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
-        $customer = customer::where('email',$request['email'])->first();
+        $customer = customer::where('email',$request['email'])->where('active',1)->first();
         if(!$customer){
             return response()->json(['delete'=>false,'message'=>'customer could not be found'],404);
         }

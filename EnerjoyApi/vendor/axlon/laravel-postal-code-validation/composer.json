@@ -1,0 +1,63 @@
+{
+    "name": "axlon/laravel-postal-code-validation",
+    "description": "Worldwide postal code validation for Laravel",
+    "keywords": [
+        "laravel",
+        "lumen",
+        "post code",
+        "postal code",
+        "zip code",
+        "validation"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Choraimy Kroonstuiver",
+            "homepage": "https://github.com/axlon"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "illuminate/contracts": "^5.1 || ^6.0 || ^7.0",
+        "illuminate/http": "^5.1 || ^6.0 || ^7.0",
+        "illuminate/support": "^5.1 || ^6.0 || ^7.0",
+        "illuminate/validation": "^5.1 || ^6.0 || ^7.0"
+    },
+    "require-dev": {
+        "guzzlehttp/guzzle": "^6.3",
+        "illuminate/filesystem": "^5.1 || ^6.0 || ^7.0",
+        "illuminate/translation": "^5.1 || ^6.0 || ^7.0",
+        "ocramius/package-versions": "^1.4",
+        "phpunit/phpunit": "^7.0",
+        "symfony/var-exporter": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Axlon\\PostalCodeValidation\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Axlon\\PostalCodeValidation\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "build": "./bin/generate-formats",
+        "test": "./vendor/bin/phpunit --colors=always"
+    },
+    "scripts-descriptions": {
+        "build": "Generate a new postal code formats file.",
+        "test": "Run all tests."
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "\\Axlon\\PostalCodeValidation\\ValidationServiceProvider"
+            ]
+        }
+    }
+}
