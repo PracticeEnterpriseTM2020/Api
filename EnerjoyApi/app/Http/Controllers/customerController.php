@@ -10,7 +10,6 @@ use App\Http\Resources\customer as customerResource;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-
 class customerController extends Controller
 {
     /**
@@ -96,8 +95,9 @@ class customerController extends Controller
             'lastname'=>$request['last'],
             'firstname'=>$request['first'],
             'email'=>$request['email'],
-            'password'=>$request['password'],
-            'addressId'=>$addr->id
+            'password'=>Hash('sha256',$request['password']),
+            'addressId'=>$addr->id,
+
         ]);
         return response()->json(['success' => true, 'message' => "Successfully created customer"]);
     }
@@ -120,7 +120,7 @@ class customerController extends Controller
             return  new customerResource(customer::where('email',$email)->with('address.city','address.city.country')->FirstOrFail());
     }
     //#################################################################
-    public function Verify(Request $request)
+    /*public function Verify(Request $request)
     {
         $validator = Validator::make($request->all(),[
             "email"=> 'required|email',
@@ -131,12 +131,16 @@ class customerController extends Controller
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
         if(customer::where('email',$request["email"])->where('password',$request['password'])->where('active',1)->exists()){
-            return response()->json(['login'=>true,'message'=>'customer password and email match']);
+            $cust=customer::where('email',$request["email"])->where('password',$request['password'])->FirstOrFail();
+            $token=Str::random(80);
+            $cust->api_token = hash('sha256',$token);
+            $cust->save();
+            return response()->json(['login'=>true,'token'=>$token]);
         }
         else{
             return response()->json(['login'=>false,'message'=>'customer password and email do not match']);
         }
-    }
+    }*/
 
     /**
      * Update the specified resource in storage.
