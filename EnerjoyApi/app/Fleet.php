@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Fleet extends Model
 {
-    protected $fillable = ['brand', 'model', 'licenseplate', 'owner_id'];
+    protected $fillable = ['brand', 'model', 'licenseplate'];
     protected $with = ['employee'];
-    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
+    protected $hidden = ['created_at', 'updated_at', 'deleted_at', 'owner_id'];
 
     use SoftDeletes;
 
