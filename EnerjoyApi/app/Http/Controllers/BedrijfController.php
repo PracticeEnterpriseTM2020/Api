@@ -228,9 +228,6 @@ class BedrijfController extends Controller
         if ($land != '')
         {
             $landId = \DB::table('country')->where("name",$land)->value('id');
-                      
-            
-            //de stad opvragen en uitzoeken welke id deze heeft
             $stad = request('city');
             if ($stad != '')
             {
