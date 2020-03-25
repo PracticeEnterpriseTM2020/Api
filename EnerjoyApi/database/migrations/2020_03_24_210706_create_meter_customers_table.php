@@ -15,7 +15,7 @@ class CreateMeterCustomersTable extends Migration
     {
         Schema::create('meter_customers', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->unsignedBigInteger('customer_id');
+            $table->string('customer_email')->unique()->nullable(false);
             $table->unsignedBigInteger('meter_id')->unique();
         });
     }

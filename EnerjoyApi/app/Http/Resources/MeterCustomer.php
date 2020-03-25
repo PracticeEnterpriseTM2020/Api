@@ -16,8 +16,8 @@ class MeterCustomer extends JsonResource
     {
         return [
             'id' => $this->id,
-            'meter_id' => $this->meter_id,
-            'creation_timestamp' => $this->customer_id
+            'customer_email' => $this->meter_email,
+            'meter_id' => $this->meter_id
         ];
     }
 }
