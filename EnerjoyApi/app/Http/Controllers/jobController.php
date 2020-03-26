@@ -30,7 +30,7 @@ class jobController extends Controller
         $validator = Validator::make($request->all(), [
             "job_title" => "required|string|unique:jobs,job_title"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         $job = Job::create($request->all());
         return response()->json($job, 201);
@@ -54,7 +54,7 @@ class jobController extends Controller
         $validator = Validator::make($request->all(), [
             "job_title" => "required|string|unique:jobs,job_title"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         $job->update($request->all());
         return response()->json($job, 200);
@@ -69,7 +69,7 @@ class jobController extends Controller
             "key" => Rule::in($cols),
             "amount" => "integer|gt:0"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         $sort = $request->input("sort", "id");
         $order = $request->input("order", "asc");

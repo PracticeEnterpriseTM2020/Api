@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Log;
 
 class employeeController extends Controller
 {
@@ -48,7 +49,7 @@ class employeeController extends Controller
             "country_id" => "required|integer|exists:countries,id",
             "job_id" => "required|integer|exists:jobs,id"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         $city = city::firstOrCreate(["name" => $request->city, "postalcode" => $request->postalcode, "country_id" => $request->country_id]);
         $addr = address::firstOrCreate(["street" => $request->street, "number" => $request->number, "city_id" => $city->id]);
@@ -88,7 +89,7 @@ class employeeController extends Controller
             "country_id" => "required|integer|exists:countries,id",
             "job_id" => "required|integer|exists:jobs,id"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         $city = city::firstOrCreate(["name" => $request->city, "postalcode" => $request->postalcode, "country_id" => $request->country_id]);
         $addr = address::firstOrCreate(["street" => $request->street, "number" => $request->number, "city_id" => $city->id]);
@@ -108,17 +109,19 @@ class employeeController extends Controller
             "order" => Rule::in(["asc", "desc"]),
             "amount" => "integer|gt:0"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         $sort = $request->input("sort", "id");
         $order = $request->input("order", "asc");
         $search = $request->input("search", "");
         $amount = $request->input("amount", 5);
 
-        return Employee::where("first_name", "like", "%$search%")
+        $response = Employee::where("first_name", "like", "%$search%")
             ->orWhere("last_name", "like", "%$search%")
             ->orderBy($sort, $order)
             ->paginate($amount);
+
+        return collect(["sort" => $sort, "order" => $order, "search" => $search])->merge($response);
     }
 
     public function login(Request $request)
@@ -128,7 +131,7 @@ class employeeController extends Controller
             "password" => "required"
         ]);
 
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         if (!$token = Auth::attempt($request->only(["email", "password"]))) throw new AuthenticationException("Email and password do not match.");
 

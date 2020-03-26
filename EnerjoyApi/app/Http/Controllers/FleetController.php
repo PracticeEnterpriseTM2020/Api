@@ -38,7 +38,7 @@ class FleetController extends Controller
             "licenseplate" => "required|string|unique:fleets,licenseplate",
             "owner_id" => "nullable|exists:employees,id"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         $fleet = Fleet::create($request->all());
         return response()->json($fleet, 201);
@@ -65,7 +65,7 @@ class FleetController extends Controller
             "licenseplate" => "required|string|unique:fleets,licenseplate",
             "owner_id" => "nullable|exists:employees,id"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         $fleet->update($request->all());
         return response()->json($fleet, 200);
@@ -80,7 +80,7 @@ class FleetController extends Controller
             "key" => Rule::in($cols),
             "amount" => "integer|gt:0"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         $sort = $request->input("sort", "id");
         $order = $request->input("order", "asc");

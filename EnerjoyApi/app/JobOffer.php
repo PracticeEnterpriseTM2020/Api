@@ -9,7 +9,7 @@ class JobOffer extends Model
 {
     protected $fillable = ['job_offer_title', 'job_offer_description', 'job_id', 'creator_id'];
     protected $with = ['creator', 'job'];
-    protected $hidden = ['created_at', 'updated_at', 'deleted_at', 'job_id', 'creator_id'];
+    protected $hidden = ['updated_at', 'deleted_at', 'job_id', 'creator_id'];
 
     use SoftDeletes;
 

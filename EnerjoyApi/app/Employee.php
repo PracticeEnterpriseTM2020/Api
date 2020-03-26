@@ -15,7 +15,7 @@ class Employee extends User implements JWTSubject
 
     protected $table = "employees";
     protected $fillable = ["first_name", "last_name", "email", "password", "salary", "phone", "ssn", "birthdate", "address_id", "job_id"];
-    protected $hidden = ['created_at', 'updated_at', 'password', 'deleted_at', 'address_id', 'job_id'];
+    protected $hidden = ['updated_at', 'password', 'deleted_at', 'address_id', 'job_id'];
     protected $dates = ["deleted_at"];
     protected $with = ["address", "job"];
 

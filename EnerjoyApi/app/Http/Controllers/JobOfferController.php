@@ -34,7 +34,7 @@ class JobOfferController extends Controller
             "job_id" => "required|exists:jobs,id",
             "creator_id" => "required|exists:employees,id"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         $job_offer = JobOffer::create($request->all())->load(["creator", "job"]);
         return response()->json($job_offer, 201);
@@ -61,7 +61,7 @@ class JobOfferController extends Controller
             "job_id" => "required|exists:jobs,id",
             "creator_id" => "required|exists:employees,id"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         $job_offer->update($request->all());
         return response()->json($job_offer, 200);
@@ -76,7 +76,7 @@ class JobOfferController extends Controller
             "key" => Rule::in($cols),
             "amount" => "integer|gt:0"
         ]);
-        if ($validator->fails()) return response()->json(["errors" => $validator->messages()], 400);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
         $sort = $request->input("sort", "id");
         $order = $request->input("order", "asc");
