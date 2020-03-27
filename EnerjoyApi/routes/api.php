@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\employeeController;
 use Illuminate\Http\Request;
 
 /*
@@ -41,6 +42,23 @@ Route::get('meters/search', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
 Route::post('meters/edit', 'MetersController@edit');
 Route::get('meters/delete','MetersController@softdelete');
+
+//Employees
+Route::get('employees','employeeController@filter');
+Route::get('employees/{employee}','employeeController@show_by_id');
+Route::post('employees','employeeController@store');
+Route::delete('employees/{employee}','employeeController@destroy');
+Route::put('employees/{employee}/restore','employeeController@restore');
+Route::put('employees/{employee}','employeeController@update');
+
+//Jobs
+Route::get('jobs','jobController@filter');
+Route::get('jobs/{job}','jobController@show_by_id');
+Route::post('jobs','jobController@store');
+Route::delete('jobs/{job}','jobController@destroy');
+Route::put('jobs/{job}/restore','jobController@restore');
+Route::put('jobs/{job}','jobController@update');
+
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

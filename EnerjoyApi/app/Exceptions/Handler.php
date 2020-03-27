@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -52,7 +53,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-
        //if ($exception instanceof \Illuminate\Database\QueryException) {
        //     return response(['message'=>'failed to query database'],404);
        //}
