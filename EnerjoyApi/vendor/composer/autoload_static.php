@@ -67,6 +67,7 @@ class ComposerStaticInit19cc748df6f4203483a14ab92e4e5bf1
             'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
+            'Sirprize\\PostalCodeValidator\\' => 29,
         ),
         'R' => 
         array (
@@ -136,6 +137,7 @@ class ComposerStaticInit19cc748df6f4203483a14ab92e4e5bf1
         ),
         'A' => 
         array (
+            'Axlon\\PostalCodeValidation\\' => 27,
             'App\\' => 4,
         ),
     );
@@ -255,6 +257,10 @@ class ComposerStaticInit19cc748df6f4203483a14ab92e4e5bf1
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
         ),
+        'Sirprize\\PostalCodeValidator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sirprize/postal-code-validator/src',
+        ),
         'Ramsey\\Uuid\\' => 
         array (
             0 => __DIR__ . '/..' . '/ramsey/uuid/src',
@@ -363,6 +369,10 @@ class ComposerStaticInit19cc748df6f4203483a14ab92e4e5bf1
         array (
             0 => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src',
         ),
+        'Axlon\\PostalCodeValidation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/axlon/laravel-postal-code-validation/src',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
@@ -416,6 +426,7 @@ class ComposerStaticInit19cc748df6f4203483a14ab92e4e5bf1
         'App\\Http\\Resources\\city' => __DIR__ . '/../..' . '/app/Http/Resources/city.php',
         'App\\Http\\Resources\\customer' => __DIR__ . '/../..' . '/app/Http/Resources/customer.php',
         'App\\Job' => __DIR__ . '/../..' . '/app/Job.php',
+        'App\\Http\\Resources\\invoice' => __DIR__ . '/../..' . '/app/Http/Resources/invoice.php',
         'App\\Meters' => __DIR__ . '/../..' . '/app/Meters.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
@@ -428,6 +439,12 @@ class ComposerStaticInit19cc748df6f4203483a14ab92e4e5bf1
         'App\\country' => __DIR__ . '/../..' . '/app/country.php',
         'App\\customer' => __DIR__ . '/../..' . '/app/customer.php',
         'App\\invoice' => __DIR__ . '/../..' . '/app/invoice.php',
+        'App\\meter_customer' => __DIR__ . '/../..' . '/app/meter_customer.php',
+        'Axlon\\PostalCodeValidation\\Extensions\\PostalCode' => __DIR__ . '/..' . '/axlon/laravel-postal-code-validation/src/Extensions/PostalCode.php',
+        'Axlon\\PostalCodeValidation\\Extensions\\PostalCodeFor' => __DIR__ . '/..' . '/axlon/laravel-postal-code-validation/src/Extensions/PostalCodeFor.php',
+        'Axlon\\PostalCodeValidation\\Rules\\PostalCode' => __DIR__ . '/..' . '/axlon/laravel-postal-code-validation/src/Rules/PostalCode.php',
+        'Axlon\\PostalCodeValidation\\ValidationServiceProvider' => __DIR__ . '/..' . '/axlon/laravel-postal-code-validation/src/ValidationServiceProvider.php',
+        'Axlon\\PostalCodeValidation\\Validator' => __DIR__ . '/..' . '/axlon/laravel-postal-code-validation/src/Validator.php',
         'BeyondCode\\DumpServer\\DumpServerCommand' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/DumpServerCommand.php',
         'BeyondCode\\DumpServer\\DumpServerServiceProvider' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/DumpServerServiceProvider.php',
         'BeyondCode\\DumpServer\\Dumper' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/Dumper.php',
@@ -470,7 +487,6 @@ class ComposerStaticInit19cc748df6f4203483a14ab92e4e5bf1
         'Carbon\\Traits\\Week' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Week.php',
         'Carbon\\Translator' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Translator.php',
         'CitiesTableSeeder' => __DIR__ . '/../..' . '/database/seeds/CitiesTableSeeder.php',
-        'CountriesTableSeeder' => __DIR__ . '/../..' . '/database/seeds/CountriesTableSeeder.php',
         'Cron\\AbstractField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/AbstractField.php',
         'Cron\\CronExpression' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/CronExpression.php',
         'Cron\\DayOfMonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/DayOfMonthField.php',
@@ -1952,6 +1968,7 @@ class ComposerStaticInit19cc748df6f4203483a14ab92e4e5bf1
         'Illuminate\\View\\ViewFinderInterface' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/ViewFinderInterface.php',
         'Illuminate\\View\\ViewName' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/ViewName.php',
         'Illuminate\\View\\ViewServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/ViewServiceProvider.php',
+        'InvoiceTableSeeder' => __DIR__ . '/../..' . '/database/seeds/InvoiceTableSeeder.php',
         'JakubOnderka\\PhpConsoleColor\\ConsoleColor' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/ConsoleColor.php',
         'JakubOnderka\\PhpConsoleColor\\InvalidStyleException' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/InvalidStyleException.php',
         'JakubOnderka\\PhpConsoleHighlighter\\Highlighter' => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src/Highlighter.php',
@@ -2011,6 +2028,7 @@ class ComposerStaticInit19cc748df6f4203483a14ab92e4e5bf1
         'League\\Flysystem\\Util\\ContentListingFormatter' => __DIR__ . '/..' . '/league/flysystem/src/Util/ContentListingFormatter.php',
         'League\\Flysystem\\Util\\MimeType' => __DIR__ . '/..' . '/league/flysystem/src/Util/MimeType.php',
         'League\\Flysystem\\Util\\StreamHasher' => __DIR__ . '/..' . '/league/flysystem/src/Util/StreamHasher.php',
+        'MeterTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MeterTableSeeder.php',
         'Mockery' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'Mockery\\Adapter\\Phpunit\\Legacy\\TestListenerForV5' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/Legacy/TestListenerForV5.php',
         'Mockery\\Adapter\\Phpunit\\Legacy\\TestListenerForV6' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/Legacy/TestListenerForV6.php',
@@ -3280,6 +3298,8 @@ class ComposerStaticInit19cc748df6f4203483a14ab92e4e5bf1
         'SebastianBergmann\\Timer\\RuntimeException' => __DIR__ . '/..' . '/phpunit/php-timer/src/RuntimeException.php',
         'SebastianBergmann\\Timer\\Timer' => __DIR__ . '/..' . '/phpunit/php-timer/src/Timer.php',
         'SebastianBergmann\\Version' => __DIR__ . '/..' . '/sebastian/version/src/Version.php',
+        'Sirprize\\PostalCodeValidator\\ValidationException' => __DIR__ . '/..' . '/sirprize/postal-code-validator/src/ValidationException.php',
+        'Sirprize\\PostalCodeValidator\\Validator' => __DIR__ . '/..' . '/sirprize/postal-code-validator/src/Validator.php',
         'Symfony\\Component\\Console\\Application' => __DIR__ . '/..' . '/symfony/console/Application.php',
         'Symfony\\Component\\Console\\CommandLoader\\CommandLoaderInterface' => __DIR__ . '/..' . '/symfony/console/CommandLoader/CommandLoaderInterface.php',
         'Symfony\\Component\\Console\\CommandLoader\\ContainerCommandLoader' => __DIR__ . '/..' . '/symfony/console/CommandLoader/ContainerCommandLoader.php',
