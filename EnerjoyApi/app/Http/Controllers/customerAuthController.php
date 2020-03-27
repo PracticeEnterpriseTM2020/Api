@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Validator;
 use App\customer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,7 +28,7 @@ class customerAuthController extends Controller
             if(password_verify($request['password'],$cust->password)){
                 $postArray = ['api_token' => $this->apiToken];
                 $cust->api_token = $this->apiToken;
-                $cust->save;
+                $cust->save();
                 return response()->json(['success'=>true,'message'=>[
                     'firstname' => $cust->firstname,
                     'lastname' => $cust->lastname,
@@ -41,13 +41,20 @@ class customerAuthController extends Controller
                 return response()->json(['success'=>false,'message'=>'password email combination not found'],401);
             }
         }
+        else{
+            return response()->json(['success'=>false,'message'=>'password email combination not found'],401);
+        }
     }
-    public function logout($request){
-        $token = $request->header('authorization');
+    public function logout(Request $request){
+        $token = $request->header('Authorization');
         $customer = customer::where('api_token',$token)->first();
         if($customer){
             $customer->api_token = null;
+            $customer->save();
             return response()->json(['success'=>true,'message'=>'user logged out']);
+        }
+        else{
+            return response()->json(['success'=>false,'message'=>'user is not logged in'],401);
         }
     }
 }

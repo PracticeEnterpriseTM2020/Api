@@ -16,14 +16,16 @@ use Illuminate\Http\Request;
 
 //Customers
 
-Route::post('customers/delete', 'customerController@destroy');
 Route::post('customers/new', 'customerController@store');
-Route::post('customers/login', 'customerController@verify');
-Route::post('customers/change', 'customerController@update');
+Route::post('customers/login', 'customerAuthController@Login');
 Route::post('customers/activate', 'customerController@activate');
-Route::get('customers/{email}', 'customerController@show');
 Route::get('customers', 'customerController@index');
-
+Route::middleware('APIToken')->group(function () {
+    Route::post('customers/logout','customerAuthController@logout');
+    Route::get('customers/{email}', 'customerController@show');
+    Route::post('customers/change', 'customerController@update');
+    Route::post('customers/delete', 'customerController@destroy');
+  });
 
 //Invoices
 Route::get('invoices', 'invoiceController@filter');

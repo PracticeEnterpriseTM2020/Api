@@ -95,7 +95,7 @@ class customerController extends Controller
             'lastname'=>$request['last'],
             'firstname'=>$request['first'],
             'email'=>$request['email'],
-            'password'=>Hash('sha256',$request['password']),
+            'password'=>password_hash($request['password'], PASSWORD_BCRYPT),
             'addressId'=>$addr->id,
 
         ]);
@@ -201,6 +201,7 @@ class customerController extends Controller
         }
         $customer = customer::where('email',$request['email'])->where('active',1)->FirstOrFail();
         $customer->active = 0;
+        $customer->api_token = null;
         if(!$customer->save()){
             return response()->json(['delete'=>false,'message'=>'customer could not be deleted'],422);
         }

@@ -20,7 +20,7 @@ class CreateCustomersTable extends Migration
             $table->string('password')->nullable(false);
             $table->smallInteger('active')->unsigned()->default(1);
             $table->unsignedBigInteger('addressId')->nullable(false);
-            $table->string('api_token',80)->unique()->nullable();
+            $table->string('api_token',100)->unique()->nullable();
         });
     }
 
