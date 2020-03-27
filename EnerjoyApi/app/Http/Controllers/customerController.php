@@ -202,10 +202,10 @@ class customerController extends Controller
         $customer = customer::where('email',$request['email'])->where('active',1)->FirstOrFail();
         $customer->active = 0;
         if(!$customer->save()){
-            return response()->json(['delete'=>false,'message'=>'customer could not be deleted'],422);
+            return response()->json(['delete'=>false,'message'=>'customer could not be deleted']);
         }
         else{
-            return response()->json(['delete'=>true,'message'=>'customer has been deleted']);
+            return response()->json(['delete'=>true,'message'=>'customer has been deleted'],422);
         }
     }
 }
