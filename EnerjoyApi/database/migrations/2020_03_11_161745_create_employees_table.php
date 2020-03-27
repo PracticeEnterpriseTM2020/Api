@@ -24,6 +24,7 @@ class CreateEmployeesTable extends Migration
             $table->integer("job_id");
             $table->softDeletes();
             $table->timeStamps();
+            $table->string('api_token',100)->unique()->nullable();
         });
     }
 
