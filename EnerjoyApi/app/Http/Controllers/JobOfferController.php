@@ -84,8 +84,10 @@ class JobOfferController extends Controller
         $search = $request->input("search", "");
         $amount = $request->input("amount", 5);
 
-        return JobOffer::where($key, "like", "%$search%")
+        $response = JobOffer::where($key, "like", "%$search%")
             ->orderBy($sort, $order)
             ->paginate($amount);
+
+        return collect(["sort" => $sort, "order" => $order, "search" => $search, "key" => $key])->merge($response);
     }
 }

@@ -81,6 +81,13 @@ Route::prefix("fleet")->group(function () {
     });
 });
 
+//Countries
+Route::prefix("countries")->group(function () {
+    Route::middleware("auth")->group(function () {
+        Route::get("/", "CountryController@filter");
+    });
+});
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });

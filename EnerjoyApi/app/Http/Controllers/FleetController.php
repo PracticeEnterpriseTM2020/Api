@@ -88,8 +88,10 @@ class FleetController extends Controller
         $search = $request->input("search", "");
         $amount = $request->input("amount", 5);
 
-        return Fleet::where($key, "like", "%$search%")
+        $response =  Fleet::where($key, "like", "%$search%")
             ->orderBy($sort, $order)
             ->paginate($amount);
+
+        return collect(["sort" => $sort, "order" => $order, "search" => $search, "key" => $key])->merge($response);
     }
 }

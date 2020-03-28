@@ -145,6 +145,8 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'ssn' => 'social security number',
+    ],
 
 ];

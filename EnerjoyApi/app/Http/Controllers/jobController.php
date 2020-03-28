@@ -77,8 +77,10 @@ class jobController extends Controller
         $search = $request->input("search", "");
         $amount = $request->input("amount", 5);
 
-        return Job::where("job_title", "like", "%$search%")
+        $response = Job::where("job_title", "like", "%$search%")
             ->orderBy($sort, $order)
             ->paginate($amount);
+
+        return collect(["sort" => $sort, "order" => $order, "search" => $search, "key" => $key])->merge($response);
     }
 }

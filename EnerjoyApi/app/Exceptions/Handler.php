@@ -59,26 +59,26 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($exception instanceof AuthorizationException) {
-            return response()->json(['error' => 'You are not authorized to perform this action.'], 403);
+            return response()->json(['error' => trans('errors.forbidden')], 403);
         }
 
         if ($exception instanceof TokenInvalidException) {
-            return response()->json(['error' => 'This token has been blacklisted.'], 401);
+            return response()->json(['error' => trans('errors.blacklist-token')], 401);
         }
 
         if ($exception instanceof JWTException) {
-            return response()->json(['error' => 'Invalid token'], 401);
+            return response()->json(['error' => trans('errors.ivalid-token')], 401);
         }
 
         if ($exception instanceof ModelNotFoundException) {
             return response()->json([
-                'error' => 'Resource not found.'
+                'error' => trans('errors.not-found')
             ], 404);
         }
 
         if ($exception instanceof QueryException) {
             return response()->json([
-                'error' => 'Internal server error.'
+                'error' => trans('errors.internal')
             ], 500);
         }
 
@@ -90,6 +90,6 @@ class Handler extends ExceptionHandler
 
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        return response()->json(['error' => $exception->getMessage()], 401);
+        return response()->json(['error' => trans('errors.unauthenticated')], 401);
     }
 }
