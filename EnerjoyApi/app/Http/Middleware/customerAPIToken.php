@@ -16,16 +16,12 @@ class customerAPIToken
      */
     public function handle($request, Closure $next)
     {
-        if($request->header('Authorization')){
-            $token = $request->header('Authorization');
-            $cust=customer::where('api_token',$token)->first();
-            if($cust){
-                return $next($request);
-            }
-            else{
-                return response()->json(['success'=>false,'message'=>'user is not logged in'],401); 
-            }
+        if ($request->header('Authorization')) {
+            return $next($request);
+        } 
+        else {
+            return response()->json(['success' => false, 'message' => 'user is not logged in'], 401);
         }
-        return response(['success'=>false,'message'=>'Not a valid request'],401);
+        return response(['success' => false, 'message' => 'Not a valid request'], 401);
     }
 }

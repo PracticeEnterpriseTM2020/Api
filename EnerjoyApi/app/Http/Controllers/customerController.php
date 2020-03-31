@@ -151,10 +151,13 @@ class customerController extends Controller
      */
     public function update(Request $request)
     {
+        if(!customer::where('api_token',$request->header('Authorization'))->exists()){
+            return response()->json(['success' => false, 'message' => 'invalid login'], 401);
+        }
+        $customer=customer::where('api_token',$request->header('Authorization'))->first();
         $validator = Validator::make($request->all(),[
-            "email"=> 'required|email',
             "newEmail"=>['required','email',
-            Rule::unique('customers','email')->ignore($request['email'],'email')],
+            Rule::unique('customers','email')->ignore($customer->email,'email')],
             "first"=> 'required|alpha',
             "last"=> 'required|alpha',
             "street"=> 'required|max:70|string',
@@ -174,7 +177,6 @@ class customerController extends Controller
         if(!$check){
             return response()->json(['success' => false, 'message' => "Postalcode does not exist"], 400);
         }
-        $customer = customer::where('email',$request['email'])->where('active',1)->firstOrFail();
         $address = address::where('id',$customer->addressId)->firstOrFail();
         $country = country::where('abv',strtoupper($request["countrycode"]))->firstOrFail();
         $city = city::firstOrCreate(['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode']],['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode'],'countryId'=>$country->id]);
@@ -192,14 +194,10 @@ class customerController extends Controller
     //#################################################################
     public function destroy(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            "email"=> 'required|email',
-        ]);
-      
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+        if(!customer::where('api_token',$request->header('Authorization'))->exists()){
+            return response()->json(['success' => false, 'message' => 'invalid login'], 401);
         }
-        $customer = customer::where('email',$request['email'])->where('active',1)->FirstOrFail();
+        $customer=customer::where('api_token',$request->header('Authorization'))->first();
         $customer->active = 0;
         $customer->api_token = null;
         if(!$customer->save()){

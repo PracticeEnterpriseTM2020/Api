@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\softDeletes;
+use UserInterface;
 
 class Employee extends Model
 {
@@ -25,5 +26,4 @@ class Employee extends Model
     {
         return $this->belongsTo("App\Job");
     }
-
 }

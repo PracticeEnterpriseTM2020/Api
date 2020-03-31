@@ -1,12 +1,11 @@
 <?php
 
 namespace App;
-
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
+use UserInterface;
 
-class customer extends Model
-{
+class customer extends Model{
     public $timestamps = false;
     protected $fillable = ['firstname', 'lastname', 'email','password','addressId'];
 
