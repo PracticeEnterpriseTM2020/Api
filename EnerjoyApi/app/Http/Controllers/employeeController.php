@@ -23,6 +23,8 @@ class employeeController extends Controller
 
     public function destroy(Request $request, Employee $employee)
     {
+        $employee->api_token = null;
+        $employee->save();
         $employee->delete();
         return response()->json(null,204);
     }
