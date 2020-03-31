@@ -45,13 +45,13 @@ class employeeController extends Controller
         $sort = $request->input("sort","id"); // neem de sort uit de url of zet default als id
         $order = $request->input("order","asc");
         $search = $request->input("search","");
-
+        $amount = $request->input("amount",5);
         try
         {
             return Employee::where("first_name", "like", "%$search%")
                 ->orWhere("last_name", "like", "%$search%")
                 ->orderBy($sort,$order)
-                ->paginate(5);
+                ->paginate($amount);
         }
         catch(QueryException $e)
         {

@@ -42,7 +42,7 @@ Route::post('meters/edit', 'MetersController@edit');
 Route::get('meters/delete','MetersController@softdelete');
 
 //Employees
-Route::get('employees','employeeController@filter');
+Route::get('employees','employeeController@filter')->middleware('cors');
 Route::get('employees/{employee}','employeeController@show_by_id');
 Route::post('employees','employeeController@store');
 Route::delete('employees/{employee}','employeeController@destroy');
