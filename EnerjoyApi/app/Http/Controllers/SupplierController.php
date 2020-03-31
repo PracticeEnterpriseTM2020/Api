@@ -7,7 +7,7 @@ use App\City;
 use App\address;
 use Illuminate\Http\Request;
 
-class BedrijfController extends Controller
+class SupplierController extends Controller
 {
 
     //Met deze functie kan je ofwel zoeken op apparte personen, dit kan op verschillende manieren id, companyname....
@@ -69,14 +69,14 @@ class BedrijfController extends Controller
         $land = request('country');
         if ($land != '')
         {
-            $landId = \DB::table('country')->where("name",$land)->value('id');
+            $landId = \DB::table('countries')->where("name",$land)->value('id');
             if ($landId == '')
             {
                 //Als het land nog niet bestaat wordt het aangemaakt.
                 $Country = new Country();
                 $Country->name = $land;
                 $Country->save();
-                $landId = \DB::table('country')->where("name",$land)->value('id');
+                $landId = \DB::table('countries')->where("name",$land)->value('id');
             }
             
             
@@ -227,7 +227,7 @@ class BedrijfController extends Controller
         $land = request('country');
         if ($land != '')
         {
-            $landId = \DB::table('country')->where("name",$land)->value('id');
+            $landId = \DB::table('countries')->where("name",$land)->value('id');
             $stad = request('city');
             if ($stad != '')
             {
@@ -264,14 +264,14 @@ class BedrijfController extends Controller
         $n_land = request('nieuwcountry');
         if ($n_land != '')
         {
-            $n_landId = \DB::table('country')->where("name",$n_land)->value('id');
+            $n_landId = \DB::table('countries')->where("name",$n_land)->value('id');
             if ($n_landId == '')
             {
                 //Als het land nog niet bestaat wordt het aangemaakt.
                 $Country = new Country();
                 $Country->name = $n_land;
                 $Country->save();
-                $n_landId = \DB::table('country')->where("name",$n_land)->value('id');
+                $n_landId = \DB::table('countries')->where("name",$n_land)->value('id');
             }
         
             //de stad opvragen en uitzoeken welke id deze heeft

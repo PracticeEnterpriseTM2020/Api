@@ -42,7 +42,7 @@ Route::get('meters/delete','MetersController@softdelete');
 
 
 //Leveranciers
-Route::get('/Leverancier/{manier?}/{zoek?}','Supplier@ophalen');
+Route::get('/Leverancier/{manier?}/{zoek?}','SupplierController@ophalen');
 Route::post('/aanmaak','SupplierController@store');
 Route::post('/verwijder','SupplierController@softVerwijder');
 Route::post('/herinstaleer', 'SupplierController@softHerinstaleer');
