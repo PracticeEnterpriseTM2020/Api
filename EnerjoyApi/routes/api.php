@@ -27,11 +27,19 @@ Route::get('customers', 'customerController@index');
 
 
 //Invoices
+/*
 Route::get('invoices', 'invoiceController@filter');
 Route::post('invoices/delete','invoiceController@destroy');
 Route::post('invoices/restore','invoiceController@restore');
 Route::post('invoices/create', 'invoiceController@store');
+*/
 
+Route::prefix('invoices')->group(function () {
+    Route::get('/', 'invoiceController@filter');
+    Route::delete('/','invoiceController@destroy');
+    Route::put('/restore','invoiceController@restore');
+    Route::post('/', 'invoiceController@store');
+});
 
 
 
