@@ -34,6 +34,9 @@ Route::post('meters/create', 'MetersController@store');
 Route::post('meters/edit', 'MetersController@edit');
 Route::get('meters/delete','MetersController@softdelete');
 
+//Meters&customers
+Route::post('meters/connection/create', 'MeterCustomerController@store');
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
