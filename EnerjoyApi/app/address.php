@@ -11,11 +11,6 @@ class address extends Model
     protected $hidden = ["created_at", "updated_at"];
     protected $with = ["city"];
 
-    public function customer()
-    {
-        return $this->hasOne('App\customer');
-    }
-
     public function city()
     {
         return $this->belongsTo('App\city');

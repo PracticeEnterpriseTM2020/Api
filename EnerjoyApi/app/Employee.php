@@ -29,11 +29,6 @@ class Employee extends User implements JWTSubject
         return $this->belongsTo("App\Job");
     }
 
-    function fleet()
-    {
-        return $this->hasMany("App\Fleet");
-    }
-
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);

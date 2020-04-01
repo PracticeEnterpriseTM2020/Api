@@ -11,10 +11,6 @@ class city extends Model
     protected $hidden = ["created_at", "updated_at"];
     protected $with = ["country"];
 
-    public function address()
-    {
-        return $this->hasOne("App\address");
-    }
     public function country()
     {
         return $this->belongsTo("App\country");
