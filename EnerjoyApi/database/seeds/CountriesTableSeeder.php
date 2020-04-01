@@ -13,11 +13,12 @@ class CountriesTableSeeder extends Seeder
      */
     public function run()
     {
-        $faker = Faker::create();
-        foreach (range(1, 10) as $index) {
-            DB::table('countries')->insert([
-                'name' => $faker->country
-            ]);
-        }
+        // $faker = Faker::create();
+        // foreach (range(1, 10) as $index) {
+        //     DB::table('countries')->insert([
+        //         'name' => $faker->country
+        //     ]);
+        // }
+        DB::unprepared(file_get_contents('../Database/countries.sql'));
     }
 }

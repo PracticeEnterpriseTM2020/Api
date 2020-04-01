@@ -77,7 +77,7 @@ class employeeController extends Controller
         $validator = Validator::make($request->all(), [
             "first_name" => "required|string",
             "last_name" => "required|string",
-            "password" => "string|confirmed",
+            "password" => "nullable|string|confirmed",
             "salary" => "required|numeric|gte:0",
             "phone" => "required|string",
             "ssn" => "required|string",
@@ -96,7 +96,7 @@ class employeeController extends Controller
 
         $request->offsetSet("address_id", $addr->id);
         if ($request->password) $employee->update($request->except(["email"]));
-        else $employee->update($request->except(["password"]));
+        else $employee->update($request->except(["email", "password"]));
 
         return response()->json($employee, 200);
     }
