@@ -16,11 +16,6 @@ class JobOfferController extends Controller
         $this->middleware("can:human-resources")->except(["filter", "show"]);
     }
 
-    public function show_all()
-    {
-        return JobOffer::get();
-    }
-
     public function show(JobOffer $job_offer)
     {
         return $job_offer;

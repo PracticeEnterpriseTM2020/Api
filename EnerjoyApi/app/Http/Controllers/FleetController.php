@@ -20,11 +20,6 @@ class FleetController extends Controller
         $this->middleware("can:human-resources");
     }
 
-    public function show_all()
-    {
-        return Fleet::get();
-    }
-
     public function show(Fleet $fleet)
     {
         return $fleet;
