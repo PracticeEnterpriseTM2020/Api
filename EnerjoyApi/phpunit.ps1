@@ -6,4 +6,4 @@ if ($refresh){
 }
 $date = Get-Date -Format "dd-MM-yyyy_HH-mm"
 Write-Host "Starting test on $date"
-./vendor/bin/phpunit --testdox-html "./logs/${date}.html"
+./vendor/bin/phpunit --testdox-html "./logs/${date}.html" --coverage-html reports/
