@@ -6,6 +6,7 @@ use App\address;
 use App\city;
 use App\country;
 use App\customer;
+use App\Employee;
 use App\Http\Resources\customer as customerResource;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -18,9 +19,13 @@ class customerController extends Controller
      * @return \Illuminate\Http\Response
      */
     //#################################################################
-    public function index()
+    public function index(Request $request)
     {
-        return customerResource::collection(customer::all());
+        $token = $request->header('Authorization');
+        if(!employee::where('api_token', $token)->exists()){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
+        return customerResource::collection(customer::paginate(5));
     }
     //#################################################################
     /**
@@ -205,6 +210,34 @@ class customerController extends Controller
         }
         else{
             return response()->json(['delete'=>true,'message'=>'customer has been deleted'],422);
+        }
+    }
+    public function filter(Request $request)
+    {
+        $token = $request->header('Authorization');
+        if(!employee::where('api_token', $token)->exists()){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
+        $validator = Validator::make($request->all(),[
+            "search"=>"string|required",
+            "sort"=>"string|required|in:email,id,firstname,lastname",
+            "order"=>"string|required|in:desc,asc"
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+        }
+            $search=$request['search'];
+            $sort=$request['sort'];
+            $order=$request['order'];
+        try
+        {
+            return customer::where("email", "like", "%$search%")
+                ->orderBy($sort,$order)
+                ->paginate(5);
+        }
+        catch(QueryException $e)
+        {
+            return response()->json(["message"=>"bad request"],400);
         }
     }
 }
