@@ -17,6 +17,7 @@ class CreateMeterCustomersTable extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->string('customer_email')->unique()->nullable(false);
             $table->unsignedBigInteger('meter_id')->unique();
+            $table->timestamps();
         });
     }
 

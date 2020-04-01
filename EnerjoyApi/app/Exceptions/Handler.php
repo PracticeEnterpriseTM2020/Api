@@ -3,16 +3,21 @@
 namespace App\Exceptions;
 
 use Exception;
-
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Request;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use \Illuminate\Database\QueryException;
+use Illuminate\Auth\AuthenticationException;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class Handler extends ExceptionHandler
 {
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -52,16 +57,38 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof AuthorizationException) {
+            return response()->json(['error' => trans('errors.forbidden')], 403);
+        }
 
-       //if ($exception instanceof \Illuminate\Database\QueryException) {
-       //     return response(['message'=>'failed to query database'],404);
-       //}
-       if ((Request::isMethod('post') && $exception instanceof MethodNotAllowedHttpException) || (Request::isMethod('post') && $exception instanceof NotFoundHttpException)) {
-        return response()->json(['message' => 'Page Not Found'], 404);
-    }
-    if($exception instanceof ModelNotFoundException){
-        return response()->json([['message'=> $exception->getMessage()]],404);
-    }
+        if ($exception instanceof TokenInvalidException) {
+            return response()->json(['error' => trans('errors.blacklist-token')], 401);
+        }
+
+        if ($exception instanceof JWTException) {
+            return response()->json(['error' => trans('errors.ivalid-token')], 401);
+        }
+
+        if ($exception instanceof ModelNotFoundException) {
+            return response()->json([
+                'error' => trans('errors.not-found')
+            ], 404);
+        }
+
+        if ($exception instanceof QueryException) {
+            return response()->json([
+                'error' => trans('errors.internal')
+            ], 500);
+        }
+
+        if ((Request::isMethod('post') && $exception instanceof MethodNotAllowedHttpException) || (Request::isMethod('post') && $exception instanceof NotFoundHttpException)) {
+            return response()->json(['message' => 'Page Not Found'], 500);
+        }
         return parent::render($request, $exception);
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        return response()->json(['error' => trans('errors.unauthenticated')], 401);
     }
 }
