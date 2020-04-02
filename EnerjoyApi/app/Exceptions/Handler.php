@@ -3,7 +3,6 @@
 namespace App\Exceptions;
 
 use Exception;
-use Symfony\Component\Process\Exception\InvalidArgumentException;
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -61,9 +60,6 @@ class Handler extends ExceptionHandler
     }
     if($exception instanceof ModelNotFoundException){
         return response()->json([['message'=> $exception->getMessage()]],404);
-    }
-    if($exception instanceof InvalidArgumentException){
-        return response()->json(['message'=> $exception->getMessage()],400);
     }
         return parent::render($request, $exception);
     }

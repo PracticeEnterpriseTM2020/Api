@@ -11,8 +11,13 @@ use App\Http\Resources\customer as customerResource;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Http\Traits\employeeTrait;
+use App\Http\Traits\customerTrait;
+
 class customerController extends Controller
 {
+    use employeeTrait;
+    use customerTrait;
     /**
      * Display a listing of the resource.
      *
@@ -22,7 +27,7 @@ class customerController extends Controller
     public function index(Request $request)
     {
         $token = $request->header('Authorization');
-        if(!employee::where('api_token', $token)->exists()){
+        if(!$this->getEmployee($token)){
             return response()->json(['success'=>false,'message'=>'invalid login']);
         }
         return customerResource::collection(customer::paginate(5));
@@ -114,15 +119,22 @@ class customerController extends Controller
      * @return \Illuminate\Http\Response
      */
     //#################################################################
-    public function show($email)
+    public function show(Request $request)
     {
-        $validator = Validator::make(['email' => $email], [
-            'email' => 'required|email'
-        ]);     
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+        $token = $request->header("Authorization");
+        if($this->isCustomer($token)){
+            return  new customerResource(customer::where('api_token',$token)->with('address.city','address.city.country')->FirstOrFail());
         }
-            return  new customerResource(customer::where('email',$email)->with('address.city','address.city.country')->FirstOrFail());
+        if($this->isEmployee($token)){
+            $validator = Validator::make($request->all(),[
+                "email"=> 'required|email'
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+            }
+            return  new customerResource(customer::where('email',$request['email'])->with('address.city','address.city.country')->FirstOrFail());
+        }
+        return response()->json(['success'=>false,'message'=>'invalid login']);
     }
     //#################################################################
     /*public function Verify(Request $request)
