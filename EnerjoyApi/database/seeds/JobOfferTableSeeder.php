@@ -19,7 +19,8 @@ class JobOfferTableSeeder extends Seeder
                 'job_offer_title' => $faker->jobTitle,
                 'job_offer_description' => $faker->text($maxNbChars = 50),
                 'job_id' => $i,
-                'creator_id' => $i
+                'creator_id' => $i,
+                'created_at' => Date("Y/m/d")
             ]);
         }
     }

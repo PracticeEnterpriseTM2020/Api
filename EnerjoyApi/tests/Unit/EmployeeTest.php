@@ -49,13 +49,13 @@ class EmployeeTest extends TestCase
 
     public function test_login_missing_email()
     {
-        $response = $this->post("$this->base_url/login", []);
+        $response = $this->post("$this->base_url/login", ["email" => "admin@enerjoy.be"]);
         $response->assertStatus(400);
     }
 
     public function test_login_missing_password()
     {
-        $response = $this->post("$this->base_url/login", []);
+        $response = $this->post("$this->base_url/login", ["password" => "secret"]);
         $response->assertStatus(400);
     }
 
