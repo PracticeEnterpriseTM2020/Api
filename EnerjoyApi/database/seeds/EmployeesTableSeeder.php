@@ -41,6 +41,19 @@ class EmployeesTableSeeder extends Seeder
             'job_id' => 2,
             'created_at' => Date("Y/m/d")
         ]);
+        DB::table('employees')->insert([
+            'first_name' => 'user',
+            'last_name' => 'user',
+            'email' => 'user@enerjoy.be',
+            'password' => bcrypt('secret'),
+            'salary' => 9000,
+            'phone' => 'xxxxxxxxxx',
+            'ssn' => 'xxxxxxxxxx',
+            'birthdate' => '1999-09-02',
+            'address_id' => 1,
+            'job_id' => 2,
+            'created_at' => Date("Y/m/d")
+        ]);
         $faker = Faker::create();
         foreach (range(1, 10) as $index) {
             DB::table('employees')->insert([
