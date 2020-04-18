@@ -15,9 +15,13 @@ class SupplierController extends Controller
 
     public function ophalen($manier = '',$zoek = '')
     {     
+        // Zodat je geen sql injectie kunt doen p dit stuk.
+        $manier = htmlspecialchars($manier);
+        $zoek = htmlspecialchars($zoek);
         // zoeken op Id en address moet niet met een like gebeuren want dat geeft problemen 
         if ($manier == 'id' || $manier == 'address')
         {
+            
             
             $persoon= \DB::table('suppliers')->where($manier,$zoek)->get();
             $isSet = \DB::table('suppliers')->where($manier,$zoek)->value('isSet');
@@ -52,11 +56,16 @@ class SupplierController extends Controller
             return $persoon;
         } 
 
-        else
+        else if ($manier == '' && $zoek == '')
         {  
             //Ik geef alles terug waar de isSet waarde op 1 staat.
             $personen = \DB::table('suppliers')->where('isSet',1)->get();
             return $personen;
+        }
+
+        else
+        {
+            return "[{\"failed\" : \"wrong_values\"}]";
         }
     }
 
@@ -66,8 +75,9 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         //het land ophalen en uitzoeken welke id hij heeft
-        $land = request('country');
-        if ($land != '')
+        $land = htmlspecialchars(request('country'));
+
+        if ($land != '' && !preg_match("/[^A-Za-z\s]/", $land))
         {
             $landId = \DB::table('countries')->where("name",$land)->value('id');
             if ($landId == '')
@@ -81,8 +91,8 @@ class SupplierController extends Controller
             
             
             //de stad opvragen en uitzoeken welke id deze heeft
-            $stad = request('city');
-            if ($stad != '')
+            $stad = htmlspecialchars(request('city'));
+            if ($stad != '' && !preg_match("/[^A-Za-z\s]/", $stad))
             {
                 $stadId = \DB::table('city')->where("countryId",$landId)->where('name', $stad)->value('id');
                 if ($stadId == '')
@@ -97,9 +107,9 @@ class SupplierController extends Controller
                 }
 
                 //de straat en het nummer opvragen en zo kijken wat het adresid is
-                $straat = request('straat');
-                $number = request('nummer');
-                if ($straat != '' && $number != '')
+                $straat= htmlspecialchars(request('straat'));
+                $number = htmlspecialchars(request('nummer'));
+                if ($straat != '' && $number != '' && !preg_match("/[^A-Za-z\s]/", $straat) && preg_match("/[0-9]+[a-zA-Z]?/",$number))
                 {
                     $adresId = \DB::table('addresses')->where("cityId",$stadId)->where('street', $straat)->where('number',$number)->value('id');
                     if ($adresId == '')
@@ -115,17 +125,32 @@ class SupplierController extends Controller
                 }
                 else
                 {
+                    
                     return "[{\"failed\" : \"found_no_street_or_number\"}]";
                 }
             }
             else
             {
-                return "[{\"failed\" : \"found_no_city\"}]";
+                if ($stad == '')
+                {
+                    return "[{\"failed\" : \"found_no_city\"}]";
+                }
+                else
+                {
+                    return "[{\"failed\" : \"(".$stad.") is no city\"}]";
+                }
             }
         }
         else
         {
-            return "[{\"failed\" : \"found_no_country\"}]";
+            if ($land == '')
+            {
+                return "[{\"failed\" : \"found_no_country\"}]";
+            }
+            else
+            {
+                return "[{\"failed\" : \"(".$land.") is no country\"}]";
+            }
         }
 
 
