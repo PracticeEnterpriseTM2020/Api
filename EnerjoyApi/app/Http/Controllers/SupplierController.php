@@ -161,12 +161,51 @@ class SupplierController extends Controller
         // de database.
         $suppliers = new Supplier();
 
-        $suppliers->companyname = request('companyname');
-        $suppliers->vatnumber = request('vatnumber');
-        $suppliers->email = request('email');
-        $suppliers->addressId = $adresId;
-        $suppliers->phonenumber = request('phonenumber');
         
+
+
+        $suppliers->companyname = htmlspecialchars(request('companyname'));
+        if ($suppliers->companyname == '' || preg_match("/[^A-Za-z\s]/", $suppliers->companyname))
+        {
+            return "[{\"failed\" : \"(".$suppliers->companyname.") is no company\"}]";
+        }
+
+        $suppliers->vatnumber = htmlspecialchars(request('vatnumber'));
+        if ($suppliers->vatnumber != '' && preg_match("/\A[A-Z]{2}[A-Za-z0-9]{2,13}\b/", $suppliers->vatnumber))
+        {
+            
+        }
+        else
+        {
+            return "[{\"failed\" : \"(".$suppliers->vatnumber.") is no valit vatnumber\"}]";
+        }
+
+        // Email adressen moeten nu volgens een vast stramien zijn. Officieel moet een email adres ook een 2de punt
+        // kunnen bevatten zolang dit tudden "" staat. Dit wist ik niet hoe ik dit moest doen.
+        $suppliers->email = htmlspecialchars(request('email'));
+        if ($suppliers->email != '' && preg_match("/^[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+\.?[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})+|[A-Za-z0-9]+\.[a-z]{2,3})\b/", $suppliers->email))
+        {
+            
+        }
+        else
+        {
+            return "[{\"failed\" : \"(".$suppliers->email.") is no email\"}]";
+        }
+
+        
+
+
+        $suppliers->addressId = $adresId;
+
+
+        $suppliers->phonenumber = htmlspecialchars(request('phonenumber'));
+        if ($suppliers->phonenumber == '' || preg_match("/\d{5,15}/", $suppliers->phonenumber))
+        {
+            return "[{\"failed\" : \"(".$suppliers->phonenumber.") is no phonenumber\"}]";
+        }
+        
+
+
 
         //Ik kijk na of het vat nummer al bestaat, is dit het geval meld ik dat dit reeds in gebruik is.
         $bedrijf = request('companyname');
@@ -192,17 +231,18 @@ class SupplierController extends Controller
     //Hiermee zet je de isSet terug op 1, dus voeg je het bedrijf opnieuw toe, dit kan op elke manier id, telefoonnr....
     public function softHerinstaleer(Request $reauest)
     {
-        $id = request('id');
+        
+        $id = htmlspecialchars(request('id'));
         \DB::table('suppliers')->where('id', $id)->update(['isSet' => 1]);
-        $companyname = request('companyname');
+        $companyname = htmlspecialchars(request('companyname'));
         \DB::table('suppliers')->where('companyname', $companyname)->update(['isSet' => 1]);
-        $vatnumber = request('vatnumber');
+        $vatnumber = htmlspecialchars(request('vatnumber'));
         \DB::table('suppliers')->where('vatnumber', $vatnumber)->update(['isSet' => 1]);
-        $email = request('email');
+        $email = htmlspecialchars(request('email'));
         \DB::table('suppliers')->where('email', $email)->update(['isSet' => 1]);
-        $addressid = request('addressid');
+        $addressid = htmlspecialchars(request('addressid'));
         \DB::table('suppliers')->where('addressId', $addressid)->update(['isSet' => 1]);
-        $phonenumber = request('phonenumber');
+        $phonenumber = htmlspecialchars(request('phonenumber'));
         \DB::table('suppliers')->where('phonenumber', $phonenumber)->update(['isSet' => 1]);
     }
 
@@ -211,18 +251,18 @@ class SupplierController extends Controller
     // zo kan je de gegevens nietmeer opvragen.
     public function softVerwijder(Request $request)
     {
-        $id = request('id');
+        $id = htmlspecialchars(request('id'));
         \DB::table('suppliers')->where('id', $id)->update(['isSet' => 0]);
-        $companyname = request('companyname');
+        $companyname = htmlspecialchars(request('companyname'));
         \DB::table('suppliers')->where('companyname', $companyname)->update(['isSet' => 0]);
-        $vatnumber = request('vatnumber');
+        $vatnumber = htmlspecialchars(request('vatnumber'));
         \DB::table('suppliers')->where('vatnumber', $vatnumber)->update(['isSet' => 0]);
-        $email = request('email');
+        $email = htmlspecialchars(request('email'));
         \DB::table('suppliers')->where('email', $email)->update(['isSet' => 0]);
-        $addressid = request('addressid');
+        $addressid = htmlspecialchars(request('addressid'));
         \DB::table('suppliers')->where('addressId', $addressid)->update(['isSet' => 0]);
-        $phonenumber = request('phonenumber');
-        \DB::table('suppliers')->where('phonenumber', $phonenmuber)->update(['isSet' => 0]);
+        $phonenumber = htmlspecialchars(request('phonenumber'));
+        \DB::table('suppliers')->where('phonenumber', $phonenumber)->update(['isSet' => 0]);
 
     }
     //Hier kan je waarde aanpassen, je kan wel maar op 1 manier tegelijkertijd zoeken, dus ofwel id, ofwel companyname...
@@ -232,11 +272,57 @@ class SupplierController extends Controller
 
     public function aanpas(Request $request)
     {
-        $id = request('id');
-        $companyname = request('companyname');
-        $vatnumber = request('vatnumber');
-        $email = request('email');
-        $phonenumber = request('phonenumber');
+
+        $id = htmlspecialchars(request('id'));
+        if (preg_match("/\D+/",$id))
+        {
+            return "[{\"failed\" : \"(".$companyname.") is no ID\"}]";
+        }
+
+        $companyname = htmlspecialchars(request('companyname'));
+        if ($companyname == '' || preg_match("/[^A-Za-z\s]/", $companyname))
+        {
+            return "[{\"failed\" : \"(".$companyname.") is no company\"}]";
+        }
+
+        $vatnumber = htmlspecialchars(request('vatnumber'));
+        if ($vatnumber != '' && preg_match("/\A[A-Z]{2}[A-Za-z0-9]{2,13}\b/", $vatnumber))
+        {
+            
+        }
+        else
+        {
+            return "[{\"failed\" : \"(".$vatnumber.") is no valit vatnumber\"}]";
+        }
+
+        // Email adressen moeten nu volgens een vast stramien zijn. Officieel moet een email adres ook een 2de punt
+        // kunnen bevatten zolang dit tudden "" staat. Dit wist ik niet hoe ik dit moest doen.
+        $email = htmlspecialchars(request('email'));
+        if ($email != '' && preg_match("/^[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+\.?[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})+|[A-Za-z0-9]+\.[a-z]{2,3})\b/", $email))
+        {
+            
+        }
+        else
+        {
+            return "[{\"failed\" : \"(".$email.") is no email\"}]";
+        }
+
+        
+
+
+        $suppliers->addressId = $adresId;
+
+
+        $phonenumber = htmlspecialchars(request('phonenumber'));
+        if ($phonenumber == '' || preg_match("/\d{5,15}/", $phonenumber))
+        {
+            return "[{\"failed\" : \"(".$phonenumber.") is no phonenumber\"}]";
+        }
+
+
+
+        
+        // hier nog alles preg_matchen.
         
 
 
