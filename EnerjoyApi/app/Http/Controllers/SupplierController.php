@@ -233,17 +233,40 @@ class SupplierController extends Controller
     {
         
         $id = htmlspecialchars(request('id'));
-        \DB::table('suppliers')->where('id', $id)->update(['isSet' => 1]);
+        if ($id != '')
+        {
+            \DB::table('suppliers')->where('id', $id)->update(['isSet' => 1]);
+        }
+        
         $companyname = htmlspecialchars(request('companyname'));
-        \DB::table('suppliers')->where('companyname', $companyname)->update(['isSet' => 1]);
+        if ($companyname != '')
+        {
+            \DB::table('suppliers')->where('companyname', $companyname)->update(['isSet' => 1]);
+        }
+        
         $vatnumber = htmlspecialchars(request('vatnumber'));
-        \DB::table('suppliers')->where('vatnumber', $vatnumber)->update(['isSet' => 1]);
+        if ($vatnumber != '')
+        {
+            \DB::table('suppliers')->where('vatnumber', $vatnumber)->update(['isSet' => 1]);
+        }
+        
         $email = htmlspecialchars(request('email'));
-        \DB::table('suppliers')->where('email', $email)->update(['isSet' => 1]);
-        $addressid = htmlspecialchars(request('addressid'));
-        \DB::table('suppliers')->where('addressId', $addressid)->update(['isSet' => 1]);
+        if ($email != '')
+        {
+            \DB::table('suppliers')->where('email', $email)->update(['isSet' => 1]);
+        }
+        
+        $addressId = htmlspecialchars(request('addressid'));
+        if ($addressId != '')
+        {
+            \DB::table('suppliers')->where('addressId', $addressId)->update(['isSet' => 1]);
+        }
+        
         $phonenumber = htmlspecialchars(request('phonenumber'));
-        \DB::table('suppliers')->where('phonenumber', $phonenumber)->update(['isSet' => 1]);
+        if ($phonenumber != '')
+        {
+            \DB::table('suppliers')->where('phonenumber', $phonenumber)->update(['isSet' => 1]);
+        }
     }
 
 
@@ -251,19 +274,42 @@ class SupplierController extends Controller
     // zo kan je de gegevens nietmeer opvragen.
     public function softVerwijder(Request $request)
     {
+        
         $id = htmlspecialchars(request('id'));
-        \DB::table('suppliers')->where('id', $id)->update(['isSet' => 0]);
+        if ($id != '')
+        {
+            \DB::table('suppliers')->where('id', $id)->update(['isSet' => 0]);
+        }
+        
         $companyname = htmlspecialchars(request('companyname'));
-        \DB::table('suppliers')->where('companyname', $companyname)->update(['isSet' => 0]);
+        if ($companyname != '')
+        {
+            \DB::table('suppliers')->where('companyname', $companyname)->update(['isSet' => 0]);
+        }
+        
         $vatnumber = htmlspecialchars(request('vatnumber'));
-        \DB::table('suppliers')->where('vatnumber', $vatnumber)->update(['isSet' => 0]);
+        if ($vatnumber != '')
+        {
+            \DB::table('suppliers')->where('vatnumber', $vatnumber)->update(['isSet' => 0]);
+        }
+        
         $email = htmlspecialchars(request('email'));
-        \DB::table('suppliers')->where('email', $email)->update(['isSet' => 0]);
-        $addressid = htmlspecialchars(request('addressid'));
-        \DB::table('suppliers')->where('addressId', $addressid)->update(['isSet' => 0]);
+        if ($email != '')
+        {
+            \DB::table('suppliers')->where('email', $email)->update(['isSet' => 0]);
+        }
+        
+        $addressId = htmlspecialchars(request('addressid'));
+        if ($addressId != '')
+        {
+            \DB::table('suppliers')->where('addressId', $addressId)->update(['isSet' => 0]);
+        }
+        
         $phonenumber = htmlspecialchars(request('phonenumber'));
-        \DB::table('suppliers')->where('phonenumber', $phonenumber)->update(['isSet' => 0]);
-
+        if ($phonenumber != '')
+        {
+            \DB::table('suppliers')->where('phonenumber', $phonenumber)->update(['isSet' => 0]);
+        }
     }
     //Hier kan je waarde aanpassen, je kan wel maar op 1 manier tegelijkertijd zoeken, dus ofwel id, ofwel companyname...
     //Als je meerdere dingen meegeeft, zal het eerst kijken naar Id, dan companyname... Als er 1 is ingevult,
@@ -322,29 +368,61 @@ class SupplierController extends Controller
 
 
         
-        // hier nog alles preg_matchen.
+        
         
 
 
-        $n_Companyname = request('nieuwcompanyname');
-        $n_Vatnumber = request('nieuwvatnumber');
-        $n_Email = request('nieuwemail');
-        $n_Phonenumber = request('nieuwphonenumber');
+        
+       
+        // Hier komen de nieuwe variabelen.
 
+        $n_companyname = htmlspecialchars(request('nieuwcompanyname'));
+        if ($n_companyname == '' || preg_match("/[^A-Za-z\s]/", $n_companyname))
+        {
+            return "[{\"failed\" : \"(".$n_companyname.") is no company\"}]";
+        }
+
+        $n_vatnumber = htmlspecialchars(request('nieuwvatnumber'));
+        if ($n_vatnumber != '' && preg_match("/\A[A-Z]{2}[A-Za-z0-9]{2,13}\b/", $n_vatnumber))
+        {
+            
+        }
+        else
+        {
+            return "[{\"failed\" : \"(".$n_vatnumber.") is no valit vatnumber\"}]";
+        }
+
+        // Email adressen moeten nu volgens een vast stramien zijn. Officieel moet een email adres ook een 2de punt
+        // kunnen bevatten zolang dit tudden "" staat. Dit wist ik niet hoe ik dit moest doen.
+        $n_email = htmlspecialchars(request('nieuwemail'));
+        if ($n_email != '' && preg_match("/^[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+\.?[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})+|[A-Za-z0-9]+\.[a-z]{2,3})\b/", $n_email))
+        {
+            
+        }
+        else
+        {
+            return "[{\"failed\" : \"(".$n_email.") is no email\"}]";
+        }
+
+        $n_phonenumber = htmlspecialchars(request('nieuwphonenumber'));
+        if ($n_phonenumber == '' || preg_match("/\d{5,15}/", $n_phonenumber))
+        {
+            return "[{\"failed\" : \"(".$n_phonenumber.") is no phonenumber\"}]";
+        }
 
 
 
         //het land ophalen en uitzoeken welke id hij heeft
-        $land = request('country');
+        $land = htmlspecialchars(request('country'));
         if ($land != '')
         {
             $landId = \DB::table('countries')->where("name",$land)->value('id');
-            $stad = request('city');
+            $stad = htmlspecialchars(request('city'));
             if ($stad != '')
             {
                 $stadId = \DB::table('city')->where("countryId",$landId)->where('name', $stad)->value('id');
-                $straat = request('straat');
-                $number = request('nummer');
+                $straat = htmlspecialchars(request('straat'));
+                $number = htmlspecialchars(request('nummer'));
                 if ($traat != '' && number != '')
                 {
                     $addressId = \DB::table('addresses')->where("cityId",$stadId)->where('street', $straat)->where('number',$number)->value('id');
@@ -370,10 +448,10 @@ class SupplierController extends Controller
 
 
 
-        // Als het addressId moet aangepast worden, krijg ik het land, de stad, se straat en het nummer binnen.
+        // Als het addressId moet aangepast worden, krijg ik het land, de stad, de straat en het nummer binnen.
         //Hier ga ik daarvan een addressid opzoeken in de tabel.
-        $n_land = request('nieuwcountry');
-        if ($n_land != '')
+        $n_land = htmlspecialchars(request('nieuwcountry'));
+        if ($n_land != '' && !preg_match("/[^A-Za-z\s]/", $n_land))
         {
             $n_landId = \DB::table('countries')->where("name",$n_land)->value('id');
             if ($n_landId == '')
@@ -386,8 +464,8 @@ class SupplierController extends Controller
             }
         
             //de stad opvragen en uitzoeken welke id deze heeft
-            $n_stad = request('nieuwcity');
-            if ($n_stad != '')
+            $n_stad = htmlspecialchars(request('nieuwcity'));
+            if ($n_stad != '' && !preg_match("/[^A-Za-z\s]/", $n_stad))
             {
                 $n_stadId = \DB::table('city')->where("countryId",$n_landId)->where('name', $n_stad)->value('id');
                 if ($n_stadId == '')
@@ -402,9 +480,9 @@ class SupplierController extends Controller
                 }
 
                 //de straat en het nummer opvragen en zo kijken wat het adresid is
-                $n_straat = request('nieuwstraat');
-                $n_number = request('nieuwnumber');
-                if ($n_straat != '' && $n_number != '')
+                $n_straat = htmlspecialchars(request('nieuwstraat'));
+                $n_number = htmlspecialchars(request('nieuwnumber'));
+                if ($n_straat != '' && $n_number != '' && !preg_match("/[^A-Za-z\s]/", $n_straat) && preg_match("/[0-9]+[a-zA-Z]?/",$n_number))
                 {
                     $n_AddressId = \DB::table('addresses')->where("cityId",$n_stadId)->where('street', $n_straat)->where('number',$n_number)->value('id');
                     if ($n_AddressId == '')
