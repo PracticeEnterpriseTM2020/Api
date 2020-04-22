@@ -25,6 +25,9 @@ class employeeAuthController extends Controller
         }
         $employee=employee::where('email',$request["email"])->where('deleted_at',null)->first();
         if($employee){
+            if($employee->api_token != null){
+                return response()->json(['success' => false, 'message' => 'already logged in'], 400);
+            }
             if(password_verify($request['password'],$employee->password)){
                 $postArray = ['api_token' => $this->apiToken];
                 $employee->api_token = $this->apiToken;

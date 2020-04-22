@@ -168,10 +168,10 @@ class customerController extends Controller
      */
     public function update(Request $request)
     {
-        if(!customer::where('api_token',$request->header('Authorization'))->exists()){
-            return response()->json(['success' => false, 'message' => 'invalid login'], 401);
+        $customer = $this->getCustomer($request->header("Authorization"));
+        if(!$customer){
+            return response()->json(['success' => false, 'message' => "Not a valid Api token"], 401);
         }
-        $customer=customer::where('api_token',$request->header('Authorization'))->first();
         $validator = Validator::make($request->all(),[
             "newEmail"=>['required','email',
             Rule::unique('customers','email')->ignore($customer->email,'email')],
@@ -232,19 +232,14 @@ class customerController extends Controller
         }
         $validator = Validator::make($request->all(),[
             "search"=>"string|required",
-            "sort"=>"string|required|in:email,id,firstname,lastname",
-            "order"=>"string|required|in:desc,asc"
         ]);
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
             $search=$request['search'];
-            $sort=$request['sort'];
-            $order=$request['order'];
         try
         {
             return customer::where("email", "like", "%$search%")
-                ->orderBy($sort,$order)
                 ->paginate(5);
         }
         catch(QueryException $e)

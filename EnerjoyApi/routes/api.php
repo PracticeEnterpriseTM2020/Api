@@ -19,16 +19,15 @@ Route::post('customers/new', 'customerController@store');
 Route::post('customers/login', 'customerAuthController@Login');
 Route::post('customers/activate', 'customerController@activate');
 //Route::post('customers/showOne', 'customerController@show');
-Route::post('customers/change', 'customerController@update');
 Route::post('customers/delete', 'customerController@destroy');
-Route::middleware('employeeAPIToken')->group(function () {
+Route::middleware('APIToken')->group(function () {
   Route::post('customers', 'customerController@index');
   Route::post('customers/search', 'customerController@filter');
   Route::post('customers/showOne', 'customerController@show');
+  Route::post('customers/change', 'customerController@update');
+  Route::post('customers/logout','customerAuthController@logout');
+  Route::post('employees/logout','employeeAuthController@logout');
 });
-Route::middleware('customerAPIToken')->group(function () {
-    Route::post('customers/logout','customerAuthController@logout');
-  });
 
 //Invoices
 Route::get('invoices', 'invoiceController@filter');
@@ -53,9 +52,6 @@ Route::delete('employees/{employee}','employeeController@destroy');
 Route::put('employees/{employee}/restore','employeeController@restore');
 Route::put('employees/{employee}','employeeController@update');
 Route::post('employees/login','employeeAuthController@login');
-Route::middleware('employeeAPIToken')->group(function () {
-    Route::post('employees/logout','employeeAuthController@logout');
-  });
 Route::fallback(function(){
     return response()->json(['message' => 'Page Not Found.'], 404);
 });
