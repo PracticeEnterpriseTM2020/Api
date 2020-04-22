@@ -21,6 +21,7 @@ Route::post('customers/activate', 'customerController@activate');
 //Route::post('customers/showOne', 'customerController@show');
 Route::post('customers/delete', 'customerController@destroy');
 Route::middleware('APIToken')->group(function () {
+    //test
   Route::post('customers', 'customerController@index');
   Route::post('customers/search', 'customerController@filter');
   Route::post('customers/showOne', 'customerController@show');
