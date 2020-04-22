@@ -19,7 +19,7 @@ class CustomerTableSeeder extends Seeder
                 'firstname' => $faker->name,
                 'lastname' => $faker->name,
                 'email' => $faker->email,
-                'password' => bcrypt('secret'),
+                'password' => password_hash('secret',PASSWORD_DEFAULT),
                 'addressId' => $index
             ]);
         }
