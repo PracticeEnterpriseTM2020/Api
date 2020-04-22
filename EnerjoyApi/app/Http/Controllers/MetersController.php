@@ -171,7 +171,7 @@ class MetersController extends Controller
 
             $updateMeters = $updateMetersQuery->update(['deleted' => 1]);
 
-            return response()->json(['success' => true], 200);
+            return response()->json(['success' => true, 'message' => 'Meter deleted.'], 200);
         } else {
             return response()->json(['success' => false, 'errors' => 'id does not exist or meter is used.'], 400);
         }
@@ -215,7 +215,7 @@ class MetersController extends Controller
                 if ($request->has('creation_timestamp')) {
                     $updateMeters = $updateMetersQuery->update(['creation_timestamp' => strtotime(request('creation_timestamp'))]);
                 }
-                return response()->json(['success' => true], 200);
+                return response()->json(['success' => true, 'message' => 'Meter edited.'], 200);
             } else {
                 return response()->json(['success' => false, 'errors' => 'Request does not have an id and-or doesn\'t have a meter_id or creation_timestamp.'], 400);
             }
