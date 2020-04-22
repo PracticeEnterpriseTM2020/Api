@@ -16,20 +16,13 @@ use Illuminate\Http\Request;
 
 //Customers
 
-Route::post('customers/new', 'customerController@store');
-Route::post('customers/login', 'customerAuthController@Login');
-Route::post('customers/activate', 'customerController@activate');
-//Route::post('customers/showOne', 'customerController@show');
 Route::post('customers/delete', 'customerController@destroy');
-Route::middleware('APIToken')->group(function () {
-    //test
-  Route::post('customers', 'customerController@index');
-  Route::post('customers/search', 'customerController@filter');
-  Route::post('customers/showOne', 'customerController@show');
-  Route::post('customers/change', 'customerController@update');
-  Route::post('customers/logout','customerAuthController@logout');
-  Route::post('employees/logout','employeeAuthController@logout');
-});
+Route::post('customers/new', 'customerController@store');
+Route::post('customers/login', 'customerController@verify');
+Route::post('customers/change', 'customerController@update');
+Route::post('customers/activate', 'customerController@activate');
+Route::get('customers/{email}', 'customerController@show');
+Route::get('customers', 'customerController@index');
 
 
 //Invoices
@@ -47,13 +40,10 @@ Route::post('meters/create', 'MetersController@store');
 Route::post('meters/edit', 'MetersController@edit');
 Route::get('meters/delete','MetersController@softdelete');
 
-Route::get('employees','employeeController@filter');
-Route::get('employees/{employee}','employeeController@show_by_id');
-Route::post('employees','employeeController@store');
-Route::delete('employees/{employee}','employeeController@destroy');
-Route::put('employees/{employee}/restore','employeeController@restore');
-Route::put('employees/{employee}','employeeController@update');
-Route::post('employees/login','employeeAuthController@login');
+
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
 Route::fallback(function(){
     return response()->json(['message' => 'Page Not Found.'], 404);
 });
