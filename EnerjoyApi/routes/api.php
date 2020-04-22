@@ -41,9 +41,14 @@ Route::post('meters/edit', 'MetersController@edit');
 Route::get('meters/delete','MetersController@softdelete');
 
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('employees','employeeController@filter');
+Route::get('employees/{employee}','employeeController@show_by_id');
+Route::post('employees','employeeController@store');
+Route::delete('employees/{employee}','employeeController@destroy');
+Route::put('employees/{employee}/restore','employeeController@restore');
+Route::put('employees/{employee}','employeeController@update');
+Route::post('employees/login','employeeAuthController@login');
+
 Route::fallback(function(){
     return response()->json(['message' => 'Page Not Found.'], 404);
 });
