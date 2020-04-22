@@ -13,9 +13,6 @@ use Illuminate\Validation\Rule;
 
 class customerController extends Controller
 {
-    
-    use employeeTrait;
-    use customerTrait;
     /**
      * Display a listing of the resource.
      *

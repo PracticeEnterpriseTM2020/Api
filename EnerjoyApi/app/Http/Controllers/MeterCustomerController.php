@@ -16,7 +16,6 @@ class MeterCustomerController extends Controller
             'creation_timestamp' => 'required|max:16|min:16|date'
         ]);
 
-
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
         }

@@ -21,17 +21,9 @@ Route::post('customers/new', 'customerController@store');
 Route::post('customers/login', 'customerController@verify');
 Route::post('customers/change', 'customerController@update');
 Route::post('customers/activate', 'customerController@activate');
-//Route::post('customers/showOne', 'customerController@show');
-Route::post('customers/delete', 'customerController@destroy');
-Route::middleware('APIToken')->group(function () {
-    //test
-  Route::post('customers', 'customerController@index');
-  Route::post('customers/search', 'customerController@filter');
-  Route::post('customers/showOne', 'customerController@show');
-  Route::post('customers/change', 'customerController@update');
-  Route::post('customers/logout','customerAuthController@logout');
-  Route::post('employees/logout','employeeAuthController@logout');
-});
+Route::get('customers/{email}', 'customerController@show');
+Route::get('customers', 'customerController@index');
+
 
 //Invoices
 Route::get('invoices', 'invoiceController@filter');
