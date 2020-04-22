@@ -9,6 +9,7 @@ use App\Employee;
 
 class employeeController extends Controller
 {
+    
     public function show_by_id(Employee $employee)
     {   
         return $employee;

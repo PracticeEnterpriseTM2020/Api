@@ -16,6 +16,7 @@ use App\Http\Traits\customerTrait;
 
 class customerController extends Controller
 {
+    
     use employeeTrait;
     use customerTrait;
     /**

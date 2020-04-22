@@ -3,6 +3,7 @@
     use App\customer;
 
     trait customerTrait{
+        
         function getCustomer($token){
             $cust=customer::where('api_token',$token)->first();
             if($cust){

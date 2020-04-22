@@ -3,6 +3,7 @@
     use App\Employee;
 
     trait employeeTrait{
+        
         function getEmployee($token){
             $employee=employee::where('api_token',$token)->first();
             if($employee){

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 class employeeAuthController extends Controller
 {
+    
     private $token;
     public function __construct()
     {
