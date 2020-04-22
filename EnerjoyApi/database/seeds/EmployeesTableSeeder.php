@@ -51,7 +51,7 @@ class EmployeesTableSeeder extends Seeder
             'ssn' => 'xxxxxxxxxx',
             'birthdate' => '1999-09-02',
             'address_id' => 1,
-            'job_id' => 2,
+            'job_id' => 3,
             'created_at' => Date("Y/m/d")
         ]);
         $faker = Faker::create();
