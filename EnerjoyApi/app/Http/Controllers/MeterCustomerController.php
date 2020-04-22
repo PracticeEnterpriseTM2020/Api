@@ -17,7 +17,6 @@ class MeterCustomerController extends Controller
             'meter_id' => 'required|unique:meter_customers,meter_id|exists:meters,id'
         ]);
 
-
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
         }

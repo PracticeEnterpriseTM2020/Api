@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 
 //Customers
+
 Route::post('customers/new', 'customerController@store');
 Route::post('customers/login', 'customerAuthController@Login');
 Route::post('customers/activate', 'customerController@activate');
@@ -29,6 +30,7 @@ Route::middleware('APIToken')->group(function () {
   Route::post('customers/logout','customerAuthController@logout');
   Route::post('employees/logout','employeeAuthController@logout');
 });
+
 
 //Invoices
 Route::get('invoices', 'invoiceController@filter');
@@ -45,8 +47,6 @@ Route::post('meters/create', 'MetersController@store');
 Route::post('meters/edit', 'MetersController@edit');
 Route::get('meters/delete','MetersController@softdelete');
 
-//Meters&customers
-//Employees
 Route::get('employees','employeeController@filter');
 Route::get('employees/{employee}','employeeController@show_by_id');
 Route::post('employees','employeeController@store');
