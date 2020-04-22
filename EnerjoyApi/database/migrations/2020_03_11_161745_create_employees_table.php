@@ -24,7 +24,7 @@ class CreateEmployeesTable extends Migration
             $table->string("ssn");
             $table->date("birthdate");
             $table->integer("address_id");
-            $table->integer("job_id");
+            $table->integer("job_id")->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -14,6 +14,7 @@ use \Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Illuminate\Support\Facades\Log;
 
 class Handler extends ExceptionHandler
 {
@@ -76,6 +77,7 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof QueryException) {
+            Log::channel("console")->error($exception->getMessage());
             return response()->json([
                 'error' => trans('errors.internal')
             ], 500);

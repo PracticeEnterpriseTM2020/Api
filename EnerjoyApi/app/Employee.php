@@ -19,6 +19,19 @@ class Employee extends User implements JWTSubject
     protected $dates = ["deleted_at"];
     protected $with = ["address", "job"];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        self::deleting(function (Employee $emp) {
+            $emp->load("fleet", "joboffers");
+            foreach ($emp->fleet as $fleet) {
+                $fleet->owner_id = null;
+                $fleet->save();
+            }
+        });
+    }
+
     function address()
     {
         return $this->belongsTo("App\address");
@@ -27,6 +40,16 @@ class Employee extends User implements JWTSubject
     function job()
     {
         return $this->belongsTo("App\Job");
+    }
+
+    function fleet()
+    {
+        return $this->hasMany("App\Fleet", "owner_id");
+    }
+
+    function joboffers()
+    {
+        return $this->hasMany("App\JobOffer", "creator_id");
     }
 
     public function setPasswordAttribute($value)
