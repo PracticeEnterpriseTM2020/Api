@@ -48,10 +48,14 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
-        $customer = customer::where('email',$request['email'])->where('active',0)->where('password',$request['password'])->firstOrFail();
+        // todo fix password verify
+        $customer = customer::where('email',$request['email'])->where('active',0)->firstOrFail();
+        if(password_verify($request['password'],$customer->password)){
         $customer->active = 1;
         $customer->save();
         return response()->json(['success' => true, 'message' => "customer has been activated"]);
+        }
+        return response()->json(['success' => false, 'message' => "password email combination is false"]);
     }
     public function store(Request $request)
     {
