@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMeterCustomersTable extends Migration
+class CreateMeterCustomerTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateMeterCustomersTable extends Migration
      */
     public function up()
     {
-        Schema::create('meter_customers', function (Blueprint $table) {
+        Schema::create('meter_customer', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
             $table->string('customer_email')->nullable(false);
             $table->unsignedBigInteger('meter_id');
+            $table->bigInteger('installedOn')->nullable();
             $table->tinyInteger('deleted')->default(0);
         });
     }
@@ -28,6 +29,6 @@ class CreateMeterCustomersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('meter_customers');
+        Schema::dropIfExists('meter_customer');
     }
 }

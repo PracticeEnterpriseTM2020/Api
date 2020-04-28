@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MeterCustomerController;
 use Illuminate\Http\Request;
 
 /*
@@ -45,6 +46,9 @@ Route::post('meters/edit', 'MetersController@edit');
 Route::get('meters/delete','MetersController@softdelete');
 
 //Meters&customers
+Route::post('meters/connection/create', 'MeterCustomerController@store');
+Route::post('meters/connection/delete', 'MeterCustomerController@softdelete');
+
 //Employees
 Route::get('employees','employeeController@filter');
 Route::get('employees/{employee}','employeeController@show_by_id');
