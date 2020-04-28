@@ -7,14 +7,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use App\invoice;
-
+use App\Http\Traits\employeeTrait;
+use App\Http\Traits\customerTrait;
 use App\Http\Resources\invoice as invoiceResource;
 
 
 class invoiceController extends Controller
 {
-    public function index()
+    use employeeTrait;
+    use customerTrait;
+    public function index(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         //Show all invoice data on the screen
         return invoiceResource::collection(invoice::all());
     }
@@ -23,6 +30,10 @@ class invoiceController extends Controller
     //Filtering all database entries (Code by HR team)
     public function filter(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $cols = Schema::getColumnListing("invoices");
         $validator = Validator::make($request->all(), [
             "sort" => Rule::in($cols),
@@ -97,6 +108,10 @@ class invoiceController extends Controller
     //Store a newly created resource in storage.
     public function store(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         //Validate the input, make sure all parameters are present and correct
         $validator = Validator::make($request->all(), [
             'id' => 'required',
@@ -105,7 +120,7 @@ class invoiceController extends Controller
             'date' => 'required|max:16|min:16|date'
         ]);
 
-        //If the data entered isn't valid, throw error and don't add to DB
+       //If the data entered isn't valid, throw error and don't add to DB
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
         }
@@ -131,6 +146,10 @@ class invoiceController extends Controller
     
     public function destroy(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(),[
             "id"=> 'required',
         ]);
@@ -158,6 +177,10 @@ class invoiceController extends Controller
     
     public function restore(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(),[
             "id"=> 'required',
         ]);

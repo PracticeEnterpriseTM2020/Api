@@ -21,7 +21,6 @@ Route::post('customers/activate', 'customerController@activate');
 //Route::post('customers/showOne', 'customerController@show');
 Route::post('customers/delete', 'customerController@destroy');
 Route::middleware('APIToken')->group(function () {
-    //test
   Route::post('customers', 'customerController@index');
   Route::post('customers/search', 'customerController@filter');
   Route::post('customers/showOne', 'customerController@show');
@@ -31,10 +30,13 @@ Route::middleware('APIToken')->group(function () {
 });
 
 //Invoices
-Route::get('invoices', 'invoiceController@filter');
-Route::post('invoices/delete','invoiceController@destroy');
-Route::post('invoices/restore','invoiceController@restore');
-Route::post('invoices/create', 'invoiceController@store');
+Route::middleware('APIToken')->group(function(){
+  Route::post('invoices', 'invoiceController@index');
+  Route::get('invoices/search', 'invoiceController@filter');
+  Route::post('invoices/delete','invoiceController@destroy');
+  Route::post('invoices/restore','invoiceController@restore');
+  Route::post('invoices/create', 'invoiceController@store');
+});
 
 
 
