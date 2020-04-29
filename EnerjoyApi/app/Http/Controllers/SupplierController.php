@@ -243,18 +243,23 @@ class SupplierController extends Controller
         $i = 0;
         while (count($zelfde) > $i)
         {
-            if (\DB::table('suppliers')->where('vatnumber', $btw)->exists())
+            $ongebruikt = \DB::table('suppliers')->where('id', $zelfde[$i])->value('isset');
+            if ($ongebruikt != 0)
             {
-                $ongebruikt = \DB::table('suppliers')->where('id', $zelfde[$i])->value('isset');
-                if ($ongebruikt != 0)
-                {
-                    return "[{\"failed\" : \"vatnumber_already_exists\"]";
-                }
+                return "[{\"failed\" : \"vatnumber_already_exists\"]";
             }
             $i++;
         }
         $suppliers->isSet = 1;
-        $suppliers->save();
+        
+        if (\DB::table('suppliers')->where('companyname', $suppliers->companyname)->where('Vatnumber',$suppliers->vatnumber)->where('email', $suppliers->email)->where('addressId',$suppliers->addressId)->where('phonenumber',$suppliers->phonenumber)->exists())
+        {
+            \DB::table('suppliers')->where('companyname', $suppliers->companyname)->where('Vatnumber',$suppliers->vatnumber)->where('email',$suppliers->email)->where('addressId',$suppliers->addressId)->where('phonenumber',$suppliers->phonenumber)->update(['isSet' => 1]);
+        }
+        else
+        {
+            $suppliers->save();
+        }
         return "[{\"success\" : \"Supplier_was_added_to_the_database\"}]";
     }
 
@@ -272,13 +277,10 @@ class SupplierController extends Controller
             
             while (count($zelfde) > $i)
             {
-                if (\DB::table('suppliers')->where('vatnumber', $btw)->exists())
+                $ongebruikt = \DB::table('suppliers')->where('id', $zelfde[$i])->value('isset');
+                if ($ongebruikt != 0)
                 {
-                    $ongebruikt = \DB::table('suppliers')->where('id', $zelfde[$i])->value('isset');
-                    if ($ongebruikt != 0)
-                    {
-                        return "[{\"failed\" : \"vatnumber_was_used_for_another_company\"]";
-                    }
+                    return "[{\"failed\" : \"vatnumber_was_used_for_another_company\"]";
                 }
                 $i++;
             }
@@ -289,52 +291,92 @@ class SupplierController extends Controller
         $companyname = htmlspecialchars(request('companyname'));
         if ($companyname != '')
         {
-            $test = 0;
             $btw = \DB::table('suppliers')->where('companyname', $companyname)->pluck('Vatnumber');
             $k = 0;
             while (count($btw) > $k)
             {
-                $test = 0;
-                $zelfde = \DB::table('suppliers')->where('vatnumber',$btw[$k])->pluck('id');
+                $zelfde = \DB::table('suppliers')->where('vatnumber',$btw[$k])->where('companyname','!=',$companyname)->pluck('id');
+                $juisteid = \DB::table('suppliers')->where('vatnumber',$btw[$k])->where('companyname',$companyname)->value('id');
                 $i = 0;
-                
-                while (count($zelfde) > $i)
+                if (count($zelfde) == 0)
                 {
-                    if (\DB::table('suppliers')->where('vatnumber', $btw[$k])->exists())
-                    {
-                        print $i;
-                        $ongebruikt = \DB::table('suppliers')->where('id', $zelfde[$i])->value('isset');
-                        if ($ongebruikt != 0)
-                        {
-                            $test = 1;
-                            break;
-                        }
-                    }
-                    $i++;
+                    \DB::table('suppliers')->where('id', $juisteid)->update(['isSet' => 1]);
                 }
-                print $k;
-                    \DB::table('suppliers')->where('id', $zelfde[0])->update(['isSet' => 1]);
+                else
+                {
+                    while (count($zelfde) > $i)
+                    {
+                        $ongebruikt = \DB::table('suppliers')->where('id', $zelfde[$i])->value('isset');
+                        if ($ongebruikt == 0)
+                        {
+                            \DB::table('suppliers')->where('id', $juisteid)->update(['isSet' => 1]);
+                        }
+                        $i++;
+                    }
+                }
                 $k++;
             }
-            
         }
         
-        $vatnumber = htmlspecialchars(request('vatnumber'));
-        if ($vatnumber != '')
-        {
-            \DB::table('suppliers')->where('vatnumber', $vatnumber)->update(['isSet' => 1]);
-        }
         
         $email = htmlspecialchars(request('email'));
         if ($email != '')
         {
-            \DB::table('suppliers')->where('email', $email)->update(['isSet' => 1]);
+            $btw = \DB::table('suppliers')->where('email', $email)->pluck('Vatnumber');
+            $k = 0;
+            while (count($btw) > $k)
+            {
+                $zelfde = \DB::table('suppliers')->where('vatnumber',$btw[$k])->where('email','!=',$email)->pluck('id');
+                $juisteid = \DB::table('suppliers')->where('vatnumber',$btw[$k])->where('email',$email)->value('id');
+                $i = 0;
+                if (count($zelfde) == 0)
+                {
+                    \DB::table('suppliers')->where('id', $juisteid)->update(['isSet' => 1]);
+                }
+                else
+                {
+                    while (count($zelfde) > $i)
+                    {
+                        $ongebruikt = \DB::table('suppliers')->where('id', $zelfde[$i])->value('isset');
+                        if ($ongebruikt == 0)
+                        {
+                            \DB::table('suppliers')->where('id', $juisteid)->update(['isSet' => 1]);
+                        }
+                        $i++;
+                    }
+                }
+                $k++;
+            }
         }
         
         $phonenumber = htmlspecialchars(request('phonenumber'));
         if ($phonenumber != '')
         {
-            \DB::table('suppliers')->where('phonenumber', $phonenumber)->update(['isSet' => 1]);
+            $btw = \DB::table('suppliers')->where('phonenumber', $phonenumber)->pluck('Vatnumber');
+            $k = 0;
+            while (count($btw) > $k)
+            {
+                $zelfde = \DB::table('suppliers')->where('vatnumber',$btw[$k])->where('phonenumber','!=',$phonenumber)->pluck('id');
+                $juisteid = \DB::table('suppliers')->where('vatnumber',$btw[$k])->where('phonenumber',$phonenumber)->value('id');
+                $i = 0;
+                if (count($zelfde) == 0)
+                {
+                    \DB::table('suppliers')->where('id', $juisteid)->update(['isSet' => 1]);
+                }
+                else
+                {
+                    while (count($zelfde) > $i)
+                    {
+                        $ongebruikt = \DB::table('suppliers')->where('id', $zelfde[$i])->value('isset');
+                        if ($ongebruikt == 0)
+                        {
+                            \DB::table('suppliers')->where('id', $juisteid)->update(['isSet' => 1]);
+                        }
+                        $i++;
+                    }
+                }
+                $k++;
+            }
         }
         return "[{\"success\" : \"Supplier_was_reinstalled\"}]";
     }
@@ -376,6 +418,8 @@ class SupplierController extends Controller
         }
         return "[{\"success\" : \"Supplier_was_deleted\"}]";
     }
+
+
     //Hier kan je waarde aanpassen, je kan wel maar op 1 manier tegelijkertijd zoeken, dus ofwel id, ofwel companyname...
     //Als je meerdere dingen meegeeft, zal het eerst kijken naar Id, dan companyname... Als er 1 is ingevult,
     //wordt de rest nietmeer nagekeken, als je op 2 dingen wilt aanpassen, dat zal de webdeveloper moeten doen.
