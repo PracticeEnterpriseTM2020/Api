@@ -37,7 +37,7 @@ class SupplierController extends Controller
         }
 
         // Hier zoek ik wel met een like, op deze manier kan je een deel van de naam of rekeningnummer... opgeven en zo zoeken.
-        else if ($manier == 'companyname' || $manier == 'vatnumber' || $manier == 'email' || $manier == 'phnenumber') 
+        else if ($manier == 'companyname' || $manier == 'vatnumber' || $manier == 'email' || $manier == 'phonenumber') 
         {
             $persoon= \DB::table('suppliers')->where($manier,'LIKE','%'.$zoek.'%')->get();
             $isSet = \DB::table('suppliers')->where($manier,'LIKE','%'.$zoek.'%')->value('isSet');
