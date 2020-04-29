@@ -30,12 +30,10 @@ class MeterCustomerController extends Controller
 
             $queryCheckIfMeterCustomerConnectionExistsOrDeleted = meter_customer::query();
 
-            $resultCheckIfMeterCustomerConnectionExistsOrDeleted = $queryCheckIfMeterCustomerConnectionExistsOrDeleted->select('meter_id')->where('meter_id', '=', request('meter_id'))->where('deleted', '=', '1')->get();
+            $resultCheckIfMeterCustomerConnectionExistsOrDeleted = $queryCheckIfMeterCustomerConnectionExistsOrDeleted->select('meter_id')->where('meter_id', '=', request('meter_id'))->where('deleted', '=', '0')->get();
 
-            if (count($resultCheckIfMeterCustomerConnectionExistsOrDeleted)) {
+            if (!count($resultCheckIfMeterCustomerConnectionExistsOrDeleted)) {
 
-                return response()->json(['success' => false, 'errors' => 'Meter is already used or does not exist'], 400);
-            } else {
                 $meter_customer = new meter_customer();
 
                 $meter_customer->customer_email = request('customer_email');
@@ -54,6 +52,8 @@ class MeterCustomerController extends Controller
 
                     return response()->json(['success' => true, 'message' => 'Data added to database.'], 200);
                 }
+            } else {
+                return response()->json(['success' => false, 'errors' => 'Meter is already used or does not exist'], 400);
             }
         } else {
             return response()->json(['success' => false, 'errors' => 'Meter is already used or does not exist'], 400);
@@ -63,7 +63,7 @@ class MeterCustomerController extends Controller
     public function softdelete(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'meter_id' => 'required|numeric|exists:meter_customer,meter_id'
+            'meter_id' => 'required|numeric|exists:meter_customers,meter_id'
         ]);
 
         if ($validator->fails()) {
@@ -74,9 +74,18 @@ class MeterCustomerController extends Controller
         $resultCheckIfMeterExistsAndUsed = $queryCheckIfMeterExistsAndUsed->select('meter_id')->where('meter_id', '=', request('meter_id'))->where('deleted', '=', '0')->get();
 
         if (count($resultCheckIfMeterExistsAndUsed)) {
-            return response()->json(['success' => true, 'message' => 'Data added to database.aaaaaaaa'], 200);
+
+            $querySoftDeleteMeterCustomer = meter_customer::query();
+            $querySoftDeleteMeterCustomer = $querySoftDeleteMeterCustomer->where('meter_id', '=', request('meter_id'));
+            $updateSoftDeleteMeterCustomer = $querySoftDeleteMeterCustomer->update(['deleted' => 1]);
+
+            $queryUpdateMeterToNotUsed = Meters::query();
+            $queryUpdateMeterToNotUsed = $queryUpdateMeterToNotUsed->where('id', '=', request('meter_id'));
+            $updateMeterToNotUsed = $queryUpdateMeterToNotUsed->update(['isUsed' => 0]);
+
+            return response()->json(['success' => true, 'message' => 'Connection meter & customer removed'], 200);
         } else {
-            return response()->json(['success' => false, 'errors' => 'Meter is already used or does not existaaaaaaaaa'], 400);
+            return response()->json(['success' => false, 'errors' => 'Connection does not exist'], 400);
         }
     }
 }
