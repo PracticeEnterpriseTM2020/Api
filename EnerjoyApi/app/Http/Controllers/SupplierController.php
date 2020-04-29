@@ -54,6 +54,15 @@ class SupplierController extends Controller
             return $persoon;
         } 
 
+        else if ($manier == 'addressid')
+        {
+            $address = \DB::table('addresses')->where('id',$zoek)->get();
+            $cityId = \DB::table('addresses')->where('id',$zoek)->value('cityId');
+            $address .=  \DB::table('city')->where('id',$cityId)->get();
+            $countryId = \DB::table('city')->where('id',$cityId)->value('countryId');
+            $address .=  \DB::table('countries')->where('id',$countryId)->get();
+            return $address;
+        }
         else if ($manier == '' && $zoek == '')
         {  
             //Ik geef alles terug waar de isSet waarde op 1 staat.
@@ -94,8 +103,8 @@ class SupplierController extends Controller
             $stad = htmlspecialchars(request('city'));
             if ($stad != '' && !preg_match("/[^A-Za-z\s]/", $stad))
             {
-                
-                $stadId = \DB::table('city')->where("countryId",$landId)->where('name', $stad)->value('id');
+                $postcode = htmlspecialchars(request('postalcode'));
+                $stadId = \DB::table('city')->where("countryId",$landId)->where('name', $stad)->where('postalcode',$postcode)->value('id');
                 if ($stadId == '')
                 {
                     
@@ -103,7 +112,7 @@ class SupplierController extends Controller
                     $City = new city();
                     $City->name = $stad;
                 
-                    $postcode = htmlspecialchars(request('postalcode'));
+                    
                     if ($postcode == '' || preg_match("/[\D]/",$postcode))
                     {
                         return "[{\"failed\" : \"no_good_postalcode\"}]";
@@ -152,6 +161,7 @@ class SupplierController extends Controller
                     
                 }
             }
+            
             else
             {
                 if ($stad == '')
@@ -269,6 +279,10 @@ class SupplierController extends Controller
     {
         // Ik moet overal ook controleren of dit btw nummer niet is gebruikt voor een ander bedrijf.
         $id = htmlspecialchars(request('id'));
+        $companyname = htmlspecialchars(request('companyname'));
+        $email = htmlspecialchars(request('email'));
+        $phonenumber = htmlspecialchars(request('phonenumber'));
+
         if ($id != '')
         {
             $btw = \DB::table('suppliers')->where('id', $id)->value('Vatnumber');
@@ -288,8 +302,8 @@ class SupplierController extends Controller
         }
 
         // Als er 1 btw nummer van de bedrijven al in gebruik is zal niets worden geherinstalleert. 
-        $companyname = htmlspecialchars(request('companyname'));
-        if ($companyname != '')
+        
+        else if ($companyname != '')
         {
             $btw = \DB::table('suppliers')->where('companyname', $companyname)->pluck('Vatnumber');
             $k = 0;
@@ -319,8 +333,8 @@ class SupplierController extends Controller
         }
         
         
-        $email = htmlspecialchars(request('email'));
-        if ($email != '')
+        
+        else if ($email != '')
         {
             $btw = \DB::table('suppliers')->where('email', $email)->pluck('Vatnumber');
             $k = 0;
@@ -349,8 +363,8 @@ class SupplierController extends Controller
             }
         }
         
-        $phonenumber = htmlspecialchars(request('phonenumber'));
-        if ($phonenumber != '')
+        
+        else if ($phonenumber != '')
         {
             $btw = \DB::table('suppliers')->where('phonenumber', $phonenumber)->pluck('Vatnumber');
             $k = 0;
