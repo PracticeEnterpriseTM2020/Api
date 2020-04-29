@@ -6,22 +6,32 @@ use App\address;
 use App\city;
 use App\country;
 use App\customer;
+use App\Employee;
 use App\Http\Resources\customer as customerResource;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Http\Traits\employeeTrait;
+use App\Http\Traits\customerTrait;
 
 class customerController extends Controller
 {
+    
+    use employeeTrait;
+    use customerTrait;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     //#################################################################
-    public function index()
+    public function index(Request $request)
     {
-        return customerResource::collection(customer::all());
+        $token = $request->header('Authorization');
+        if(!$this->getEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
+        return customerResource::collection(customer::paginate(5));
     }
     //#################################################################
     /**
@@ -38,10 +48,14 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
-        $customer = customer::where('email',$request['email'])->where('active',0)->where('password',$request['password'])->firstOrFail();
+        // todo fix password verify
+        $customer = customer::where('email',$request['email'])->where('active',0)->firstOrFail();
+        if(password_verify($request['password'],$customer->password)){
         $customer->active = 1;
         $customer->save();
         return response()->json(['success' => true, 'message' => "customer has been activated"]);
+        }
+        return response()->json(['success' => false, 'message' => "password email combination is false"]);
     }
     public function store(Request $request)
     {
@@ -96,8 +110,9 @@ class customerController extends Controller
             'lastname'=>$request['last'],
             'firstname'=>$request['first'],
             'email'=>$request['email'],
-            'password'=>$request['password'],
-            'addressId'=>$addr->id
+            'password'=>password_hash($request['password'], PASSWORD_BCRYPT),
+            'addressId'=>$addr->id,
+
         ]);
         return response()->json(['success' => true, 'message' => "Successfully created customer"]);
     }
@@ -109,18 +124,25 @@ class customerController extends Controller
      * @return \Illuminate\Http\Response
      */
     //#################################################################
-    public function show($email)
+    public function show(Request $request)
     {
-        $validator = Validator::make(['email' => $email], [
-            'email' => 'required|email'
-        ]);     
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+        $token = $request->header("Authorization");
+        if($this->isCustomer($token)){
+            return  new customerResource(customer::where('api_token',$token)->with('address.city','address.city.country')->FirstOrFail());
         }
-            return  new customerResource(customer::where('email',$email)->with('address.city','address.city.country')->FirstOrFail());
+        if($this->isEmployee($token)){
+            $validator = Validator::make($request->all(),[
+                "email"=> 'required|email'
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+            }
+            return  new customerResource(customer::where('email',$request['email'])->with('address.city','address.city.country')->FirstOrFail());
+        }
+        return response()->json(['success'=>false,'message'=>'invalid login']);
     }
     //#################################################################
-    public function Verify(Request $request)
+    /*public function Verify(Request $request)
     {
         $validator = Validator::make($request->all(),[
             "email"=> 'required|email',
@@ -131,12 +153,16 @@ class customerController extends Controller
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
         if(customer::where('email',$request["email"])->where('password',$request['password'])->where('active',1)->exists()){
-            return response()->json(['login'=>true,'message'=>'customer password and email match']);
+            $cust=customer::where('email',$request["email"])->where('password',$request['password'])->FirstOrFail();
+            $token=Str::random(80);
+            $cust->api_token = hash('sha256',$token);
+            $cust->save();
+            return response()->json(['login'=>true,'token'=>$token]);
         }
         else{
             return response()->json(['login'=>false,'message'=>'customer password and email do not match']);
         }
-    }
+    }*/
 
     /**
      * Update the specified resource in storage.
@@ -147,10 +173,13 @@ class customerController extends Controller
      */
     public function update(Request $request)
     {
+        $customer = $this->getCustomer($request->header("Authorization"));
+        if(!$customer){
+            return response()->json(['success' => false, 'message' => "Not a valid Api token"], 401);
+        }
         $validator = Validator::make($request->all(),[
-            "email"=> 'required|email',
             "newEmail"=>['required','email',
-            Rule::unique('customers','email')->ignore($request['email'],'email')],
+            Rule::unique('customers','email')->ignore($customer->email,'email')],
             "first"=> 'required|alpha',
             "last"=> 'required|alpha',
             "street"=> 'required|max:70|string',
@@ -170,7 +199,6 @@ class customerController extends Controller
         if(!$check){
             return response()->json(['success' => false, 'message' => "Postalcode does not exist"], 400);
         }
-        $customer = customer::where('email',$request['email'])->where('active',1)->firstOrFail();
         $address = address::where('id',$customer->addressId)->firstOrFail();
         $country = country::where('abv',strtoupper($request["countrycode"]))->firstOrFail();
         $city = city::firstOrCreate(['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode']],['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode'],'countryId'=>$country->id]);
@@ -188,20 +216,40 @@ class customerController extends Controller
     //#################################################################
     public function destroy(Request $request)
     {
+        if(!customer::where('api_token',$request->header('Authorization'))->exists()){
+            return response()->json(['success' => false, 'message' => 'invalid login'], 401);
+        }
+        $customer=customer::where('api_token',$request->header('Authorization'))->first();
+        $customer->active = 0;
+        $customer->api_token = null;
+        if(!$customer->save()){
+            return response()->json(['delete'=>false,'message'=>'customer could not be deleted']);
+        }
+        else{
+            return response()->json(['delete'=>true,'message'=>'customer has been deleted'],422);
+        }
+    }
+    public function filter(Request $request)
+    {
+        $token = $request->header('Authorization');
+        if(!employee::where('api_token', $token)->exists()){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(),[
-            "email"=> 'required|email',
+            "search"=>"string|required",
         ]);
-      
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
-        $customer = customer::where('email',$request['email'])->where('active',1)->FirstOrFail();
-        $customer->active = 0;
-        if(!$customer->save()){
-            return response()->json(['delete'=>false,'message'=>'customer could not be deleted'],422);
+            $search=$request['search'];
+        try
+        {
+            return customer::where("email", "like", "%$search%")
+                ->paginate(5);
         }
-        else{
-            return response()->json(['delete'=>true,'message'=>'customer has been deleted']);
+        catch(QueryException $e)
+        {
+            return response()->json(["message"=>"bad request"],400);
         }
     }
 }
