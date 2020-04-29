@@ -47,7 +47,12 @@ Route::post('meters/create', 'MetersController@store');
 Route::post('meters/edit', 'MetersController@edit');
 Route::get('meters/delete','MetersController@softdelete');
 
-//Employees
+rancier/{manier?}/{zoek?}','SupplierController@ophalen');
+Route::post('/aanmaak','SupplierController@store');
+Route::post('/verwijder','SupplierController@softVerwijder');
+Route::post('/herinstaleer', 'SupplierController@softHerinstaleer');
+Route::post('/aanpas','SupplierController@aanpas');
+
 Route::get('employees','employeeController@filter');
 Route::get('employees/{employee}','employeeController@show_by_id');
 Route::post('employees','employeeController@store');
