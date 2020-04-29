@@ -49,6 +49,9 @@ Route::get('meters/delete','MetersController@softdelete');
 Route::post('meters/connection/create', 'MeterCustomerController@store');
 Route::post('meters/connection/delete', 'MeterCustomerController@softdelete');
 
+//Meter Data
+Route::post('meters/usage/add', 'MeterDataController@store');
+
 //Employees
 Route::get('employees','employeeController@filter');
 Route::get('employees/{employee}','employeeController@show_by_id');
