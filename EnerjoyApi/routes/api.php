@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MeterCustomerController;
 use Illuminate\Http\Request;
 
 /*
@@ -52,7 +53,20 @@ Route::post('meters/create', 'MetersController@store');
 Route::post('meters/edit', 'MetersController@edit');
 Route::get('meters/delete','MetersController@softdelete');
 
+//Meters&customers
+Route::post('meters/connection/create', 'MeterCustomerController@store');
+Route::post('meters/connection/delete', 'MeterCustomerController@softdelete');
+
+//Meter Data
+Route::post('meters/usage/add', 'MeterDataController@store');
+
 //Employees
+rancier/{manier?}/{zoek?}','SupplierController@ophalen');
+Route::post('/aanmaak','SupplierController@store');
+Route::post('/verwijder','SupplierController@softVerwijder');
+Route::post('/herinstaleer', 'SupplierController@softHerinstaleer');
+Route::post('/aanpas','SupplierController@aanpas');
+
 Route::get('employees','employeeController@filter');
 Route::get('employees/{employee}','employeeController@show_by_id');
 Route::post('employees','employeeController@store');

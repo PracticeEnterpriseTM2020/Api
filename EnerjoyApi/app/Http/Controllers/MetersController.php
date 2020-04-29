@@ -10,26 +10,6 @@ use App\Http\Controllers\Controller;
 class MetersController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -50,7 +30,6 @@ class MetersController extends Controller
 
         $meter->meter_id = request('meter_id');
         $meter->creation_timestamp = strtotime(request('creation_timestamp'));
-        $meter->save();
 
         if (!$meter->save()) {
             return response()->json(['success' => false, 'errors' => 'Data has not been added to database.'], 400);
@@ -82,7 +61,7 @@ class MetersController extends Controller
 
         if ($request->has('amountPerPage')) {
             $amountPerPageRequest = request('amountPerPage');
-        } else{
+        } else {
             $amountPerPageRequest = 10;
         }
 
@@ -119,21 +98,21 @@ class MetersController extends Controller
         $selectQuery = $selectQuery->where('deleted', '=', '0');
         $selectMetersAll = $selectQuery->count();
 
-        if ((floor($selectMetersAll / $amountPerPageRequest)+1) >= $pageRequest) {
+        if ((floor($selectMetersAll / $amountPerPageRequest) + 1) >= $pageRequest) {
             $page = (int) $pageRequest;
         } else {
             $page = (floor($selectMetersAll / $amountPerPageRequest));
         }
 
-        if($pageRequest ==1){
+        if ($pageRequest == 1) {
             $selectMeters = $selectQuery->limit($amountPerPageRequest)->get();
         } else {
-            $selectMeters = $selectQuery->limit($amountPerPageRequest)->offset(($page-1) * $amountPerPageRequest)->get();
+            $selectMeters = $selectQuery->limit($amountPerPageRequest)->offset(($page - 1) * $amountPerPageRequest)->get();
         }
 
         if (count($selectMeters)) {
             //return $selectMeters;
-            return response()->json(['success' => true, 'results' => $selectMetersAll, 'pages' => (floor($selectMetersAll / $amountPerPageRequest)+1), 'current_page' => $page, 'data' => $selectMeters], 200);
+            return response()->json(['success' => true, 'results' => $selectMetersAll, 'pages' => (floor($selectMetersAll / $amountPerPageRequest) + 1), 'current_page' => $page, 'data' => $selectMeters], 200);
         } else {
             return response()->json(['success' => false, 'errors' => 'No results found.'], 400);
         }
@@ -222,28 +201,5 @@ class MetersController extends Controller
         } else {
             return response()->json(['success' => false, 'errors' => 'id does not exist'], 400);
         }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Meters  $meters
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Meters $meters)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Meters  $meters
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Meters $meters)
-    {
-        //
     }
 }
