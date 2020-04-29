@@ -59,21 +59,3 @@ Route::post('meters/connection/delete', 'MeterCustomerController@softdelete');
 
 //Meter Data
 Route::post('meters/usage/add', 'MeterDataController@store');
-
-//Employees
-rancier/{manier?}/{zoek?}','SupplierController@ophalen');
-Route::post('/aanmaak','SupplierController@store');
-Route::post('/verwijder','SupplierController@softVerwijder');
-Route::post('/herinstaleer', 'SupplierController@softHerinstaleer');
-Route::post('/aanpas','SupplierController@aanpas');
-
-Route::get('employees','employeeController@filter');
-Route::get('employees/{employee}','employeeController@show_by_id');
-Route::post('employees','employeeController@store');
-Route::delete('employees/{employee}','employeeController@destroy');
-Route::put('employees/{employee}/restore','employeeController@restore');
-Route::put('employees/{employee}','employeeController@update');
-Route::post('employees/login','employeeAuthController@login');
-Route::fallback(function(){
-    return response()->json(['message' => 'Page Not Found.'], 404);
-});
