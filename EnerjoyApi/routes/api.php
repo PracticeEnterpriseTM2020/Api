@@ -56,6 +56,7 @@ Route::get('meters/delete','MetersController@softdelete');
 //Meters&customers
 Route::post('meters/connection/create', 'MeterCustomerController@store');
 Route::post('meters/connection/delete', 'MeterCustomerController@softdelete');
+Route::get('meters/connection/search', 'MeterCustomerController@search');
 
 //Meter Data
 Route::post('meters/usage/add', 'MeterDataController@store');
