@@ -25,7 +25,7 @@ class JobOfferController extends Controller
     {
         $validator = Validator::make($request->all(), [
             "job_offer_title" => "required|string",
-            "job_offer_description" => "required|string",
+            "job_offer_description" => "required|string|max:65535",
             "job_id" => "required|exists:jobs,id",
             "creator_id" => "required|exists:employees,id"
         ]);
@@ -52,7 +52,7 @@ class JobOfferController extends Controller
     {
         $validator = Validator::make($request->all(), [
             "job_offer_title" => "required|string",
-            "job_offer_description" => "required|string",
+            "job_offer_description" => "required|string|max:65535",
             "job_id" => "required|exists:jobs,id",
             "creator_id" => "required|exists:employees,id"
         ]);

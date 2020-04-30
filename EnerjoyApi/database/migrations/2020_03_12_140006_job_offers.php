@@ -16,7 +16,7 @@ class JobOffers extends Migration
         Schema::create('job_offers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('job_offer_title');
-            $table->string('job_offer_description');
+            $table->text('job_offer_description');
             $table->integer('job_id');
             $table->integer('creator_id');
             $table->softDeletes('deleted_at', 0);

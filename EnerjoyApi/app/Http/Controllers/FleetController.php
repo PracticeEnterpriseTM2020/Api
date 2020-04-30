@@ -57,7 +57,7 @@ class FleetController extends Controller
         $validator = Validator::make($request->all(), [
             "brand" => "required|string",
             "model" => "required|string",
-            "licenseplate" => "required|string|unique:fleets,licenseplate",
+            "licenseplate" => "required|string|unique:fleets,licenseplate,{$fleet->id}",
             "owner_id" => "nullable|exists:employees,id"
         ]);
         if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
