@@ -117,7 +117,7 @@ class invoiceController extends Controller
             'id' => 'required',
             'customerId' => 'required',
             'price' => 'required',
-            'date' => 'required|max:16|min:16|date'
+            'date' => 'required|date'
         ]);
 
        //If the data entered isn't valid, throw error and don't add to DB
@@ -139,7 +139,7 @@ class invoiceController extends Controller
         if (!$invoice->save()) {
             return response()->json(['success' => false, 'errors' => 'Data has not been added to database.'], 422);
         } else {
-            return response()->json(['success' => true, 'message' => 'Data added to database.'], 200);
+            return response()->json(['success' => true, 'message' => 'Data added to database.'], 201);
         }
     }
 
@@ -171,7 +171,7 @@ class invoiceController extends Controller
             return response()->json(['delete'=>false,'message'=>'Invoice could not be deleted'],422);
         }
         else{
-            return response()->json(['delete'=>true,'message'=>'Invoice has been deleted']);
+            return response()->json(['delete'=>true,'message'=>'Invoice has been deleted'], 204);
         }
     }
     
@@ -191,8 +191,8 @@ class invoiceController extends Controller
         //Get the correct row
         $invoice = Invoice::where('id',$request['id'])->where('active',0)->first();
         if(!$invoice){
-        return response()->json(['restore'=>false,'message'=>'Inactive invoice could not be found'],404);
- }
+            return response()->json(['restore'=>false,'message'=>'Inactive invoice could not be found'],404);
+        }
 
         $invoice->active = 1;
         if(!$invoice->save()){

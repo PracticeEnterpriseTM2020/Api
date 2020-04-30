@@ -18,7 +18,7 @@ class AddressesTableSeeder extends Seeder
             DB::table('addresses')->insert([
                 'street' => $faker->streetName,
                 'number' => $index,
-                'cityId' => $index,
+                'city_id' => $index,
             ]);
         };
     }
