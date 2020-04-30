@@ -25,6 +25,7 @@ class CreateEmployeesTable extends Migration
             $table->date("birthdate");
             $table->integer("address_id");
             $table->integer("job_id")->nullable();
+            $table->string('api_token', 100)->unique()->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
