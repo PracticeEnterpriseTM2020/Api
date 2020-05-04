@@ -88,4 +88,29 @@ class MeterCustomerController extends Controller
             return response()->json(['success' => false, 'errors' => 'Connection does not exist'], 400);
         }
     }
+
+    public function search(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'customer_email' => 'required|email|exists:customers,email'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+        }
+
+        $queryGetAllMetersFromCustomerAndData = meter_customer::query();
+        $responseQueryGetAllMetersFromCustomerAndData = $queryGetAllMetersFromCustomerAndData->select('meterInfo.id as id', 'meterInfo.meter_id as meter_id', 'meterInfo.creation_timestamp as creation_timestamp', 'installedOn')
+            ->where('customer_email', '=', request('customer_email'))
+            ->where('meter_customers.deleted', '=', '0')
+            ->leftJoin('meters as meterInfo', 'meterInfo.id', '=', 'meter_customers.meter_id')
+            ->get();
+
+        if (count($responseQueryGetAllMetersFromCustomerAndData)) {
+
+            return response()->json(['success' => true, 'message' => $responseQueryGetAllMetersFromCustomerAndData], 200);
+        } else {
+            return response()->json(['success' => false, 'errors' => 'error'], 400);
+        }
+    }
 }
