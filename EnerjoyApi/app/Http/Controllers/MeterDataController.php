@@ -7,11 +7,19 @@ use App\meter_customer;
 use App\meter_data;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Traits\employeeTrait;
+use App\Http\Traits\customerTrait;
 
 class MeterDataController extends Controller
 {
+    use employeeTrait;
+    use customerTrait;
     public function store(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(), [
             'meter_id' => 'required|numeric|exists:meters,id',
             'meterReading' => 'required|numeric|min:0|not_in:0',

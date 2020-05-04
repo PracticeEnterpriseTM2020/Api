@@ -7,11 +7,19 @@ use App\meter_customer;
 use App\Meters;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Traits\employeeTrait;
+use App\Http\Traits\customerTrait;
 
 class MeterCustomerController extends Controller
 {
+    use employeeTrait;
+    use customerTrait;
     public function store(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(), [
             'customer_email' => 'required|email|exists:customers,email',
             'meter_id' => 'required|numeric|exists:meters,id',
@@ -62,6 +70,10 @@ class MeterCustomerController extends Controller
 
     public function softdelete(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(), [
             'meter_id' => 'required|numeric|exists:meter_customers,meter_id'
         ]);
@@ -91,6 +103,10 @@ class MeterCustomerController extends Controller
 
     public function search(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)&&!$this->isCustomer($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(), [
             'customer_email' => 'required|email|exists:customers,email'
         ]);

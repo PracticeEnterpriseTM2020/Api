@@ -56,13 +56,15 @@ Route::middleware('APIToken')->group(function(){
   Route::get('meters/delete','MetersController@softdelete');
 });
 //Meters&customers
-Route::post('meters/connection/create', 'MeterCustomerController@store');
-Route::post('meters/connection/delete', 'MeterCustomerController@softdelete');
-Route::get('meters/connection/search', 'MeterCustomerController@search');
-
+Route::middleware('APIToken')->group(function(){
+  Route::post('meters/connection/create', 'MeterCustomerController@store');
+  Route::post('meters/connection/delete', 'MeterCustomerController@softdelete');
+  Route::get('meters/connection/search', 'MeterCustomerController@search');
+});
 //Meter Data
-Route::post('meters/usage/add', 'MeterDataController@store');
-
+Route::middleware('APIToken')->group(function(){
+  Route::post('meters/usage/add', 'MeterDataController@store');
+});
 Route::get('employees','employeeController@filter');
 Route::get('employees/{employee}','employeeController@show_by_id');
 Route::post('employees','employeeController@store');

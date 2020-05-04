@@ -55,7 +55,7 @@ class MetersController extends Controller
     public function show(Request $request)
     {
         $token = $request->header('Authorization');
-        if(!$this->isEmployee($token)&&!$this->isCustomer($token)){
+        if(!$this->isEmployee($token)){
             return response()->json(['success'=>false,'message'=>'invalid login']);
         }
         $validator = Validator::make($request->all(), [
