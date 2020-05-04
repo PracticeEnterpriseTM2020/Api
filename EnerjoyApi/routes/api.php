@@ -124,6 +124,11 @@ Route::prefix("fleet")->group(function () {
 Route::prefix("countries")->group(function () {
     Route::middleware("auth")->group(function () {
         Route::get("/", "CountryController@filter");
+        Route::get("/{country}", "CountryController@show");
+        Route::post("/", "CountryController@store");
+        Route::put("/{country}", "CountryController@update");
+        Route::delete("/{country}", "CountryController@destroy");
+        Route::put("/{id}/restore", "CountryController@restore");
     });
 });
 
