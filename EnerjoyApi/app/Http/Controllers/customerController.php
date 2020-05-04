@@ -216,9 +216,6 @@ class customerController extends Controller
     //#################################################################
     public function destroy(Request $request)
     {
-        if(!customer::where('api_token',$request->header('Authorization'))->exists()){
-            return response()->json(['success' => false, 'message' => 'invalid login'], 401);
-        }
         $customer=customer::where('api_token',$request->header('Authorization'))->first();
         $customer->active = 0;
         $customer->api_token = null;
