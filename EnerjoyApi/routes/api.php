@@ -42,7 +42,7 @@ Route::middleware('APIToken')->group(function(){
 
 //Leveranciers
 Route::middleware('APIToken')->group(function(){
-  Route::get('/Leverancier/{manier?}/{zoek?}','SupplierController@ ophalen');
+  Route::get('/Leverancier/{manier?}/{zoek?}','SupplierController@ophalen');
   Route::post('/aanmaak','SupplierController@store');
   Route::post('/verwijder','SupplierController@softVerwijder');
   Route::post('/herinstaleer', 'SupplierController@softHerinstaleer');
