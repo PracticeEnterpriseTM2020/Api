@@ -5,16 +5,25 @@ use App\Supplier;
 use App\country;
 use App\City;
 use App\address;
+use App\Http\Traits\employeeTrait;
+use App\Http\Traits\customerTrait;
 use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-
+    use employeeTrait;
+    use customerTrait;
     //Met deze functie kan je ofwel zoeken op apparte personen, dit kan op verschillende manieren id, companyname....
     //Als je geen variabele doorgeeft, krijg je al de waarden terug.
 
-    public function ophalen($manier = '',$zoek = '')
-    {     
+    public function ophalen(Request $request)
+    {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
+        $manier = $request['manier'];
+        $zoek = $request['zoek'];
         // Zodat je geen sql injectie kunt doen dit stuk.
         $manier = htmlspecialchars($manier);
         $zoek = htmlspecialchars($zoek);
@@ -81,6 +90,10 @@ class SupplierController extends Controller
     //Hetzelfde geldt voor het land en de stad.
     public function store(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         //het land ophalen en uitzoeken welke id hij heeft
         $land = htmlspecialchars(request('country'));
 
@@ -277,6 +290,10 @@ class SupplierController extends Controller
     //Hiermee zet je de isSet terug op 1, dus voeg je het bedrijf opnieuw toe, dit kan op elke manier id, telefoonnr....
     public function softHerinstaleer(Request $reauest)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         // Ik moet overal ook controleren of dit btw nummer niet is gebruikt voor een ander bedrijf.
         $id = htmlspecialchars(request('id'));
         $companyname = htmlspecialchars(request('companyname'));
@@ -400,7 +417,10 @@ class SupplierController extends Controller
     // zo kan je de gegevens nietmeer opvragen.
     public function softVerwijder(Request $request)
     {
-        
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $id = htmlspecialchars(request('id'));
         if ($id != '')
         {
@@ -441,7 +461,10 @@ class SupplierController extends Controller
 
     public function aanpas(Request $request)
     {
-
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $id = htmlspecialchars(request('id'));
         if (preg_match("/\D+/",$id))
         {
@@ -522,7 +545,7 @@ class SupplierController extends Controller
                 $stadId = \DB::table('city')->where("countryId",$landId)->where('name', $stad)->value('id');
                 $straat = htmlspecialchars(request('straat'));
                 $number = htmlspecialchars(request('nummer'));
-                if ($traat != '' && number != '')
+                if ($straat != '' && $number != '')
                 {
                     $AddressId = \DB::table('addresses')->where("cityId",$stadId)->where('street', $straat)->where('number',$number)->value('id');
                 }

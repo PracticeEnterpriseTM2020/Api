@@ -41,12 +41,13 @@ Route::middleware('APIToken')->group(function(){
 
 
 //Leveranciers
-Route::get('/Leverancier/{manier?}/{zoek?}','SupplierController@ophalen');
-Route::post('/aanmaak','SupplierController@store');
-Route::post('/verwijder','SupplierController@softVerwijder');
-Route::post('/herinstaleer', 'SupplierController@softHerinstaleer');
-Route::post('/aanpas','SupplierController@aanpas');
-
+Route::middleware('APIToken')->group(function(){
+  Route::get('/Leverancier/{manier?}/{zoek?}','SupplierController@ ophalen');
+  Route::post('/aanmaak','SupplierController@store');
+  Route::post('/verwijder','SupplierController@softVerwijder');
+  Route::post('/herinstaleer', 'SupplierController@softHerinstaleer');
+  Route::post('/aanpas','SupplierController@aanpas');
+});
 //Meters
 Route::get('meters/search', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');

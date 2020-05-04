@@ -199,11 +199,17 @@ class customerController extends Controller
         if(!$check){
             return response()->json(['success' => false, 'message' => "Postalcode does not exist"], 400);
         }
-        $address = address::where('id',$customer->addressId)->firstOrFail();
         $country = country::where('abv',strtoupper($request["countrycode"]))->firstOrFail();
         $city = city::firstOrCreate(['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode']],['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode'],'countryId'=>$country->id]);
-        $address->update(['street'=>strtolower($request['street']),'number'=>$request['number'],'cityId'=>$city->id]);
-        $customer->update(['firstname'=>$request['first'],'lastname'=>$request['last'],'email'=>$request['newEmail']]);
+        $address = address::where('street',strtolower($request['street']))->
+        where('number',$request['number'])->
+        where('cityId',$city->id)->first();
+        if(!$address){
+            $address=address::create(['street'=>strtolower($request['street']),
+            'number'=>$request['number'],
+            'cityId'=>$city->id]);
+        }
+        $customer->update(['firstname'=>$request['first'],'lastname'=>$request['last'],'email'=>$request['newEmail'],'addressId'=>$address->id]);
         return response()->json(['success' => true, 'message' => "customer has been updated"]);
     }
 
