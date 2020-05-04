@@ -31,7 +31,7 @@ class invoiceController extends Controller
     public function filter(Request $request)
     {
         $token = $request->header('Authorization');
-        if(!$this->isEmployee($token)){
+        if(!$this->isEmployee($token)&&!$this->isCustomer($token)){
             return response()->json(['success'=>false,'message'=>'invalid login']);
         }
         $cols = Schema::getColumnListing("invoices");

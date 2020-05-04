@@ -6,9 +6,13 @@ use Validator; //For validating the inputs
 use App\Meters;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Traits\employeeTrait;
+use App\Http\Traits\customerTrait;
 
 class MetersController extends Controller
 {
+    use employeeTrait;
+    use customerTrait;
     /**
      * Store a newly created resource in storage.
      *
@@ -17,6 +21,10 @@ class MetersController extends Controller
      */
     public function store(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(), [
             'meter_id' => 'required|max:255|alpha_dash',
             'creation_timestamp' => 'required|max:16|min:16|date'
@@ -46,6 +54,10 @@ class MetersController extends Controller
      */
     public function show(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)&&!$this->isCustomer($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(), [
             'meter_id'                  => 'max:255|alpha_dash',
             'creation_timestamp_after'  => 'max:16|min:16|date',
@@ -127,6 +139,10 @@ class MetersController extends Controller
      */
     public function softdelete(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric'
         ]);
@@ -165,6 +181,10 @@ class MetersController extends Controller
      */
     public function edit(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric',
             'meter_id' => 'max:255|alpha_dash',

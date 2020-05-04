@@ -49,11 +49,12 @@ Route::middleware('APIToken')->group(function(){
   Route::post('/aanpas','SupplierController@aanpas');
 });
 //Meters
-Route::get('meters/search', 'MetersController@show');
-Route::post('meters/create', 'MetersController@store');
-Route::post('meters/edit', 'MetersController@edit');
-Route::get('meters/delete','MetersController@softdelete');
-
+Route::middleware('APIToken')->group(function(){
+  Route::get('meters/search', 'MetersController@show');
+  Route::post('meters/create', 'MetersController@store');
+  Route::post('meters/edit', 'MetersController@edit');
+  Route::get('meters/delete','MetersController@softdelete');
+});
 //Meters&customers
 Route::post('meters/connection/create', 'MeterCustomerController@store');
 Route::post('meters/connection/delete', 'MeterCustomerController@softdelete');
