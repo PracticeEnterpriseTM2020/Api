@@ -288,7 +288,7 @@ class SupplierController extends Controller
 
 
     //Hiermee zet je de isSet terug op 1, dus voeg je het bedrijf opnieuw toe, dit kan op elke manier id, telefoonnr....
-    public function softHerinstaleer(Request $reauest)
+    public function softHerinstaleer(Request $request)
     {
         $token = $request->header('Authorization');
         if(!$this->isEmployee($token)){
