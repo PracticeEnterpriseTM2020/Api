@@ -132,6 +132,18 @@ Route::prefix("countries")->group(function () {
     });
 });
 
+//Articles
+Route::prefix("articles")->group(function () {
+    Route::middleware("auth")->group(function () {
+        Route::get("/", "ArticleController@filter");
+        Route::get("/{article}", "ArticleController@getById");
+        Route::post("/", "ArticleController@create");
+        Route::put("/{article}", "ArticleController@update");
+        Route::delete("/{article}", "ArticleController@delete");
+        Route::put("/{id}/restore", "ArticleController@restore");
+    });
+});
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });

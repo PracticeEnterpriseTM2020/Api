@@ -79,7 +79,7 @@ class FleetController extends Controller
 
         $sort = $request->input("sort", "id");
         $order = $request->input("order", "asc");
-        $key = $request->input("key", "brand");
+        $key = $request->input("key", "licenseplate");
         $search = $request->input("search", "");
         $amount = $request->input("amount", 5);
 

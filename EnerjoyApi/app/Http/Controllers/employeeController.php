@@ -133,7 +133,7 @@ class employeeController extends Controller
 
         if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
-        if (!$token = Auth::attempt($request->only(["email", "password"]))) throw new AuthenticationException("Email and password do not match.");
+        if (!$token = Auth::attempt($request->only(["email", "password"]))) throw new AuthenticationException("errors.credentials");
 
         $employee = Employee::where("email", "=", $request->email)->first();
         $employee["token"] = $token;
