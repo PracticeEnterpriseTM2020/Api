@@ -8,4 +8,5 @@ return [
     'unauthenticated' => 'You must be logged in to perform this action.',
     'invalid-token' => 'This token is invalid',
     'blacklist-token' => 'This token is outdated, refresh your token or login again',
+    'credentials' => 'Email en password do not match.',
 ];
