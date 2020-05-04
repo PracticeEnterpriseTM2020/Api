@@ -54,7 +54,7 @@ class ArticleController extends Controller
         $validator = Validator::make($request->all(), [
             "title" => "required|string",
             "description" => "required|string|max:65535",
-            "creator_id" => "required|iteger|exists:employees,id"
+            "creator_id" => "required|integer|exists:employees,id"
         ]);
         if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
@@ -67,11 +67,12 @@ class ArticleController extends Controller
         $validator = Validator::make($request->all(), [
             "title" => "required|string",
             "description" => "required|string|max:65535",
-            "creator_id" => "required|iteger|exists:employees,id"
+            "creator_id" => "required|integer|exists:employees,id"
         ]);
         if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
-
-        return $article->update($request->all());
+        
+        $article->update($request->all());
+        return response()->json($article, 200);
     }
 
     public function delete(Article $article)
