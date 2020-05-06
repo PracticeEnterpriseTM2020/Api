@@ -21,6 +21,8 @@ class SupplierController extends Controller
         // zoeken op Id en address moet niet met een like gebeuren want dat geeft problemen 
         if ($manier == 'id' || $manier == 'address')
         {
+            // While lus voor maken zodat ik naar al de issets kijk, nu kijk ik nog maar naar de eerste.
+            // zelfde voor de 2 codes hieronder
             $persoon= \DB::table('suppliers')->where($manier,$zoek)->get();
             $isSet = \DB::table('suppliers')->where($manier,$zoek)->value('isSet');
             if ($persoon == "[]")
@@ -39,8 +41,12 @@ class SupplierController extends Controller
         // Hier zoek ik wel met een like, op deze manier kan je een deel van de naam of rekeningnummer... opgeven en zo zoeken.
         else if ($manier == 'companyname' || $manier == 'vatnumber' || $manier == 'email' || $manier == 'phonenumber') 
         {
+            
+            // Hier while lus maken
             $persoon= \DB::table('suppliers')->where($manier,'LIKE','%'.$zoek.'%')->get();
+            
             $isSet = \DB::table('suppliers')->where($manier,'LIKE','%'.$zoek.'%')->value('isSet');
+            return $isSet;
             if ($persoon == "[]")
             {
                 $persoon = "[{\"failed\" : \"notFound\"}]";
