@@ -19,7 +19,7 @@ class SupplierController extends Controller
         $manier = htmlspecialchars($manier);
         $zoek = htmlspecialchars($zoek);
         // zoeken op Id en address moet niet met een like gebeuren want dat geeft problemen 
-        if ($manier == 'id' || $manier == 'address')
+        if ($manier == 'id')
         {
             // While lus voor maken zodat ik naar al de issets kijk, nu kijk ik nog maar naar de eerste.
             // zelfde voor de 2 codes hieronder
@@ -43,10 +43,9 @@ class SupplierController extends Controller
         {
             
             // Hier while lus maken
-            $persoon= \DB::table('suppliers')->where($manier,'LIKE','%'.$zoek.'%')->get();
+            $persoon= \DB::table('suppliers')->where($manier,'LIKE','%'.$zoek.'%')->where('isset',1)->get();
             
             $isSet = \DB::table('suppliers')->where($manier,'LIKE','%'.$zoek.'%')->value('isSet');
-            return $isSet;
             if ($persoon == "[]")
             {
                 $persoon = "[{\"failed\" : \"notFound\"}]";
@@ -60,7 +59,7 @@ class SupplierController extends Controller
             return $persoon;
         } 
 
-        else if ($manier == 'addressid')
+        else if ($manier == 'addressId')
         {
             $address = \DB::table('addresses')->where('id',$zoek)->get();
             $cityId = \DB::table('addresses')->where('id',$zoek)->value('cityId');
