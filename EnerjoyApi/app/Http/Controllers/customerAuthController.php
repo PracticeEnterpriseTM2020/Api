@@ -26,9 +26,6 @@ class customerAuthController extends Controller
         $cust=customer::where('email',$request["email"])->where('active',1)->first();
         
         if($cust){
-            if($cust->api_token!=null){
-                return response()->json(['success' => false, 'message' => 'already logged in'], 400);
-            }
             if(password_verify($request['password'],$cust->password)){
                 $postArray = ['api_token' => $this->apiToken];
                 $cust->api_token = $this->apiToken;
