@@ -150,6 +150,7 @@ Route::prefix("conversations")->group(function () {
         Route::get("/", "ConversationController@filter");
         Route::get("/{conversation}", "ConversationController@getById");
         Route::post("/", "ConversationController@create");
+        Route::put("/{conversation}", "ConversationController@update");
     });
 });
 
@@ -157,6 +158,7 @@ Route::prefix("conversations")->group(function () {
 Route::prefix("messages")->group(function () {
     Route::middleware("auth")->group(function () {
         Route::post("/", "MessageController@create");
+        Route::put("/{message}","MessageController@update");
     });
 });
 
