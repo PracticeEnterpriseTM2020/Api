@@ -22,4 +22,17 @@ class MessageController extends Controller
         $message = Message::create(array_merge($request->all(), ["sender_id" => $sender->id]));
         return $message;
     }
+
+    public function destroy(Message $message)
+    {
+        $message->delete();
+        return response()->json(null, 204);
+    }
+
+    public function restore($id)
+    {
+        $message = Message::onlyTrashed()->findOrFail($id);
+        $message->restore();
+        return response()->json($message, 200);
+    }
 }

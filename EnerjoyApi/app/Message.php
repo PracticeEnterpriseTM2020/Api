@@ -3,9 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Message extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ["text", "sender_id", "conversation_id"];
     protected $hidden = ["updated_at", "deleted_at"];
     protected $with = ["sender"];

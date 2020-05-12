@@ -69,4 +69,17 @@ class ConversationController extends Controller
         $conversation = Conversation::create(["employee_one_id" => $emp1, "employee_two_id" => $emp2]);
         return $conversation;
     }
+
+    public function destroy(Conversation $conversation)
+    {
+        $conversation->delete();
+        return response()->json(null, 204);
+    }
+
+    public function restore($id)
+    {
+        $conversation = Conversation::onlyTrashed()->findOrFail($id);
+        $conversation->restore();
+        return response()->json($conversation, 200);
+    }
 }
