@@ -144,6 +144,22 @@ Route::prefix("articles")->group(function () {
     });
 });
 
+//Conversations
+Route::prefix("conversations")->group(function () {
+    Route::middleware("auth")->group(function () {
+        Route::get("/", "ConversationController@filter");
+        Route::get("/{conversation}", "ConversationController@getById");
+        Route::post("/", "ConversationController@create");
+    });
+});
+
+//Messages
+Route::prefix("messages")->group(function () {
+    Route::middleware("auth")->group(function () {
+        Route::post("/", "MessageController@create");
+    });
+});
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
