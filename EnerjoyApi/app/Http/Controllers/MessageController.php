@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Conversation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Message;
+use Illuminate\Support\Facades\App;
 use Validator;
 
 class MessageController extends Controller
@@ -20,6 +22,9 @@ class MessageController extends Controller
         $sender = $request->user();
 
         $message = Message::create(array_merge($request->all(), ["sender_id" => $sender->id]));
+
+        $message->conversation()->touch();
+
         return $message;
     }
 
@@ -33,6 +38,17 @@ class MessageController extends Controller
     {
         $message = Message::onlyTrashed()->findOrFail($id);
         $message->restore();
+        return response()->json($message, 200);
+    }
+
+    public function update(Request $request, Message $message)
+    {
+        $validator = Validator::make($request->all(), [
+            "text" => "required|string"
+        ]);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
+
+        $message->update($request->all());
         return response()->json($message, 200);
     }
 }

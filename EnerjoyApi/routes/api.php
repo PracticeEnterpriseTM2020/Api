@@ -152,6 +152,7 @@ Route::prefix("conversations")->group(function () {
         Route::post("/", "ConversationController@create");
         Route::delete("/{conversation}", "ConversationController@delete");
         Route::put("/{id}/restore", "ConversationController@restore");
+        Route::put("/{conversation}", "ConversationController@update");
     });
 });
 
@@ -161,6 +162,7 @@ Route::prefix("messages")->group(function () {
         Route::post("/", "MessageController@create");
         Route::delete("/{message}", "MessageController@delete");
         Route::put("/{id}/restore", "MessageController@restore");
+        Route::put("/{message}", "MessageController@update");
     });
 });
 
