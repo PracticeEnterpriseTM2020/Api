@@ -22,7 +22,7 @@ class ConversationController extends Controller
     public function filter(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "search" => "string"
+            "search" => "nullable|string"
         ]);
         if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
@@ -51,23 +51,25 @@ class ConversationController extends Controller
 
     public function create(Request $request)
     {
-        // TODO: check for unique combination 
         $validator = Validator::make($request->all(), [
-            "employee_one" => "required|integer|exists:employees,id",
-            "employee_two" => "required|integer|exists:employees,id"
+            "receiver_email" => "required|string|exists:employees,email"
         ]);
         if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
 
-        $emp1 = $request->input("employee_one");
-        $emp2 = $request->input("employee_two");
-        if ($emp1 > $emp2) {
+        $emp1 = $request->user();
+        $emp2 = Employee::where("email", $request->input("receiver_email"))->first();
+
+        if ($emp1->id > $emp2->id) {
             $temp = $emp1;
             $emp1 = $emp2;
             $emp2 = $temp;
         }
 
-        $conversation = Conversation::create(["employee_one_id" => $emp1, "employee_two_id" => $emp2]);
-        return $conversation;
+        if (Conversation::where("employee_one_id", $emp1)->where("employee_two_id", $emp2)->exists())
+            return response()->json(["error" => trans("errors.conversation")], 400);
+
+        $conversation = Conversation::create(["employee_one_id" => $emp1->id, "employee_two_id" => $emp2->id]);
+        return response()->json($conversation, 201);
     }
 
     public function destroy(Conversation $conversation)

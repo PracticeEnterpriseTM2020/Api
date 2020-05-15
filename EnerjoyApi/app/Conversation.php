@@ -10,12 +10,12 @@ class Conversation extends Model
     use SoftDeletes;
 
     protected $fillable = ["employee_one_id", "employee_two_id"];
-    protected $hidden = ["created_at", "updated_at", "deleted_at"];
-    protected $with = ["messages", "employee_one", "employee_two"];
+    protected $hidden = ["created_at", "deleted_at"];
+    protected $with = ["last_message", "employee_one", "employee_two"];
 
-    function messages()
+    function last_message()
     {
-        return $this->hasMany("App\Message");
+        return $this->hasOne("App\Message")->latest();
     }
 
     function employee_one()

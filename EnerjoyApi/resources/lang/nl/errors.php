@@ -8,5 +8,6 @@ return [
     'unauthenticated' => 'Je moet ingelogd zijn om deze actie uit te voeren.',
     'invalid-token' => 'Het opgegeven kenteken is fout.',
     'blacklist-token' => 'Het opgegeven kenteken is veroudered, vernieuw je teken of log opnieuw in.',
-    'credentials' => 'Email en wachtwoord komen niet overeen.'
+    'credentials' => 'Email en wachtwoord komen niet overeen.',
+    'conversation' => 'Deze conversatie bestaat al.'
 ];

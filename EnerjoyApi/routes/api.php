@@ -159,6 +159,7 @@ Route::prefix("conversations")->group(function () {
 //Messages
 Route::prefix("messages")->group(function () {
     Route::middleware("auth")->group(function () {
+        Route::get("/", "MessageController@filter");
         Route::post("/", "MessageController@create");
         Route::delete("/{message}", "MessageController@delete");
         Route::put("/{id}/restore", "MessageController@restore");

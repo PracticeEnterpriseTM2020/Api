@@ -25,7 +25,7 @@ class MessageController extends Controller
 
         $message->conversation()->touch();
 
-        return $message;
+        return response()->json($message, 201);
     }
 
     public function destroy(Message $message)
@@ -50,5 +50,24 @@ class MessageController extends Controller
 
         $message->update($request->all());
         return response()->json($message, 200);
+    }
+
+    public function filter(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "conversation_id" => "required|integer|exists:conversations,id",
+            "search" => "nullable|string"
+        ]);
+        if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
+
+        $search = $request->input("search", "");
+        $conversation = $request->input("conversation_id");
+
+        $messages = Message::where("conversation_id", $conversation)
+            ->where("text", "like", "%$search%")
+            ->orderBy("created_at", "desc")
+            ->paginate(15);
+
+        return collect(["search" => $search])->merge($messages);
     }
 }
