@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: api-php
+  name: api-php
+spec:
+  ports:
+  - name: "8000"
+    port: 8000
+    targetPort: 8000
+  selector:
+    app: api-php
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: api-php
+  name: api-php
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-php
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: api-php
+    spec:
+      nodeSelector:
+        php: "true"
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+      - image: luclecocq/api
+        name: api-php
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - "-c"
+              - |
+                set -ex
+                sed -i '10s/.*/DB_HOST=mysql/' /var/www/html/.env
+                sed -i '13s/.*/DB_USERNAME=${mysqlu}/' /var/www/html/.env
+                sed -i '14s/.*/DB_PASSWORD=${mysqlp}/' /var/www/html/.env
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "128Mi"
+            cpu: "200m"
+        command:
+          - php 
+          - "artisan"
+          - "serve" 
+          - "--host=0.0.0.0"
+      restartPolicy: Always
+
