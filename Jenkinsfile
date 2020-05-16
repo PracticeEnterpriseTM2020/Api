@@ -38,7 +38,6 @@ pipeline {
         script {
           kubernetesDeploy(configs: "api-php-deployment.yaml", kubeconfigId: "mykubeconfig")
           sh 'kubectl --kubeconfig="/web-nfs/kubernetes/secrets/config" set image deployments/api-php api-php=localhost:5000/luclecocq/api:$BUILD_NUMBER'
-          sh 'docker image prune -a --force'
         }
       }
     }
