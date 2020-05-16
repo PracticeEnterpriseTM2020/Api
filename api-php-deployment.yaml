@@ -49,6 +49,7 @@ spec:
                 sed -i '10s/.*/DB_HOST=mysql/' /var/www/html/.env
                 sed -i '13s/.*/DB_USERNAME=${mysqlu}/' /var/www/html/.env
                 sed -i '14s/.*/DB_PASSWORD=${mysqlp}/' /var/www/html/.env
+                chmod -R 777 ./storage/
         ports:
         - containerPort: 8000
         resources:
