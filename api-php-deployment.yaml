@@ -32,9 +32,9 @@ spec:
     spec:
 #      nodeSelector:
 #        php: "true"
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
+#      securityContext:
+#        runAsUser: 1000
+#        runAsGroup: 1000
       containers:
       - image: luclecocq/api
         name: api-php
