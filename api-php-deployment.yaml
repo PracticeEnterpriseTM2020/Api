@@ -30,8 +30,8 @@ spec:
       labels:
         app: api-php
     spec:
-      nodeSelector:
-        php: "true"
+#      nodeSelector:
+#        php: "true"
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
