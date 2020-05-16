@@ -1,7 +1,7 @@
 pipeline {
 
   environment {
-    registry = "localhost:5000/luclecocq/api"
+    registry = "10.48.0.70:5000/luclecocq/api"
     dockerImage = ""
   }
   
