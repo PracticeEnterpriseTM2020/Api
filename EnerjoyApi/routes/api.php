@@ -65,6 +65,7 @@ Route::middleware('APIToken')->group(function(){
 Route::middleware('APIToken')->group(function(){
   Route::post('meters/usage/add', 'MeterDataController@store');
 });
+//employees
 Route::get('employees','employeeController@filter');
 Route::get('employees/{employee}','employeeController@show_by_id');
 Route::post('employees','employeeController@store');

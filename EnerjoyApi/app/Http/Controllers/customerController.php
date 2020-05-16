@@ -222,7 +222,20 @@ class customerController extends Controller
     //#################################################################
     public function destroy(Request $request)
     {
-        $customer=customer::where('api_token',$request->header('Authorization'))->first();
+        $token = $request->header("Authorization");
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
+        $validator = Validator::make($request->all(),[
+            "email"=> 'required|email'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+        }
+        $customer=customer::where('email',$request['email'])->first();
+        if(!$customer){
+            return response()->json(['delete'=>false,'message'=>'customer does not exist']);
+        }
         $customer->active = 0;
         $customer->api_token = null;
         if(!$customer->save()){
