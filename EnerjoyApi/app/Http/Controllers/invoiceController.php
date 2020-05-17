@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Validator;
 //use App\Http\Controllers\Schema;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
@@ -14,8 +15,9 @@ use App\Http\Resources\invoice as invoiceResource;
 
 class invoiceController extends Controller
 {
+    
     use employeeTrait;
-    use customerTrait;
+    //use customerTrait;
     public function index(Request $request)
     {
         $token = $request->header('Authorization');
@@ -23,6 +25,7 @@ class invoiceController extends Controller
             return response()->json(['success'=>false,'message'=>'invalid login']);
         }
         //Show all invoice data on the screen
+        
         return invoiceResource::collection(invoice::all());
     }
 
@@ -190,9 +193,10 @@ class invoiceController extends Controller
 
         //Get the correct row
         $invoice = Invoice::where('id',$request['id'])->where('active',0)->first();
-        if(!$invoice){
+        if(!$invoice)
+        {
         return response()->json(['restore'=>false,'message'=>'Inactive invoice could not be found'],404);
- }
+        }
 
         $invoice->active = 1;
         if(!$invoice->save()){

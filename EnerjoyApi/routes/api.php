@@ -47,6 +47,10 @@ Route::post('/verwijder','SupplierController@softVerwijder');
 Route::post('/herinstaleer', 'SupplierController@softHerinstaleer');
 Route::post('/aanpas','SupplierController@aanpas');
 
+
+//kosten
+Route::post('/kosten/maken','kostencontroler@store');
+
 //Meters
 Route::get('meters/search', 'MetersController@show');
 Route::post('meters/create', 'MetersController@store');
