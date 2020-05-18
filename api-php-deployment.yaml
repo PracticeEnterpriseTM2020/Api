@@ -19,7 +19,7 @@ metadata:
     app: api-php
   name: api-php
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: api-php
@@ -30,11 +30,11 @@ spec:
       labels:
         app: api-php
     spec:
-      nodeSelector:
-        php: "true"
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
+#      nodeSelector:
+#        php: "true"
+#      securityContext:
+#        runAsUser: 1000
+#        runAsGroup: 1000
       containers:
       - image: luclecocq/api
         name: api-php
@@ -49,6 +49,7 @@ spec:
                 sed -i '10s/.*/DB_HOST=mysql/' /var/www/html/.env
                 sed -i '13s/.*/DB_USERNAME=${mysqlu}/' /var/www/html/.env
                 sed -i '14s/.*/DB_PASSWORD=${mysqlp}/' /var/www/html/.env
+                chmod -R 777 ./storage/
         ports:
         - containerPort: 8000
         resources:
