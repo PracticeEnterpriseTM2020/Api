@@ -16,6 +16,7 @@ class APIToken
      */
     public function handle($request, Closure $next)
     {
+        //check if token exist in header
         if ($request->header('Authorization')) {
             return $next($request);
         } 

@@ -27,10 +27,13 @@ class customerController extends Controller
     //#################################################################
     public function index(Request $request)
     {
+        //get token
         $token = $request->header('Authorization');
+        //check if token is employee
         if(!$this->getEmployee($token)){
             return response()->json(['success'=>false,'message'=>'invalid login']);
         }
+        //return customer resource
         return customerResource::collection(customer::paginate(5));
     }
     //#################################################################
@@ -48,11 +51,13 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
-        // todo fix password verify
+        //get customer
         $customer = customer::where('email',$request['email'])->where('active',0)->firstOrFail();
+        //verify password
         if(password_verify($request['password'],$customer->password)){
-        $customer->active = 1;
-        $customer->save();
+            //set customer as active
+            $customer->active = 1;
+            $customer->save();
         return response()->json(['success' => true, 'message' => "customer has been activated"]);
         }
         return response()->json(['success' => false, 'message' => "password email combination is false"]);
@@ -73,6 +78,7 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
+        //use different validator for postalcode validation
         $Vpostal = new \Sirprize\PostalCodeValidator\Validator();
         if(!$Vpostal->hasCountry($request['countrycode'])){
             return response()->json(['success' => false, 'message' => "Countrycode does not exist"], 400);
@@ -81,7 +87,9 @@ class customerController extends Controller
         if(!$check){
             return response()->json(['success' => false, 'message' => "Postalcode does not exist"], 400);
         }
+        //get the requested country
         $country=country::where('abv',strtoupper($request["countrycode"]))->firstOrFail();
+        //check if address is already used
         if(address::leftJoin('city','addresses.cityId','=','city.id')
         ->where('street',$request["street"])
         ->where('number',$request['number'])
@@ -90,6 +98,7 @@ class customerController extends Controller
         ->where('city.countryId',$country->id)->exists()){
             return response()->json(['success' => false, 'message' => "Address already in use"], 400);
         }
+        //if city does not exist create it in the database
         $city = city::firstOrCreate(
         [
             'name'=>strtolower($request['city']),
@@ -100,12 +109,14 @@ class customerController extends Controller
             'name'=>strtolower($request['city']),
             'postalcode'=>$request['postalcode']
         ]);
+        //create the address
         $addr = address::create(
         [
             'street'=>strtolower($request['street']),
             'number'=>$request['number'],
             'cityId'=>$city->id
         ]);
+        //create the customer
         $cust = customer::create([
             'lastname'=>$request['last'],
             'firstname'=>$request['first'],
@@ -126,10 +137,13 @@ class customerController extends Controller
     //#################################################################
     public function show(Request $request)
     {
+        //get token
         $token = $request->header("Authorization");
+        //if customer send customer based on token
         if($this->isCustomer($token)){
             return  new customerResource(customer::where('api_token',$token)->with('address.city','address.city.country')->FirstOrFail());
         }
+        //if employee return customer based on email in request
         if($this->isEmployee($token)){
             $validator = Validator::make($request->all(),[
                 "email"=> 'required|email'
@@ -191,6 +205,7 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
+        //check if postalcode is valid
         $Vpostal = new \Sirprize\PostalCodeValidator\Validator();
         if(!$Vpostal->hasCountry(strtoupper($request['countrycode']))){
             return response()->json(['success' => false, 'message' => "Countrycode does not exist"], 400);
@@ -199,16 +214,21 @@ class customerController extends Controller
         if(!$check){
             return response()->json(['success' => false, 'message' => "Postalcode does not exist"], 400);
         }
+        //get country
         $country = country::where('abv',strtoupper($request["countrycode"]))->firstOrFail();
+        //get city
         $city = city::firstOrCreate(['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode']],['name'=>strtolower($request['city']),'postalcode'=>$request['postalcode'],'countryId'=>$country->id]);
+        //get address
         $address = address::where('street',strtolower($request['street']))->
         where('number',$request['number'])->
         where('cityId',$city->id)->first();
+        //address has changed create a new address
         if(!$address){
             $address=address::create(['street'=>strtolower($request['street']),
             'number'=>$request['number'],
             'cityId'=>$city->id]);
         }
+        //update the customer in the database
         $customer->update(['firstname'=>$request['first'],'lastname'=>$request['last'],'email'=>$request['newEmail'],'addressId'=>$address->id]);
         return response()->json(['success' => true, 'message' => "customer has been updated"]);
     }
@@ -232,10 +252,12 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
+        //get customer based on email
         $customer=customer::where('email',$request['email'])->first();
         if(!$customer){
             return response()->json(['delete'=>false,'message'=>'customer does not exist']);
         }
+        //set inactive and save
         $customer->active = 0;
         $customer->api_token = null;
         if(!$customer->save()){
@@ -260,6 +282,7 @@ class customerController extends Controller
             $search=$request['search'];
         try
         {
+            //return customers based on search paginate /5
             return customer::where("email", "like", "%$search%")
                 ->paginate(5);
         }
@@ -281,13 +304,17 @@ class customerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
+        //check if password is correct
         if(!password_verify($request['password'],$customer->password)){
             return response()->json(['success' => false, 'message' => "password is wrong"], 400);
         }
+        //check if passwords match
         if($request["newpass"]!=$request["newpass_second"]){
             return response()->json(['success' => false, 'message' => "passwords do no match"], 400);
         }
+        //hash the new password
         $customer->password = password_hash($request['newpass'], PASSWORD_BCRYPT);
+        //save it
         $customer->save();
         return response()->json(['success' => true, 'message' => "password has been updated"], 200);
     }
