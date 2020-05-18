@@ -27,6 +27,7 @@ Route::middleware('APIToken')->group(function () {
   Route::post('customers/showOne', 'customerController@show');
   Route::post('customers/change', 'customerController@update');
   Route::post('customers/logout','customerAuthController@logout');
+  Route::post('customers/changePass','customerController@changeLogin');
   Route::post('employees/logout','employeeAuthController@logout');
 });
 

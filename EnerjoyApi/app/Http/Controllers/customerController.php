@@ -268,4 +268,27 @@ class customerController extends Controller
             return response()->json(["message"=>"bad request"],400);
         }
     }
+    public function changeLogin(Request $request){
+        $customer = $this->getCustomer($request->header("Authorization"));
+        if(!$customer){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
+        $validator = Validator::make($request->all(),[
+            "password"=> 'required',
+            "newpass"=> 'required',
+            "newpass_second"=> 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->messages()], 400);
+        }
+        if(!password_verify($request['password'],$customer->password)){
+            return response()->json(['success' => false, 'message' => "password is wrong"], 400);
+        }
+        if($request["newpass"]!=$request["newpass_second"]){
+            return response()->json(['success' => false, 'message' => "passwords do no match"], 400);
+        }
+        $customer->password = password_hash($request['newpass'], PASSWORD_BCRYPT);
+        $customer->save();
+        return response()->json(['success' => true, 'message' => "password has been updated"], 200);
+    }
 }
