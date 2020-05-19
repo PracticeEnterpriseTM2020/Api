@@ -23,6 +23,7 @@ return [
     'before' => ':attribute moet voor :date komen.',
     'integer' => ':attribute moet een niet kommagetal zijn.',
     'in' => ':attribute moet één van de volgende types zijn: :values',
+    'exists' => ':attribute bestaat niet.',
 
     'attributes' => [
         'first_name' => 'voornaam',
@@ -44,5 +45,6 @@ return [
         'job_offer_title' => 'vacature titel',
         'job_offer_description' => 'vacature beschrijving',
         'creator_id' => 'eigenaar',
+        'receiver_email' => 'email',
     ],
 ];

@@ -65,7 +65,7 @@ class ConversationController extends Controller
             $emp2 = $temp;
         }
 
-        if (Conversation::where("employee_one_id", $emp1)->where("employee_two_id", $emp2)->exists())
+        if (Conversation::where("employee_one_id", $emp1->id)->where("employee_two_id", $emp2->id)->exists())
             return response()->json(["error" => trans("errors.conversation")], 400);
 
         $conversation = Conversation::create(["employee_one_id" => $emp1->id, "employee_two_id" => $emp2->id]);
