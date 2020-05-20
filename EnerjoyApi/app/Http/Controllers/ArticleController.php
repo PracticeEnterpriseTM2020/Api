@@ -70,7 +70,7 @@ class ArticleController extends Controller
             "creator_id" => "required|integer|exists:employees,id"
         ]);
         if ($validator->fails()) return response()->json(["error" => $validator->messages()->all()], 400);
-        
+
         $article->update($request->all());
         return response()->json($article, 200);
     }
@@ -83,6 +83,8 @@ class ArticleController extends Controller
 
     public function restore($id)
     {
-        return Article::onlyTrashed()->findOrFail($id)->restore();
+        $article = Article::onlyTrashed()->findOrFail($id);
+        $article->restore();
+        return $article;
     }
 }
