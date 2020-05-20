@@ -27,7 +27,7 @@ class MeterCustomerController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 411);
         }
 
         $selectQueryCheckIfMeterIsOkToUse = Meters::query();
@@ -49,7 +49,7 @@ class MeterCustomerController extends Controller
                 $meter_customer->installedOn = strtotime(request('installedOn'));
 
                 if (!$meter_customer->save()) {
-                    return response()->json(['success' => false, 'errors' => 'Data has not been added to database.'], 400);
+                    return response()->json(['success' => false, 'errors' => 'Data has not been added to database.'], 511);
                 } else {
 
 
@@ -58,13 +58,13 @@ class MeterCustomerController extends Controller
                     $updateMeterToUsed = $queryUpdateMeterToUsed->update(['isUsed' => 1]);
 
 
-                    return response()->json(['success' => true, 'message' => 'Data added to database.'], 200);
+                    return response()->json(['success' => true, 'message' => 'Data added to database.'], 212);
                 }
             } else {
-                return response()->json(['success' => false, 'errors' => 'Meter is already used or does not exist'], 400);
+                return response()->json(['success' => false, 'errors' => 'Meter is already used or does not exist'], 411);
             }
         } else {
-            return response()->json(['success' => false, 'errors' => 'Meter is already used or does not exist'], 400);
+            return response()->json(['success' => false, 'errors' => 'Meter is already used or does not exist'], 411);
         }
     }
 
@@ -79,7 +79,7 @@ class MeterCustomerController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 411);
         }
 
         $queryCheckIfMeterExistsAndUsed = meter_customer::query();
@@ -95,9 +95,9 @@ class MeterCustomerController extends Controller
             $queryUpdateMeterToNotUsed = $queryUpdateMeterToNotUsed->where('id', '=', request('meter_id'));
             $updateMeterToNotUsed = $queryUpdateMeterToNotUsed->update(['isUsed' => 0]);
 
-            return response()->json(['success' => true, 'message' => 'Connection meter & customer removed'], 200);
+            return response()->json(['success' => true, 'message' => 'Connection meter & customer removed'], 214);
         } else {
-            return response()->json(['success' => false, 'errors' => 'Connection does not exist'], 400);
+            return response()->json(['success' => false, 'errors' => 'Connection does not exist'], 412);
         }
     }
 
@@ -112,7 +112,7 @@ class MeterCustomerController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 411);
         }
 
         $queryGetAllMetersFromCustomerAndData = meter_customer::query();
@@ -124,9 +124,9 @@ class MeterCustomerController extends Controller
 
         if (count($responseQueryGetAllMetersFromCustomerAndData)) {
 
-            return response()->json(['success' => true, 'message' => $responseQueryGetAllMetersFromCustomerAndData], 200);
+            return response()->json(['success' => true, 'message' => $responseQueryGetAllMetersFromCustomerAndData], 213);
         } else {
-            return response()->json(['success' => false, 'errors' => 'error'], 400);
+            return response()->json(['success' => false, 'errors' => 'Customer has no meter(s)'], 412);
         }
     }
 }

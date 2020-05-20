@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class meter_data extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['meter_id', 'meterReading', 'readDate'];
+    protected $fillable = ['Connection_ID', 'meterReading', 'totalMeterReading', 'startReadDate', 'readDate'];
 }
