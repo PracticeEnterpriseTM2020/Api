@@ -18,6 +18,7 @@ class Kosten extends Migration
             $table->unsignedBigInteger('typeId');
             $table->unsignedBigInteger('supplierId');
             $table->unsignedBigInteger('prijs_per_eenheid');
+            $table->string('eenheid');
         });
     }
 

@@ -50,6 +50,7 @@ Route::post('/aanpas','SupplierController@aanpas');
 
 //kosten
 Route::post('/kosten/maken','kostencontroler@store');
+Route::post('/kosten/berekenen','kostencontroler@rekenaar');
 
 //Meters
 Route::get('meters/search', 'MetersController@show');
