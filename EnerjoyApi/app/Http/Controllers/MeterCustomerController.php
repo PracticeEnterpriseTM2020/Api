@@ -61,10 +61,10 @@ class MeterCustomerController extends Controller
                     return response()->json(['success' => true, 'message' => 'Data added to database.'], 212);
                 }
             } else {
-                return response()->json(['success' => false, 'errors' => 'Meter is already used or does not exist'], 411);
+                return response()->json(['success' => false, 'message' => 'Meter is already used or does not exist'], 411);
             }
         } else {
-            return response()->json(['success' => false, 'errors' => 'Meter is already used or does not exist'], 411);
+            return response()->json(['success' => false, 'message' => 'Meter is already used or does not exist'], 411);
         }
     }
 
@@ -97,7 +97,7 @@ class MeterCustomerController extends Controller
 
             return response()->json(['success' => true, 'message' => 'Connection meter & customer removed'], 214);
         } else {
-            return response()->json(['success' => false, 'errors' => 'Connection does not exist'], 412);
+            return response()->json(['success' => false, 'message' => 'Connection does not exist'], 412);
         }
     }
 
@@ -126,7 +126,7 @@ class MeterCustomerController extends Controller
 
             return response()->json(['success' => true, 'message' => $responseQueryGetAllMetersFromCustomerAndData], 213);
         } else {
-            return response()->json(['success' => false, 'errors' => 'Customer has no meter(s)'], 412);
+            return response()->json(['success' => false, 'message' => 'Customer has no meter(s)'], 412);
         }
     }
 }

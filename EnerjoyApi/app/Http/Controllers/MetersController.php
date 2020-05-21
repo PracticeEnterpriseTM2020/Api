@@ -125,7 +125,7 @@ class MetersController extends Controller
         if (count($selectMeters)) {
             return response()->json(['success' => true, 'results' => $selectMetersAll, 'pages' => (floor($selectMetersAll / $amountPerPageRequest) + 1), 'current_page' => $page, 'data' => $selectMeters], 213);
         } else {
-            return response()->json(['success' => false, 'errors' => 'No results found.'], 412);
+            return response()->json(['success' => false, 'message' => 'No results found.'], 412);
         }
     }
 
@@ -167,7 +167,7 @@ class MetersController extends Controller
 
             return response()->json(['success' => true, 'message' => 'Data successfully softdeleted.'], 214);
         } else {
-            return response()->json(['success' => false, 'errors' => 'id does not exist or meter is used.'], 412);
+            return response()->json(['success' => false, 'message' => 'id does not exist or meter is used.'], 412);
         }
     }
 
@@ -218,7 +218,7 @@ class MetersController extends Controller
                 return response()->json(['success' => false, 'errors' => 'Request does not have an id and-or doesn\'t have a meter_id or creation_timestamp.'], 411);
             }
         } else {
-            return response()->json(['success' => false, 'errors' => 'id does not exist'], 412);
+            return response()->json(['success' => false, 'message' => 'id does not exist'], 412);
         }
     }
 }
