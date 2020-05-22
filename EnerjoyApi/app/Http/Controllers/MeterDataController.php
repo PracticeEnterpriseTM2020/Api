@@ -146,10 +146,10 @@ class MeterDataController extends Controller
             if (count($countDataQuery)) {
                 return response()->json(['success' => true, 'usage' => $resultDataQuery], 213);
             } else {
-                return response()->json(['success' => false, 'message' => 'No results found.'], 412);
+                return response()->json(['success' => false, 'message' => 'No data for given meter.'], 412);
             }
         } else {
-            return response()->json(['success' => false, 'message' => 'No data or connection found for given meter.'], 412);
+            return response()->json(['success' => false, 'message' => 'No connection found for given meter.'], 412);
         }
     }
 }
