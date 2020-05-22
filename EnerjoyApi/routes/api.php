@@ -49,6 +49,8 @@ Route::middleware('APIToken')->group(function(){
   Route::post('/herinstaleer', 'SupplierController@softHerinstaleer');
   Route::post('/aanpas','SupplierController@aanpas');
 });
+
+
 //Meters
 Route::middleware('APIToken')->group(function(){
   Route::get('meters/search', 'MetersController@show');
@@ -65,6 +67,7 @@ Route::middleware('APIToken')->group(function(){
 //Meter Data
 Route::middleware('APIToken')->group(function(){
   Route::post('meters/usage/add', 'MeterDataController@store');
+  Route::get('meters/usage/search', 'MeterDataController@show');
 });
 //employees
 Route::get('employees','employeeController@filter');

@@ -17,6 +17,8 @@ class CreateMeterDatasTable extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->unsignedBigInteger('Connection_ID');
             $table->bigInteger('meterReading');
+            $table->bigInteger('totalMeterReading');
+            $table->bigInteger('startReadDate');
             $table->bigInteger('readDate');
         });
     }
