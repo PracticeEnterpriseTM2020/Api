@@ -80,7 +80,7 @@ Route::middleware('APIToken')->group(function () {
 Route::post('employees/login', 'employeeAuthController@login');
 //Employees
 Route::prefix("employees")->group(function () {
-    Route::post('/login', 'employeeController@login');
+    Route::post('/hr/login', 'employeeController@login');
     Route::get('/refresh', 'employeeController@refresh');
     Route::middleware("auth")->group(function () {
         Route::get('/', 'employeeController@filter');
