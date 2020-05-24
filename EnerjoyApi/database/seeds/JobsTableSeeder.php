@@ -13,6 +13,12 @@ class JobsTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('jobs')->insert([
+            'job_title' => 'administrator'
+        ]);
+        DB::table('jobs')->insert([
+            'job_title' => 'human resources'
+        ]);
         $faker = Faker::create();
         foreach (range(1, 10) as $index) {
             DB::table('jobs')->insert([

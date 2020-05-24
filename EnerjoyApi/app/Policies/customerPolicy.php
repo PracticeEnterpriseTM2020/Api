@@ -3,14 +3,13 @@
 namespace App\Policies;
 
 use App\customer;
-use App\customer;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use UserInterface;
 
 class customerPolicy
 {
     use HandlesAuthorization;
-    
+
     /**
      * Determine whether the user can view any customers.
      *
@@ -54,7 +53,6 @@ class customerPolicy
      */
     public function update(customer $user, customer $customer)
     {
-        
     }
 
     /**
@@ -65,7 +63,7 @@ class customerPolicy
      * @return mixed
      */
     public function delete(customer $user, customer $customer)
-    {   
+    {
     }
 
     /**

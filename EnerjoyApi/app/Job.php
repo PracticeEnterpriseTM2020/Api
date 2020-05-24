@@ -8,15 +8,27 @@ use Illuminate\Database\Eloquent\softDeletes;
 class Job extends Model
 {
     use SoftDeletes;
-    
+
     protected $table = "jobs";
     protected $fillable = ["job_title"];
-    protected $hidden = ['created_at','updated_at','deleted_at'];
+    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
     protected $dates = ["deleted_at"];
-    protected $width = ["Employee"];
 
-    function employee()
+    public static function boot()
     {
-        return $this->hasMany("App/Employee");
+        parent::boot();
+
+        self::deleting(function (Job $job) {
+            $job->load("employees");
+            foreach ($job->employees as $emp) {
+                $emp->job_id = null;
+                $emp->save();
+            }
+        });
+    }
+
+    public function employees()
+    {
+        return $this->hasMany("App\Employee");
     }
 }
