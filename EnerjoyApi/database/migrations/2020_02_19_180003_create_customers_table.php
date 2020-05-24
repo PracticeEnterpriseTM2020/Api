@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -14,8 +15,8 @@ class CreateCustomersTable extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->string('firstname',30)->nullable(false);
-            $table->string('lastname',30)->nullable(false);
+            $table->string('firstname', 30)->nullable(false);
+            $table->string('lastname', 30)->nullable(false);
             $table->string('email')->unique()->nullable(false);
             $table->string('password')->nullable(false);
             $table->smallInteger('active')->unsigned()->default(1);

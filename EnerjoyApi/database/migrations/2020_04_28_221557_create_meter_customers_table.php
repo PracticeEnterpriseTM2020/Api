@@ -17,7 +17,7 @@ class CreateMeterCustomersTable extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->string('customer_email')->nullable(false);
             $table->unsignedBigInteger('meter_id');
-            $table->bigInteger('installedOn')->nullable();
+            $table->bigInteger('installedOn');
             $table->tinyInteger('deleted')->default(0);
         });
     }

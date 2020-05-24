@@ -6,9 +6,13 @@ use Validator; //For validating the inputs
 use App\Meters;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Traits\employeeTrait;
+use App\Http\Traits\customerTrait;
 
 class MetersController extends Controller
 {
+    use employeeTrait;
+    use customerTrait;
     /**
      * Store a newly created resource in storage.
      *
@@ -17,13 +21,17 @@ class MetersController extends Controller
      */
     public function store(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(), [
             'meter_id' => 'required|max:255|alpha_dash',
             'creation_timestamp' => 'required|max:16|min:16|date'
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 411);
         }
 
         $meter = new Meters();
@@ -32,9 +40,9 @@ class MetersController extends Controller
         $meter->creation_timestamp = strtotime(request('creation_timestamp'));
 
         if (!$meter->save()) {
-            return response()->json(['success' => false, 'errors' => 'Data has not been added to database.'], 400);
+            return response()->json(['success' => false, 'errors' => 'Data has not been added to database.'], 511);
         } else {
-            return response()->json(['success' => true, 'message' => 'Data added to database.'], 200);
+            return response()->json(['success' => true, 'message' => 'Data added to database.'], 212);
         }
     }
 
@@ -46,6 +54,10 @@ class MetersController extends Controller
      */
     public function show(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(), [
             'meter_id'                  => 'max:255|alpha_dash',
             'creation_timestamp_after'  => 'max:16|min:16|date',
@@ -56,7 +68,7 @@ class MetersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 411);
         }
 
         if ($request->has('amountPerPage')) {
@@ -111,10 +123,9 @@ class MetersController extends Controller
         }
 
         if (count($selectMeters)) {
-            //return $selectMeters;
-            return response()->json(['success' => true, 'results' => $selectMetersAll, 'pages' => (floor($selectMetersAll / $amountPerPageRequest) + 1), 'current_page' => $page, 'data' => $selectMeters], 200);
+            return response()->json(['success' => true, 'results' => $selectMetersAll, 'pages' => (floor($selectMetersAll / $amountPerPageRequest) + 1), 'current_page' => $page, 'data' => $selectMeters], 213);
         } else {
-            return response()->json(['success' => false, 'errors' => 'No results found.'], 400);
+            return response()->json(['success' => false, 'message' => 'No results found.'], 412);
         }
     }
 
@@ -127,12 +138,16 @@ class MetersController extends Controller
      */
     public function softdelete(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric'
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 411);
         }
 
         $checkIfMeterExistsAndIsNotUsedQuery = Meters::query();
@@ -150,9 +165,9 @@ class MetersController extends Controller
 
             $updateMeters = $updateMetersQuery->update(['deleted' => 1]);
 
-            return response()->json(['success' => true], 200);
+            return response()->json(['success' => true, 'message' => 'Data successfully softdeleted.'], 214);
         } else {
-            return response()->json(['success' => false, 'errors' => 'id does not exist or meter is used.'], 400);
+            return response()->json(['success' => false, 'message' => 'id does not exist or meter is used.'], 412);
         }
     }
 
@@ -165,6 +180,10 @@ class MetersController extends Controller
      */
     public function edit(Request $request)
     {
+        $token = $request->header('Authorization');
+        if(!$this->isEmployee($token)){
+            return response()->json(['success'=>false,'message'=>'invalid login']);
+        }
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric',
             'meter_id' => 'max:255|alpha_dash',
@@ -172,7 +191,7 @@ class MetersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
+            return response()->json(['success' => false, 'errors' => $validator->messages()], 411);
         }
 
         $checkIfMeterExistsAndIsNotUsedQuery = Meters::query();
@@ -194,12 +213,12 @@ class MetersController extends Controller
                 if ($request->has('creation_timestamp')) {
                     $updateMeters = $updateMetersQuery->update(['creation_timestamp' => strtotime(request('creation_timestamp'))]);
                 }
-                return response()->json(['success' => true], 200);
+                return response()->json(['success' => true, 'message' => 'Data successfully updated in database.'], 215);
             } else {
-                return response()->json(['success' => false, 'errors' => 'Request does not have an id and-or doesn\'t have a meter_id or creation_timestamp.'], 400);
+                return response()->json(['success' => false, 'errors' => 'Request does not have an id and-or doesn\'t have a meter_id or creation_timestamp.'], 411);
             }
         } else {
-            return response()->json(['success' => false, 'errors' => 'id does not exist'], 400);
+            return response()->json(['success' => false, 'message' => 'id does not exist'], 412);
         }
     }
 }

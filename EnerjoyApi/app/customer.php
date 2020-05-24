@@ -8,6 +8,7 @@ use UserInterface;
 class customer extends Model{
     public $timestamps = false;
     protected $fillable = ['firstname', 'lastname', 'email','password','addressId'];
+    protected $hidden = ['password'];
 
     public function address()
     {

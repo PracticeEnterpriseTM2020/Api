@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Validator;
 //use App\Http\Controllers\Schema;
 
@@ -21,8 +22,8 @@ class invoiceController extends Controller
     public function index(Request $request)
     {
         $token = $request->header('Authorization');
-        if(!$this->isEmployee($token)){
-            return response()->json(['success'=>false,'message'=>'invalid login']);
+        if (!$this->isEmployee($token)) {
+            return response()->json(['success' => false, 'message' => 'invalid login']);
         }
         //Show all invoice data on the screen
         
@@ -34,8 +35,8 @@ class invoiceController extends Controller
     public function filter(Request $request)
     {
         $token = $request->header('Authorization');
-        if(!$this->isEmployee($token)){
-            return response()->json(['success'=>false,'message'=>'invalid login']);
+        if (!$this->isEmployee($token) && !$this->isCustomer($token)) {
+            return response()->json(['success' => false, 'message' => 'invalid login']);
         }
         $cols = Schema::getColumnListing("invoices");
         $validator = Validator::make($request->all(), [
@@ -54,37 +55,33 @@ class invoiceController extends Controller
         $amount = $request->input("amount", 5);
 
         //Show all entries
-        if ($customerId == 0 && $invoiceId == 0)
-        {
+        if ($customerId == 0 && $invoiceId == 0) {
             return Invoice::where("active", "=", "1")
-            ->orderBy($sort, $order)
-            ->paginate($amount);
+                ->orderBy($sort, $order)
+                ->paginate($amount);
         }
 
         //Filter based on InvoiceId
-        else if($customerId == 0 && $invoiceId != "0")
-        {
+        else if ($customerId == 0 && $invoiceId != "0") {
             return Invoice::where("id", "=", "$invoiceId")
-            ->where("active", "=", "1")
-            ->orderBy($sort, $order)
-            ->paginate($amount);
+                ->where("active", "=", "1")
+                ->orderBy($sort, $order)
+                ->paginate($amount);
         }
         //Filter based on customerId
-        else if ($customerId != 0 && $invoiceId == "0")
-        {
+        else if ($customerId != 0 && $invoiceId == "0") {
             return Invoice::where("customerId", "=", "$customerId")
-            ->where("active", "=", "1")
-            ->orderBy($sort, $order)
-            ->paginate($amount);
+                ->where("active", "=", "1")
+                ->orderBy($sort, $order)
+                ->paginate($amount);
         }
         //Filter on both customer and invoice ID
-        else
-        {
+        else {
             return Invoice::where("customerId", "=", "$customerId")
-            ->where("id", "=", "$invoiceId")
-            ->where("active", "=", "1")
-            ->orderBy($sort, $order)
-            ->paginate($amount);
+                ->where("id", "=", "$invoiceId")
+                ->where("active", "=", "1")
+                ->orderBy($sort, $order)
+                ->paginate($amount);
         }
     }
 
@@ -107,23 +104,23 @@ class invoiceController extends Controller
     }
     */
 
-    
+
     //Store a newly created resource in storage.
     public function store(Request $request)
     {
-        $token = $request->header('Authorization');
-        if(!$this->isEmployee($token)){
-            return response()->json(['success'=>false,'message'=>'invalid login']);
-        }
+        // $token = $request->header('Authorization');
+        // if (!$this->isEmployee($token)) {
+        //     return response()->json(['success' => false, 'message' => 'invalid login']);
+        // }
         //Validate the input, make sure all parameters are present and correct
         $validator = Validator::make($request->all(), [
             'id' => 'required',
             'customerId' => 'required',
             'price' => 'required',
-            'date' => 'required|max:16|min:16|date'
+            'date' => 'required|date'
         ]);
 
-       //If the data entered isn't valid, throw error and don't add to DB
+        //If the data entered isn't valid, throw error and don't add to DB
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->messages()], 400);
         }
@@ -142,19 +139,19 @@ class invoiceController extends Controller
         if (!$invoice->save()) {
             return response()->json(['success' => false, 'errors' => 'Data has not been added to database.'], 422);
         } else {
-            return response()->json(['success' => true, 'message' => 'Data added to database.'], 200);
+            return response()->json(['success' => true, 'message' => 'Data added to database.'], 201);
         }
     }
 
-    
+
     public function destroy(Request $request)
     {
-        $token = $request->header('Authorization');
-        if(!$this->isEmployee($token)){
-            return response()->json(['success'=>false,'message'=>'invalid login']);
-        }
-        $validator = Validator::make($request->all(),[
-            "id"=> 'required',
+        // $token = $request->header('Authorization');
+        // if (!$this->isEmployee($token)) {
+        //     return response()->json(['success' => false, 'message' => 'invalid login']);
+        // }
+        $validator = Validator::make($request->all(), [
+            "id" => 'required',
         ]);
 
         //If the data entered isn't valid, throw error and don't alter the DB
@@ -163,49 +160,44 @@ class invoiceController extends Controller
         }
 
         //Get the correct row
-        $invoice = Invoice::where('id',$request['id'])->where('active',1)->first();
-        if(!$invoice){
-            return response()->json(['delete'=>false,'message'=>'Invoice could not be found'],404);
+        $invoice = Invoice::where('id', $request['id'])->where('active', 1)->first();
+        if (!$invoice) {
+            return response()->json(['delete' => false, 'message' => 'Invoice could not be found'], 404);
         }
 
         //Set the active column of the row to 0
         $invoice->active = 0;
-        if(!$invoice->save()){
-            return response()->json(['delete'=>false,'message'=>'Invoice could not be deleted'],422);
-        }
-        else{
-            return response()->json(['delete'=>true,'message'=>'Invoice has been deleted']);
+        if (!$invoice->save()) {
+            return response()->json(['delete' => false, 'message' => 'Invoice could not be deleted'], 422);
+        } else {
+            return response()->json(['delete' => true, 'message' => 'Invoice has been deleted'], 204);
         }
     }
-    
+
     public function restore(Request $request)
     {
-        $token = $request->header('Authorization');
-        if(!$this->isEmployee($token)){
-            return response()->json(['success'=>false,'message'=>'invalid login']);
-        }
-        $validator = Validator::make($request->all(),[
-            "id"=> 'required',
+        // $token = $request->header('Authorization');
+        // if (!$this->isEmployee($token)) {
+        //     return response()->json(['success' => false, 'message' => 'invalid login']);
+        // }
+        $validator = Validator::make($request->all(), [
+            "id" => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['success' => false, 'message' => $validator->messages()], 400);
         }
 
         //Get the correct row
-        $invoice = Invoice::where('id',$request['id'])->where('active',0)->first();
-        if(!$invoice)
-        {
-        return response()->json(['restore'=>false,'message'=>'Inactive invoice could not be found'],404);
+        $invoice = Invoice::where('id', $request['id'])->where('active', 0)->first();
+        if (!$invoice) {
+            return response()->json(['restore' => false, 'message' => 'Inactive invoice could not be found'], 404);
         }
 
         $invoice->active = 1;
-        if(!$invoice->save()){
-            return response()->json(['restore'=>false,'message'=>'Invoice could not be restored'],422);
+        if (!$invoice->save()) {
+            return response()->json(['restore' => false, 'message' => 'Invoice could not be restored'], 422);
+        } else {
+            return response()->json(['restore' => true, 'message' => 'Invoice has been restored']);
         }
-        else{
-            return response()->json(['restore'=>true,'message'=>'Invoice has been restored']);
-        }
-
     }
-
 }
