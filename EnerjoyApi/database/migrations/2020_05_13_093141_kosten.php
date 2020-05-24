@@ -15,7 +15,7 @@ class Kosten extends Migration
     {
         Schema::create('kostens', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->unsignedBigInteger('typeId');
+            $table->string('type');
             $table->unsignedBigInteger('supplierId');
             $table->unsignedBigInteger('prijs_per_eenheid');
             $table->string('eenheid');

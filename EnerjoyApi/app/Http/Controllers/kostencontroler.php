@@ -14,9 +14,12 @@ class kostencontroler extends Controller
     {
         $kosten = new kosten();
         $type = htmlspecialchars(request("type"));
-        // Type nog aanpassen dat ik die ophaal uit de andere tabel
+        if (preg_match("/[^A-Za-z]+/",$type) || $tupe == "")
+        {
+            return "[{\"failed\" : \"This_is_no_type\"}]";
+        }
         $supplierId = htmlspecialchars(request('supplierId'));
-        if (preg_match("/[^0-9]+/",$supplierId))
+        if (preg_match("/[^0-9]+/",$supplierId) || $supplierId == "")
         {
             return "[{\"failed\" : \"This_is_no_id\"}]";
         }
@@ -37,16 +40,16 @@ class kostencontroler extends Controller
             }
         }
         $prijs = htmlspecialchars(request('prijsPerEenheid'));
-        if (preg_match("/[^0-9]+/",$prijs))
+        if (preg_match("/[^0-9]+/",$prijs) || $prijs == "")
         {
             return "[{\"failed\" : \"expected a number\"}]";
         }
         $eenheid = htmlspecialchars(request('eenheid'));
-        if (preg_match("/\p{No}/",$eenheid))
+        if (preg_match("/\p{No}/",$eenheid) || $eenheid == "")
         {
             return "[{\"failed\" : \"subscripts are not allowed use normal numbers\"}]";
         }
-        $kosten->typeId = $type;
+        $kosten->type = $type;
         $kosten->supplierId = $supplierId;
         $kosten->prijs_per_eenheid = $prijs;
         $kosten->eenheid = $eenheid;
@@ -57,11 +60,23 @@ class kostencontroler extends Controller
     public function rekenaar(Request $request)
     {
         $verbruik = htmlspecialchars(request('verbruik'));
-        $dealnaam = htmlspecialchars(request('tariefnaam'));
+        if (preg_match("/[^0-9]+/",$verbruik) || $verbruik == "")
+        {
+            return "[{\"failed\" : \"expected a number for verbruik\"}]";
+        }
+        
         $dealId = htmlspecialchars(request('tariefid'));
+        if (preg_match("/[^0-9]+/",$dealId) || $dealId == "")
+        {
+            return "[{\"failed\" : \"expected a number for id\"}]";
+        }
         $vermenigvuldiger = \DB::table('kostens')->where('id',$dealId)->value('prijs_per_eenheid');
+        if ($vermenigvuldiger == "")
+        {
+            return "[{\"failed\" : \"wasn't a valid id\"}]";
+        }
         $totaalPrijs = $vermenigvuldiger * $verbruik;
-        return $totaalPrijs;
+        return "[{\"succes\" : \"$totaalPrijs is de totaalprijs\"}]";
 
     }
 }
