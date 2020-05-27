@@ -25,9 +25,10 @@ class CountryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             "nicename" => "required|string",
-            "iso" => "required|string",
-            "iso3" => "required|string",
-            "phonecode" => "required|string"
+            "iso" => "required|string|max:2|min:2|unique",
+            "iso3" => "required|string|max:3|min:3|unique",
+            "phonecode" => "required|numeric",
+            "numcode" => "numeric"
         ]);
 
         $request->request->add(['name'=> $request->nicename]);

@@ -25,6 +25,14 @@ return [
     'in' => ':attribute moet één van de volgende types zijn: :values',
     'exists' => ':attribute bestaat niet.',
 
+    'max' => [
+        'string' => ':attribute mag niet langer zijn dan :max',
+    ],
+
+    'min' => [
+        'string' => ':attribute mag niet korter zijn dan :min',
+    ],
+
     'attributes' => [
         'first_name' => 'voornaam',
         'last_name' => 'achternaam',
