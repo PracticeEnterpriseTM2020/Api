@@ -61,6 +61,7 @@ class employeeController extends Controller
 
     public function destroy(Request $request, Employee $employee)
     {
+        if ($request->user()->id == $employee->id) return response()->json(["error" => trans("errors.selfdelete")], 400);
         $employee->delete();
         return response()->json(null, 204);
     }

@@ -9,5 +9,6 @@ return [
     'invalid-token' => 'Het opgegeven kenteken is fout.',
     'blacklist-token' => 'Het opgegeven kenteken is veroudered, vernieuw je teken of log opnieuw in.',
     'credentials' => 'Email en wachtwoord komen niet overeen.',
-    'conversation' => 'Deze conversatie bestaat al.'
+    'conversation' => 'Deze conversatie bestaat al.',
+    'selfdelete' => 'Je kan jezelf niet verwijderen.'
 ];
