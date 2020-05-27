@@ -24,11 +24,20 @@ class Job extends Model
                 $emp->job_id = null;
                 $emp->save();
             }
+            $job->load("jobOffers");
+            foreach ($job->jobOffers as $offer) {
+                $offer->delete();
+            }
         });
     }
 
     public function employees()
     {
         return $this->hasMany("App\Employee");
+    }
+
+    public function jobOffers()
+    {
+        return $this->hasMany("App\JobOffer");
     }
 }

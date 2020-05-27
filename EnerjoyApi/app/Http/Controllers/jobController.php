@@ -38,6 +38,7 @@ class jobController extends Controller
 
     public function destroy(Request $request, Job $job)
     {
+        if ($request->user()->job_id == $job->id) return response()->json(["error" => trans("errors.jobdelete")], 400);
         $job->delete();
         return response()->json(null, 204);
     }

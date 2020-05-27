@@ -10,5 +10,6 @@ return [
     'blacklist-token' => 'This token is outdated, refresh your token or login again',
     'credentials' => 'Email and password do not match.',
     'conversation' => 'This conversation already exists.',
-    'selfdelete' => 'You cannot delete yourself.'
+    'selfdelete' => 'You cannot delete yourself.',
+    'jobdelete' => 'You cannot delete your own job.'
 ];

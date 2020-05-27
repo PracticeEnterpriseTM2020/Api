@@ -17,7 +17,7 @@ class FleetController extends Controller
 
     public function __construct()
     {
-        $this->middleware("can:human-resources");
+        $this->middleware("can:human-resources")->except("filter");
     }
 
     public function show(Fleet $fleet)
